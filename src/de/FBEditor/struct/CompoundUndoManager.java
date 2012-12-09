@@ -104,6 +104,10 @@ public class CompoundUndoManager extends UndoManager implements UndoableEditList
 
 	public void changedUpdate(DocumentEvent documentevent) {
 	}
+	
+	public JTextComponent getEditor() {
+		return this.editor;
+	}
 
 	private static final long serialVersionUID = 1L;
 	public CompoundEdit compoundEdit;

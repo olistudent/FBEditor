@@ -25,55 +25,64 @@ public class CutAndPastePopup extends JComponent implements ClipboardOwner {
 		popupMenu.setLabel("Edit");
 		
 		// hier noch nicht implementiert
-		// rückgängig = new JMenuItem("Rückgängig");
-		ausschneiden = new JMenuItem("Ausschneiden");
-		kopieren = new JMenuItem("Kopieren");
-		einfügen = new JMenuItem("Einfügen");
-		löschen = new JMenuItem("Löschen");
+		// revert = new JMenuItem("RÃ¼ckgÃ¤ngig");
+		cut = new JMenuItem("Ausschneiden");
+		copy = new JMenuItem("Kopieren");
+		insert = new JMenuItem("EinfÃ¼gen");
+		delete = new JMenuItem("LÃ¶schen");
 		markall = new JMenuItem("Alles markieren");
 		
 		clipbd  = getToolkit().getSystemClipboard();
 		// undoManager = fbedit.getUndoManager();
 
-		ausschneiden.addActionListener(action);
-		kopieren.addActionListener(action);
-		einfügen.addActionListener(action);
-		löschen.addActionListener(action);
+		cut.setActionCommand("cut");
+		copy.setActionCommand("copy");
+		insert.setActionCommand("insert");
+		delete.setActionCommand("delete");
+		markall.setActionCommand("markall");
+		
+		cut.addActionListener(action);
+		copy.addActionListener(action);
+		insert.addActionListener(action);
+		delete.addActionListener(action);
 		markall.addActionListener(action);
 		
-		// rückgängig.addActionListener(this);
-		// rückgängig.setEnabled(false);
-		// popupMenu.add(rückgängig);
+		// revert.addActionListener(this);
+		// revert.setEnabled(false);
+		// popupMenu.add(revert);
 		// popupMenu.addSeparator();
 		
-		popupMenu.add(ausschneiden);
-		popupMenu.add(kopieren);
-		popupMenu.add(einfügen);
-		popupMenu.add(löschen);
+		popupMenu.add(cut);
+		popupMenu.add(copy);
+		popupMenu.add(insert);
+		popupMenu.add(delete);
 		popupMenu.addSeparator();
 		popupMenu.add(markall);
 	}
 
-	public void updateMenu(JTextComponent source) {
-		this.source = source;
+	public void updateMenu() {
 		if (source.getSelectedText() != null) {
-			kopieren.setEnabled(true);
-			ausschneiden.setEnabled(true);
-			löschen.setEnabled(true);
+			copy.setEnabled(true);
+			cut.setEnabled(true);
+			delete.setEnabled(true);
 		} else {
-			kopieren.setEnabled(false);
-			ausschneiden.setEnabled(false);
-			löschen.setEnabled(false);
+			copy.setEnabled(false);
+			cut.setEnabled(false);
+			delete.setEnabled(false);
 		}
 		if (clipbd.getContents(this) != null)
-			einfügen.setEnabled(true);
+			insert.setEnabled(true);
 		else
-			einfügen.setEnabled(false);
-		// rückgängig.setEnabled(undoManager.canUndo());
+			insert.setEnabled(false);
+		// revert.setEnabled(undoManager.canUndo());
 	}
 
 	public void lostOwnership(Clipboard c, Transferable t) {
 		selection = null;
+	}
+	
+	public void updateSource(JTextComponent source) {
+		this.source = source;
 	}
 
 	public void cut() {
@@ -122,11 +131,11 @@ public class CutAndPastePopup extends JComponent implements ClipboardOwner {
 	private static JPopupMenu popupMenu;
 	private Clipboard clipbd;
 	private String selection;
-	JMenuItem rückgängig;
-	JMenuItem ausschneiden;
-	JMenuItem kopieren;
-	JMenuItem einfügen;
-	JMenuItem löschen;
+	JMenuItem revert;
+	JMenuItem cut;
+	JMenuItem copy;
+	JMenuItem insert;
+	JMenuItem delete;
 	JMenuItem markall;
 	JTextComponent source;
 	// CompoundUndoManager undoManager;

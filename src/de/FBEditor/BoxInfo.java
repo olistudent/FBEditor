@@ -100,9 +100,9 @@ public class BoxInfo extends JDialog {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setPreferredSize(new java.awt.Dimension(115, 35));
-			jButton.setText("Schlieﬂen");
-			jButton.setToolTipText("Fenster schlieﬂen");
-			jButton.setName("Schlieﬂen");
+			jButton.setText("Schlie√üen");
+			jButton.setToolTipText("Fenster schlie√üen");
+			jButton.setName("close");
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);

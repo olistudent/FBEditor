@@ -165,19 +165,19 @@ public class FBEdit extends JFrame implements Runnable
 		myMenu.undo.setEnabled(undoManager.canUndo());
 		myMenu.redo.setEnabled(undoManager.canRedo());
 		if (pane.getSelectedText() != null) {
-			myMenu.kopieren.setEnabled(true);
-			myMenu.ausschneiden.setEnabled(true);
-			myMenu.löschen.setEnabled(true);
+			myMenu.copy.setEnabled(true);
+			myMenu.cut.setEnabled(true);
+			myMenu.delete.setEnabled(true);
 		} else {
-			myMenu.kopieren.setEnabled(false);
-			myMenu.ausschneiden.setEnabled(false);
-			myMenu.löschen.setEnabled(false);
+			myMenu.copy.setEnabled(false);
+			myMenu.cut.setEnabled(false);
+			myMenu.delete.setEnabled(false);
 		}
 		Clipboard clipbd = getToolkit().getSystemClipboard();
 		if (clipbd.getContents(this) != null)
-			myMenu.einfügen.setEnabled(true);
+			myMenu.insert.setEnabled(true);
 		else
-			myMenu.einfügen.setEnabled(false);
+			myMenu.insert.setEnabled(false);
 	}
 
 	void undoredo(int addaction) {
@@ -193,13 +193,17 @@ public class FBEdit extends JFrame implements Runnable
 		updateMenu(myMenu);
 		return;
 	}
+	
+	public JTextComponent getEditor() {
+		return this.undoManager.getEditor();
+	}
 
 	void newFile() {
 		pane.setText("");
 		undoManager.discardAllEdits();
 	}
 
-	public void beenden() {
+	public void exit() {
 		stoprequested = true;
 		Utils.saveProperties(PROPERTIES_FILE, this);
 		dispose();
@@ -224,7 +228,7 @@ public class FBEdit extends JFrame implements Runnable
 		jFile = null;
 	}
 
-	// Editor mit Inhalt füllen
+	// Editor mit Inhalt fÃ¼llen
 	public void setData(String data) {
 		JTextPane2 pane2 = this.getJTextPane();
 
@@ -239,13 +243,13 @@ public class FBEdit extends JFrame implements Runnable
 		pane2.setEditable(true);
 	}
 
-	// Export auf die Box zurückspielen
+	// Export auf die Box zurÃ¼ckspielen
 	void putFile() {
 		// Sicherheitsabfrage
 		int response = JOptionPane.showConfirmDialog(this, "Sind sie sicher, dass sie die Konfiguration auf die Fritz!Box zur\374ckspielen wollen?\nDer Autor dieses Programms \374bernimmt keine Haftung f\374r defekte Boxen!!!", "Einstellungen wiederherstellen", 0, 0);
 		if (response == 0) {
 			String text = CalcChecksum.replaceChecksum(this.getJTextPane().getText());
-			/* NoChecks=yes einfügen */
+			/* NoChecks=yes einfÃ¼gen */
 			if (NoChecks.equals("true")) {
 				int index = text.indexOf("**** CFGFILE:ar7.cfg");
 				text = text.substring(0, index) + "NoChecks=yes" + '\n' + text.substring(index);
@@ -318,7 +322,7 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void about() {
-		JOptionPane.showMessageDialog(this, (new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n").append("by Oliver Metz\n\nFür ihren Beitrag Danke ich Enrik Berkhan, Andreas Bühmann \nund dem JFritz-Team\n").toString(), "\334ber",
+		JOptionPane.showMessageDialog(this, (new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n").append("by Oliver Metz\n\nMein Dank geht an Enrik Berkhan, Andreas BÃ¼hmann \nund an das JFritz-Team.\n").toString(), "\334ber",
 				0, new ImageIcon(getImageFromJAR("/icon.gif")));
 	}
 
@@ -410,7 +414,7 @@ public class FBEdit extends JFrame implements Runnable
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(INSTANCE, "Fritz!Box wurde nicht gefunden.\nBitte die Einstellungen prüfen.", "Fehler", 0);
+			JOptionPane.showMessageDialog(INSTANCE, "Fritz!Box wurde nicht gefunden.\nBitte die Einstellungen prï¿½fen.", "Fehler", 0);
 		} catch (InvalidFirmwareException e) {
 			e.printStackTrace();
 		}

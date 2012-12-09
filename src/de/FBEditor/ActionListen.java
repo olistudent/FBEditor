@@ -10,52 +10,80 @@ class ActionListen implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent event) {
-		String action = event.getActionCommand();
 		CutAndPastePopup cutAndPaste = fbedit.getCutAndPaste();
-		if (action.equals("Beenden"))
-			fbedit.beenden();
-		else if (action.equals("Öffnen"))
+		cutAndPaste.updateSource(fbedit.getEditor());
+		
+		switch (event.getActionCommand()) {
+		case "exit":
+			fbedit.exit();
+			break;
+		case "open":
 			fbedit.loadFile();
-		else if (action.equals("Neu"))
+			break;
+		case "new":
 			fbedit.newFile();
-		else if (action.equals("Speichern"))
+			break;
+		case "save":
 			fbedit.saveFile();
-		else if (action.equals("Reconnect"))
+			break;
+		case "reconnect":
 			FBEdit.makeNewConnection(false);
-		else if (action.equals("Über"))
+			break;
+		case "about":
 			fbedit.about();
-		else if (action.equals("Konfiguration einlesen"))
+			break;
+		case "config_read":
 			fbedit.getFile();
-		else if (action.equalsIgnoreCase("konfiguration automatisch einlesen"))
+			break;
+		case "config_auto_read":
 			fbedit.changeRAS();
-		else if (action.equalsIgnoreCase("nochecks"))
+		case "nochecks":
 			fbedit.changeNoChecks();
-		else if (action.equalsIgnoreCase("konfiguration zurückspielen"))
+			break;
+		case "config_write":
 			fbedit.putFile();
-		else if (action.equals("Host / IP"))
+			break;
+		case "host_ip":
 			fbedit.getHost(false);
-		else if (action.equals("Passwort"))
+			break;
+		case "password":
 			fbedit.getPassword(false);
-		else if (action.equals("Boxinfo"))
+			break;
+		case "boxinfo":
 			fbedit.showBoxInfo();
-		else if (action.equals("Suchen"))
+			break;
+		case "search":
 			fbedit.search();
-		else if (action.equals("Ersetzen"))
+			break;
+		case "replace":
 			fbedit.replace();
-		else if (action.equals("Ausschneiden"))
+			break;
+		case "cut":
 			cutAndPaste.cut();
-		else if (action.equals("Kopieren"))
+			break;
+		case "copy":
 			cutAndPaste.copy();
-		else if (action.equals("Einfügen"))
+			break;
+		case "insert":
 			cutAndPaste.paste();
-		else if (action.equals("Löschen"))
+			break;
+		case "delete":
 			cutAndPaste.delete();
-		else if (action.equals("Alles markieren"))
+			break;
+		case "markall":
 			cutAndPaste.markall();
-		else if (action.startsWith("Rückgängig"))
+			break;
+		case "revert":
 			fbedit.undoredo(1);
-		else if (action.startsWith("Wiederherstellen"))
+			break;
+		case "restore":
 			fbedit.undoredo(2);
+			break;
+		default:
+			// TODO unknown action listener
+			System.out.println("unknown action listener: " + event.getActionCommand());
+			break;
+		}
 	}
 
 	private FBEdit fbedit;

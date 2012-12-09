@@ -21,7 +21,6 @@ public class Listener {
 
 	public static void addKeyListener(final FBEdit fbedit) {
 		final JTextPane2 pane2 = fbedit.getJTextPane();
-		final FindReplace findReplace = fbedit.getFindReplace();
 		
 		pane2.addKeyListener(new KeyListener() {
 
@@ -32,6 +31,7 @@ public class Listener {
 			}
 
 			public void keyReleased(KeyEvent arg0) {
+				FindReplace findReplace = fbedit.getFindReplace();
 				int key = arg0.getKeyCode();
 
 				/* Insert Mode */
@@ -56,7 +56,7 @@ public class Listener {
 			}
 
 			public void windowClosing(WindowEvent e) {
-				fbedit.beenden();
+				fbedit.exit();
 			}
 
 			public void windowClosed(WindowEvent windowevent) {
@@ -100,14 +100,16 @@ public class Listener {
 
 		public void mousePressed(MouseEvent e) {
 			if (e.isPopupTrigger()) {
-				cutAndPastePopup.updateMenu((JTextComponent) e.getSource());
+				cutAndPastePopup.updateSource((JTextComponent) e.getSource());
+				cutAndPastePopup.updateMenu();
 				popup.show((Component) e.getSource(), e.getX(), e.getY());
 			}
 		}
 
 		public void mouseReleased(MouseEvent e) {
 			if (e.isPopupTrigger()) {
-				cutAndPastePopup.updateMenu((JTextComponent) e.getSource());
+				cutAndPastePopup.updateSource((JTextComponent) e.getSource());
+				cutAndPastePopup.updateMenu();
 				popup.show((Component) e.getSource(), e.getX(), e.getY());
 			}
 		}

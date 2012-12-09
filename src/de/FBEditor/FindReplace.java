@@ -71,14 +71,16 @@ public class FindReplace extends JDialog {
 
 			public void mousePressed(MouseEvent e) {
 				if (e.isPopupTrigger()) {
-					CAP.updateMenu((JTextField) e.getSource());
+					CAP.updateSource((JTextComponent) e.getSource());
+					CAP.updateMenu();
 					popup.show((Component) e.getSource(), e.getX(), e.getY());
 				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
 				if (e.isPopupTrigger()) {
-					CAP.updateMenu((JTextComponent) e.getSource());
+					CAP.updateSource((JTextComponent) e.getSource());
+					CAP.updateMenu();
 					popup.show((Component) e.getSource(), e.getX(), e.getY());
 				}
 			}
