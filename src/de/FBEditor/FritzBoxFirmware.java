@@ -159,7 +159,7 @@ public class FritzBoxFirmware {
 		case 51:
 			return "FRITZ!Box 2170";
 		case 54:
-			return "FRITZ!Box 7270";	
+			return "FRITZ!Box 7270";
 		case 67:
 			return "FRITZ!Box 3270";
 		case 73:
@@ -168,8 +168,10 @@ public class FritzBoxFirmware {
 			return "FRITZ!Box 7270v3";
 		case 84:
 			return "FRITZ!Box 7390";
+		case 85:
+			return "FRITZ!Box 6360 Cable";
 		case 87:
-			return "FRITZ!Box 7112";	
+			return "FRITZ!Box 7112";
 		case 93:
 			return "Speedport W501V";
 		case 96:
