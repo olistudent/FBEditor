@@ -112,7 +112,7 @@ public class Utils {
 		if (statusCode1 == 200 && checkResponse(data))
 			result = true;
 		else
-			JOptionPane.showMessageDialog(fbedit, "Beim Zurückspielen ist ein Fehler aufgetreten!", "Fehler", 0);
+			JOptionPane.showMessageDialog(fbedit, FBEdit.getMessage(""), FBEdit.getMessage("error"), 0);
 
 		mPost.releaseConnection();
 		return result;
@@ -131,6 +131,7 @@ public class Utils {
 			properties.setProperty("box.password", "");
 			properties.setProperty("readOnStartup", "no");
 			properties.setProperty("NoChecks", "true");
+			properties.setProperty("language", "de_DE");
 		} catch (Exception exception) {
 		}
 		return false;
@@ -146,6 +147,7 @@ public class Utils {
 		properties.setProperty("box.address", fbedit.getbox_address());
 		properties.setProperty("readOnStartup", fbedit.getRASstate());
 		properties.setProperty("NoChecks", fbedit.getNoChecksState());
+		properties.setProperty("language", fbedit.getLanguage());
 		try {
 			FileOutputStream fos = new FileOutputStream(PROPERTIES_FILE);
 			properties.storeToXML(fos, "Properties for FBEditor");

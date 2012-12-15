@@ -22,15 +22,15 @@ public class CutAndPastePopup extends JComponent implements ClipboardOwner {
 	public CutAndPastePopup(ActionListen action) {
 		
 		popupMenu = new JPopupMenu();
-		popupMenu.setLabel("Edit");
+		popupMenu.setLabel(FBEdit.getMessage("menu.edit"));
 		
 		// hier noch nicht implementiert
 		// revert = new JMenuItem("Rückgängig");
-		cut = new JMenuItem("Ausschneiden");
-		copy = new JMenuItem("Kopieren");
-		insert = new JMenuItem("Einfügen");
-		delete = new JMenuItem("Löschen");
-		markall = new JMenuItem("Alles markieren");
+		cut = new JMenuItem(FBEdit.getMessage("menu.cut"));
+		copy = new JMenuItem(FBEdit.getMessage("menu.copy"));
+		insert = new JMenuItem(FBEdit.getMessage("menu.insert"));
+		delete = new JMenuItem(FBEdit.getMessage("menu.delete"));
+		markall = new JMenuItem(FBEdit.getMessage("menu.markall"));
 		
 		clipbd  = getToolkit().getSystemClipboard();
 		// undoManager = fbedit.getUndoManager();

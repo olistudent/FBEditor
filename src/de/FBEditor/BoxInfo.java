@@ -44,7 +44,7 @@ public class BoxInfo extends JDialog {
 		super();
 		
 		this.setSize(500, 300);
-		this.setTitle("BoxInfo");
+		this.setTitle(FBEdit.getMessage("menu.boxinfo"));
 		this.setIconImage(FBEdit.getInstance().getImageFromJAR("/icon.gif"));
 		this.setContentPane(getJPanel());
 		this.setLocationRelativeTo(FBEdit.getInstance().getframe());
@@ -100,8 +100,8 @@ public class BoxInfo extends JDialog {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setPreferredSize(new java.awt.Dimension(115, 35));
-			jButton.setText("Schließen");
-			jButton.setToolTipText("Fenster schließen");
+			jButton.setText(FBEdit.getMessage("menu.close"));
+			jButton.setToolTipText(FBEdit.getMessage("window.close"));
 			jButton.setName("close");
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -152,19 +152,19 @@ public class BoxInfo extends JDialog {
 		if (jPanel1 == null) {
 			jPanel1 = new JPanel();
 			jPanel1.setLayout(new GridLayout(4, 2));
-			JLabel jLabel = new JLabel(" Hardware:");
+			JLabel jLabel = new JLabel(FBEdit.getMessage("boxinfo.hardware"));
 			jLabel.setPreferredSize(new Dimension(100, 26));
 			jPanel1.add(jLabel);
 			jLabel2 = new JLabel();
 			jLabel2.setPreferredSize(new Dimension(100, 26));
 			jPanel1.add(jLabel2);
-			jLabel = new JLabel(" Firmware: ");
+			jLabel = new JLabel(FBEdit.getMessage("boxinfo.firmware"));
 			jLabel.setPreferredSize(new Dimension(100, 26));
 			jPanel1.add(jLabel);
 			jLabel4 = new JLabel();
 			jLabel4.setPreferredSize(new Dimension(100, 26));
 			jPanel1.add(jLabel4);
-			jLabel = new JLabel(" Mod-Version: ");
+			jLabel = new JLabel(FBEdit.getMessage("boxinfo.modversion"));
 			jLabel.setPreferredSize(new Dimension(100, 26));
 			jPanel1.add(jLabel);
 			jLabel6 = new JLabel();
@@ -177,6 +177,9 @@ public class BoxInfo extends JDialog {
 	public void setPanelText(String boxName, String firmwareVersion, String modVersion) {
 		jLabel2.setText(boxName);
 		jLabel4.setText(firmwareVersion);
-		jLabel6.setText(modVersion);
+		if (modVersion.equals(""))
+			jLabel6.setText(FBEdit.getMessage("boxinfo.nomod"));
+		else
+			jLabel6.setText(modVersion);
 	}
 }

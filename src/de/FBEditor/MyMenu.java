@@ -25,43 +25,43 @@ public class MyMenu {
 	}
 
 	JMenu createFileMenu() {
-		JMenu ret = new JMenu("Datei");
+		JMenu ret = new JMenu(FBEdit.getMessage("menu.file"));
 		ret.setMnemonic('D');
-		JMenuItem mi = new JMenuItem("Neu", 78);
+		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.new"), 78);
 		fbedit.setCtrlAccelerator(mi, 'N');
 		mi.setActionCommand("new");
 		mi.addActionListener(action);
 		ret.add(mi);
-		mi = new JMenuItem("\326ffnen", 102);
+		mi = new JMenuItem(FBEdit.getMessage("menu.open"), 102);
 		fbedit.setCtrlAccelerator(mi, 'O');
 		mi.setActionCommand("open");
 		mi.addActionListener(action);
 		ret.add(mi);
-		exportcfg = new JMenuItem("Konfiguration einlesen", 115);
+		exportcfg = new JMenuItem(FBEdit.getMessage("menu.config_read"), 115);
 		fbedit.setCtrlAccelerator(exportcfg, 'E');
 		exportcfg.setActionCommand("config_read");
 		exportcfg.addActionListener(action);
 		exportcfg.setEnabled(false);
 		ret.add(exportcfg);
 		ret.addSeparator();
-		mi = new JMenuItem("Speichern", 112);
+		mi = new JMenuItem(FBEdit.getMessage("menu.config_save"), 112);
 		fbedit.setCtrlAccelerator(mi, 'S');
 		mi.setActionCommand("save");
 		mi.addActionListener(action);
 		ret.add(mi);
-		importcfg = new JMenuItem("Konfiguration zurückspielen", 119);
+		importcfg = new JMenuItem(FBEdit.getMessage("menu.config_write"), 119);
 		importcfg.setActionCommand("config_write");
 		importcfg.addActionListener(action);
 		importcfg.setEnabled(false);
 		ret.add(importcfg);
 		ret.addSeparator();
-		reconnect = new JMenuItem("Reconnect");
+		reconnect = new JMenuItem(FBEdit.getMessage("menu.reconnect"));
 		reconnect.setActionCommand("reconnect");
 		reconnect.addActionListener(action);
 		reconnect.setEnabled(false);
 		ret.add(reconnect);
 		ret.addSeparator();
-		mi = new JMenuItem("Beenden", 66);
+		mi = new JMenuItem(FBEdit.getMessage("menu.exit"), 66);
 		mi.setActionCommand("exit");
 		mi.addActionListener(action);
 		ret.add(mi);
@@ -69,53 +69,53 @@ public class MyMenu {
 	}
 
 	JMenu createEditMenu() {
-		JMenu ret = new JMenu("Bearbeiten");
+		JMenu ret = new JMenu(FBEdit.getMessage("menu.edit"));
 		ret.setMnemonic('B');
 		ret.addMenuListener(new EditMenuListener(fbedit));
-		undo = new JMenuItem("Rückgängig", 82);
+		undo = new JMenuItem(FBEdit.getMessage("menu.revert"), 82);
 		fbedit.setCtrlAccelerator(undo, 'Z');
 		undo.setEnabled(false);
 		undo.setActionCommand("revert");
 		undo.addActionListener(action);
 		ret.add(undo);
-		redo = new JMenuItem("Wiederherstellen", 87);
+		redo = new JMenuItem(FBEdit.getMessage("menu.restore"), 87);
 		fbedit.setCtrlAccelerator(redo, 'Y');
 		redo.setActionCommand("restore");
 		redo.addActionListener(action);
 		redo.setEnabled(false);
 		ret.add(redo);
 		ret.addSeparator();
-		cut = new JMenuItem("Ausschneiden", 117);
+		cut = new JMenuItem(FBEdit.getMessage("menu.cut"), 117);
 		fbedit.setCtrlAccelerator(cut, 'X');
 		cut.setActionCommand("cut");
 		cut.addActionListener(action);
 		cut.setEnabled(false);
 		ret.add(cut);
-		copy = new JMenuItem("Kopieren", 75);
+		copy = new JMenuItem(FBEdit.getMessage("menu.copy"), 75);
 		fbedit.setCtrlAccelerator(copy, 'C');
 		copy.setActionCommand("copy");
 		copy.addActionListener(action);
 		copy.setEnabled(false);
 		ret.add(copy);
-		insert = new JMenuItem("Einf\374gen", 105);
+		insert = new JMenuItem(FBEdit.getMessage("menu.insert"), 105);
 		fbedit.setCtrlAccelerator(insert, 'V');
 		insert.setActionCommand("insert");
 		insert.addActionListener(action);
 		insert.setEnabled(false);
 		ret.add(insert);
-		delete = new JMenuItem("L\366schen", 105);
+		delete = new JMenuItem(FBEdit.getMessage("menu.delete"), 105);
 		fbedit.setCtrlAccelerator(delete, 'V');
 		delete.setActionCommand("delete");
 		delete.addActionListener(action);
 		delete.setEnabled(false);
 		ret.add(delete);
 		ret.addSeparator();
-		JMenuItem mi = new JMenuItem("Suchen", 83);
+		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.search"), 83);
 		fbedit.setCtrlAccelerator(mi, 'F');
 		mi.setActionCommand("search");
 		mi.addActionListener(action);
 		ret.add(mi);
-		mi = new JMenuItem("Ersetzen", 69);
+		mi = new JMenuItem(FBEdit.getMessage("menu.replace"), 69);
 		fbedit.setCtrlAccelerator(mi, 'R');
 		mi.setActionCommand("replace");
 		mi.addActionListener(action);
@@ -124,14 +124,14 @@ public class MyMenu {
 	}
 
 	JMenu createHelpMenu() {
-		JMenu ret = new JMenu("Hilfe");
+		JMenu ret = new JMenu(FBEdit.getMessage("menu.help"));
 		ret.setMnemonic('H');
-		hardmenu = new JMenuItem("Boxinfo", 72);
+		hardmenu = new JMenuItem(FBEdit.getMessage("menu.boxinfo"), 72);
 		hardmenu.setEnabled(false);
 		ret.add(hardmenu);
 		hardmenu.setActionCommand("boxinfo");
 		hardmenu.addActionListener(action);
-		JMenuItem mi = new JMenuItem("\334ber", 98);
+		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.about"), 98);
 		ret.add(mi);
 		mi.setActionCommand("about");
 		mi.addActionListener(action);
@@ -139,23 +139,23 @@ public class MyMenu {
 	}
 
 	JMenu createConfigMenu() {
-		JMenu ret = new JMenu("Einstellungen");
+		JMenu ret = new JMenu(FBEdit.getMessage("menu.settings"));
 		ret.setMnemonic('B');
-		JMenuItem mi = new JMenuItem("Host / IP", 72);
+		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.host_ip"), 72);
 		fbedit.setCtrlAccelerator(mi, 'H');
 		mi.setActionCommand("host_ip");
 		mi.addActionListener(action);
 		ret.add(mi);
-		mi = new JMenuItem("Passwort", 80);
+		mi = new JMenuItem(FBEdit.getMessage("menu.password"), 80);
 		fbedit.setCtrlAccelerator(mi, 'P');
 		mi.setActionCommand("password");
 		mi.addActionListener(action);
 		ret.add(mi);
-		readOnStartup = new JCheckBoxMenuItem("Konfiguration automatisch einlesen", Boolean.parseBoolean(fbedit.getRASstate()));
+		readOnStartup = new JCheckBoxMenuItem(FBEdit.getMessage("menu.config_auto_read"), Boolean.parseBoolean(fbedit.getRASstate()));
 		readOnStartup.setActionCommand("config_auto_read");
 		readOnStartup.addActionListener(action);
 		ret.add(readOnStartup);
-		NoChecks = new JCheckBoxMenuItem("NoChecks", Boolean.parseBoolean(fbedit.getNoChecksState()));
+		NoChecks = new JCheckBoxMenuItem(FBEdit.getMessage("menu.nochecks"), Boolean.parseBoolean(fbedit.getNoChecksState()));
 		NoChecks.setActionCommand("nochecks");
 		NoChecks.addActionListener(action);
 		// Disable NoChecks because it doesn't work at the moment
@@ -178,7 +178,7 @@ public class MyMenu {
 		Element map = pane2.getDocument().getDefaultRootElement();
 		int currLine = map.getElementIndex(off);
 		int numLines = map.getElementCount();
-		statusMsg.setText(' ' + "Zeile " + (currLine + 1) + " / " + numLines);
+		statusMsg.setText(' ' + FBEdit.getMessage("menu.line") + (currLine + 1) + " / " + numLines);
 	}
 
 	JMenuItem undo;

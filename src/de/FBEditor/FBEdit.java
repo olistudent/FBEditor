@@ -57,6 +57,11 @@ import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.utils.Debug;
 import de.moonflower.jfritz.utils.Encryption;
 
+import java.util.ResourceBundle;
+import java.util.Vector;
+import java.util.Locale;
+import java.util.MissingResourceException;
+
 public class FBEdit extends JFrame implements Runnable
 
 {
@@ -77,11 +82,12 @@ public class FBEdit extends JFrame implements Runnable
 	private static String box_password = "";
 	private static String readOnStartup = "false";
 	private static String NoChecks = "false";
+	private static String language = "false";
 
 	private static MyProperties properties;
 	private final CompoundUndoManager undoManager;
-	private final String progName = "Fritz!Box Export Editor";;
-	private String fileName = "Bearbeiten";
+	private static String progName = "Fritz!Box Export Editor";;
+	private String fileName = "";
 	private boolean stoprequested = false;
 	private static CutAndPastePopup cutAndPaste;
 	private ActionListen action;
@@ -92,6 +98,9 @@ public class FBEdit extends JFrame implements Runnable
 	private FindReplace findReplace = null;
 	private static JPopupMenu popup;
 
+	private static Vector<Locale> supported_languages;
+    private static ResourceBundle messages;
+    private static ResourceBundle en_messages;
 
 	public FBEdit() {
 
@@ -110,8 +119,30 @@ public class FBEdit extends JFrame implements Runnable
 			getHost(true);
 			getPassword(true);
 		}
+		
+	    // load supported languages
+        loadLanguages();
 
+        Debug.always("OS Language: " + System.getProperty("user.language"));
+        Debug.always("OS Country: " + System.getProperty("user.country"));
+        if ( language == null || language.equals("") )
+        {
+            Debug.info("No language set yet ... Setting language to OS language");
+            // Check if language is supported. If not switch to English
+            if ( supported_languages.contains(new Locale(System.getProperty("user.language"),System.getProperty("user.country"))))
+            {
+                language = System.getProperty("user.language")+"_"+System.getProperty("user.country");
+            } else {
+                Debug.warning("Your language ist not yet supported.");
+                language = "en_US";
+            }
+        }
+        Debug.always("Selected language: " + language);
 
+        loadMessages(new Locale(language.substring(0, language.indexOf("_")), language.substring(language.indexOf("_")+1, language.length())));
+
+        fileName = FBEdit.getMessage("main.unknown_file");
+        
 		undoManager = new CompoundUndoManager(pane);
 		action = new ActionListen(this);
 		cutAndPaste = new CutAndPastePopup(action);
@@ -136,7 +167,7 @@ public class FBEdit extends JFrame implements Runnable
 		insertCaret = pane.getCaret();
 		pane.setCaret(insertMode ? insertCaret : overwriteCaret);
 		pane.setCaretPosition(0);
-
+		
 		(new Thread(this)).start();
 	}
 
@@ -144,8 +175,8 @@ public class FBEdit extends JFrame implements Runnable
 		box_address = properties.getProperty("box.address");
 		box_password = Encryption.decrypt(properties.getProperty("box.password"));
 		readOnStartup = properties.getProperty("readOnStartup");
-		// NoChecks = properties.getProperty("NoChecks");
-		NoChecks = "true";
+		NoChecks = properties.getProperty("NoChecks");
+		language = properties.getProperty("language");
 	}
 
 	// Dateiname im Titel und Cursor Position setzen
@@ -222,7 +253,7 @@ public class FBEdit extends JFrame implements Runnable
 		pane2.setFont(new Font("Courrier", 0, 16));
 		/* Speedup */
 		removeDocumentListener(pane2, docListen2);
-		pane2.setText("Hole Konfiguration von Fritz!Box.\nBitte warten...");
+		pane2.setText(FBEdit.getMessage("box.get_config"));
 		new ImportData();
 		fileName = "fritzbox.export";
 		jFile = null;
@@ -246,7 +277,7 @@ public class FBEdit extends JFrame implements Runnable
 	// Export auf die Box zurückspielen
 	void putFile() {
 		// Sicherheitsabfrage
-		int response = JOptionPane.showConfirmDialog(this, "Sind sie sicher, dass sie die Konfiguration auf die Fritz!Box zur\374ckspielen wollen?\nDer Autor dieses Programms \374bernimmt keine Haftung f\374r defekte Boxen!!!", "Einstellungen wiederherstellen", 0, 0);
+		int response = JOptionPane.showConfirmDialog(this, FBEdit.getMessage("box.affirmation"), FBEdit.getMessage("settings.backup"), 0, 0);
 		if (response == 0) {
 			String text = CalcChecksum.replaceChecksum(this.getJTextPane().getText());
 			/* NoChecks=yes einfügen */
@@ -264,11 +295,11 @@ public class FBEdit extends JFrame implements Runnable
 					e.printStackTrace();
 				}
 				if (result)
-					JOptionPane.showMessageDialog(this, "Die Einstellungen wurden erfolgreich wiederhergestellt.\nDie Anlage startet jetzt neu.\n", "Einstellungen wiederherstellen", 1);
+					JOptionPane.showMessageDialog(this, FBEdit.getMessage("box.restart"), FBEdit.getMessage("settings.backup"), 1);
 
 				enableMenu(false);
 			} else {
-				JOptionPane.showMessageDialog(this, "Die Konfiguration ist fehlerhaft und konnte nicht zur\374ckgespielt werden!", "Einstellungen wiederherstellen", 0);
+				JOptionPane.showMessageDialog(this, FBEdit.getMessage("box.settings_error"), FBEdit.getMessage("settings.backup"), 0);
 			}
 		}
 	}
@@ -277,7 +308,7 @@ public class FBEdit extends JFrame implements Runnable
 		JTextPane2 pane2 = this.getJTextPane();
 		JFileChooser chooser = new JFileChooser(".");
 		ExampleFileFilter filter = new ExampleFileFilter("export");
-		filter.setDescription("Export-Datei");
+		filter.setDescription(FBEdit.getMessage("export.file"));
 		chooser.setFileFilter(filter);
 		int returnVal = chooser.showOpenDialog(this);
 		if (returnVal == 0) {
@@ -290,7 +321,7 @@ public class FBEdit extends JFrame implements Runnable
 				setData(new String(donnees));
 				fis.close();
 			} catch (IOException e) {
-				pane2.setText("Fehler: Datei konnte nicht geladen werden.");
+				pane2.setText(FBEdit.getMessage("export.load.error"));
 			}
 			undoManager.discardAllEdits();
 		}
@@ -300,7 +331,7 @@ public class FBEdit extends JFrame implements Runnable
 		JTextPane2 pane2 = this.getJTextPane();
 		JFileChooser chooser = new JFileChooser(".");
 		ExampleFileFilter filter = new ExampleFileFilter("export");
-		filter.setDescription("Export-Datei");
+		filter.setDescription(FBEdit.getMessage("export.file"));
 		chooser.setFileFilter(filter);
 
 		chooser.setSelectedFile(new File(fileName));
@@ -316,13 +347,13 @@ public class FBEdit extends JFrame implements Runnable
 			pfos.print(text);
 			fos.close();
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this.getframe(), "Datei konnte nicht gespeichert werden.", "Fehler", 0);
+			JOptionPane.showMessageDialog(this.getframe(), FBEdit.getMessage("export.save.error"), FBEdit.getMessage("main.error"), 0);
 		}
 		undoManager.discardAllEdits();
 	}
 
 	void about() {
-		JOptionPane.showMessageDialog(this, (new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n").append("by Oliver Metz\n\nMein Dank geht an Enrik Berkhan, Andreas Bühmann \nund an das JFritz-Team.\n").toString(), "\334ber",
+		JOptionPane.showMessageDialog(this, (new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n").append("by Oliver Metz\n\n").append(FBEdit.getMessage("main.thanks")).toString(), FBEdit.getMessage("menu.about"),
 				0, new ImageIcon(getImageFromJAR("/icon.gif")));
 	}
 
@@ -331,7 +362,7 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void getHost(boolean first) {
-		String new_box_address = JOptionPane.showInputDialog(this, "Host / IP:", box_address);
+		String new_box_address = JOptionPane.showInputDialog(this, FBEdit.getMessage("settings.host_ip"), box_address);
 		if (new_box_address != null && !new_box_address.equals(box_address)) {
 			box_address = new_box_address;
 
@@ -342,7 +373,7 @@ public class FBEdit extends JFrame implements Runnable
 
 	void getPassword(boolean first) {
 		JPasswordField field = new JPasswordField(box_password);
-		JOptionPane.showConfirmDialog(this, field, "Passwort:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.password"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		field.requestFocus();
 		String newPass = new String(field.getPassword());
 		if (newPass != null && !newPass.equals(box_password)) {
@@ -414,7 +445,7 @@ public class FBEdit extends JFrame implements Runnable
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(INSTANCE, "Fritz!Box wurde nicht gefunden.\nBitte die Einstellungen pr�fen.", "Fehler", 0);
+			JOptionPane.showMessageDialog(INSTANCE, FBEdit.getMessage("box.not_found") , "Fehler", 0);
 		} catch (InvalidFirmwareException e) {
 			e.printStackTrace();
 		}
@@ -524,6 +555,10 @@ public class FBEdit extends JFrame implements Runnable
 	public String getNoChecksState() {
 		return NoChecks;
 	}
+	
+	public String getLanguage() {
+		return language;
+	}
 
 
 	/* NoChecks setzen */
@@ -551,4 +586,53 @@ public class FBEdit extends JFrame implements Runnable
 	public CutAndPastePopup getCutAndPaste() {
 		return cutAndPaste;
 	}
+	
+    private static void loadLanguages()
+    {
+        supported_languages = new Vector<Locale>();
+        supported_languages.add(new Locale("de","DE"));
+        supported_languages.add(new Locale("en","US"));
+        /*
+        supported_languages.add(new Locale("it","IT"));
+        supported_languages.add(new Locale("nl","NL"));
+        supported_languages.add(new Locale("pl","PL"));
+        supported_languages.add(new Locale("ru","RU"));
+        */
+    }
+    
+    /**
+     * Loads resource messages
+     * 
+     * @param locale
+     */
+    public static void loadMessages(Locale locale) {
+        try {
+            Debug.info("Loading locale: " + locale);
+            en_messages = ResourceBundle.getBundle("fbeditor", new Locale("en","US"));//$NON-NLS-1$
+            messages = ResourceBundle.getBundle("fbeditor", locale);//$NON-NLS-1$
+        } catch (MissingResourceException e) {
+            Debug.error("Can't find i18n resource! (\"fbeditor_" + locale + ".properties\")");//$NON-NLS-1$
+            JOptionPane.showMessageDialog(null, progName + " v"//$NON-NLS-1$
+                    + version + "\n\nCannot find the language file \"fbeditor_" + locale
+                    + ".properties\"!" + "\nProgram will exit!");//$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * @return Returns an internationalized message.
+     */
+    public static String getMessage(String msg) {
+        String i18n = ""; //$NON-NLS-1$
+        try {
+            if (!messages.getString(msg).equals("")) {
+                i18n = messages.getString(msg);
+            } else {
+                i18n = msg;
+            }
+        } catch (MissingResourceException e) {
+            Debug.error("Can't find resource string for " + msg); //$NON-NLS-1$
+            i18n = en_messages.getString(msg);
+        }
+        return i18n;
+    }
 }
