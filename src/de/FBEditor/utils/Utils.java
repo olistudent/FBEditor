@@ -1,7 +1,7 @@
 package de.FBEditor.utils;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+//import java.awt.Image;
+//import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +14,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
+//import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 
 import de.FBEditor.FBEdit;
 import de.FBEditor.struct.MyProperties;
-import de.moonflower.jfritz.exceptions.WrongPasswordException;
+//import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.struct.SIDLogin;
 import de.moonflower.jfritz.utils.Encryption;
 import de.moonflower.jfritz.utils.HTMLUtil;
@@ -68,16 +70,17 @@ public class Utils {
 			return null;
 	}
 	
-	public static boolean exportData(FBEdit fbedit, String box_address, String data) throws IOException, WrongPasswordException {
+	public static boolean exportData(FBEdit fbedit, String box_address, String data) {
 		boolean result = false;
+		try {
 		String url = (new StringBuilder("http://")).append(box_address).append("/cgi-bin/firmwarecfg").toString();
 		File uploadFile = createTempFile(data);
 		PostMethod mPost = new PostMethod(url);
 
-		String sid = SIDLogin.getInstance().getSessionId();
+		String sid = SIDLogin.getSessionId();
 
 		Part[] parts = null;
-		if (SIDLogin.getInstance().isSidLogin()) {
+		if (SIDLogin.isSidLogin()) {
 			// with session id
 			parts = new Part[3];
 			parts[0] = new StringPartNoTransferEncoding("sid", sid);
@@ -115,6 +118,10 @@ public class Utils {
 			JOptionPane.showMessageDialog(fbedit, FBEdit.getMessage(""), FBEdit.getMessage("error"), 0);
 
 		mPost.releaseConnection();
+		} catch (IOException ex) {
+			   Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+		} 
+		
 		return result;
 	}
 	

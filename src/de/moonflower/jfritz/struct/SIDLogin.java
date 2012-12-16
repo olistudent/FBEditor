@@ -21,19 +21,19 @@ import de.moonflower.jfritz.utils.Debug;
 public class SIDLogin {
 
  private static boolean sidLogin;
- private static boolean sidLoginLua; // 28.11.2012
+ private static boolean sidLoginLua;
  private static boolean isLoginOld;
  private static boolean isLogOut;
  private static String sessionId;
  private static String TsessionId;
  private static String sidResponse;
- private final static String LOGIN_SID_LUA = "/login_sid.lua"; // 28.11.2012
- private final static String POSTDATA_LOGIN_SID_LUA_RESPONSE = "page=/login_sid.lua&response="; // 28.11.2012
+ private final static String LOGIN_SID_LUA = "/login_sid.lua";
+ private final static String POSTDATA_LOGIN_SID_LUA_RESPONSE = "page=/login_sid.lua&response=";
  private final static String POSTDATA_LOGIN_XML = "getpage=../html/login_sid.xml";
- private final static String POSTDATA_LOGIN_XML_RESPONSE = "getpage=../html/login_sid.xml&login:command/response="; // 20.10.2012
+ private final static String POSTDATA_LOGIN_XML_RESPONSE = "getpage=../html/login_sid.xml&login:command/response=";
  private final static String PATTERN_WRITE_ACCESS = "<iswriteaccess>([^<]*)</iswriteaccess>";
  private final static String PATTERN_CHALLENGE = "<Challenge>([^<]*)</Challenge>";
- private final static String PATTERN_SID = "<SID>([^<]*)</SID>"; // 18.10.2012
+ private final static String PATTERN_SID = "<SID>([^<]*)</SID>";
  private static SIDLogin INSTANCE;
  private static String UrlLogoutFB = "";
 
@@ -46,7 +46,7 @@ public class SIDLogin {
   TsessionId = "0000000000000000";
   sidResponse = "";
 //  UrlLogoutFB = "";
-  INSTANCE = null; // 06.11.2012
+  INSTANCE = null;
  }
 
  public static void check(String box_name, String urlstr, String box_password, String sRetSID) {

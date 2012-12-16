@@ -21,6 +21,7 @@ import de.moonflower.jfritz.utils.JFritzUtils;
  */
 public class FritzBoxFirmware {
 
+	private String FritzboxName;
 	private byte boxtype;
 	private byte majorFirmwareVersion;
 	private byte minorFirmwareVersion;
@@ -34,8 +35,10 @@ public class FritzBoxFirmware {
 	 * @param majorFirmwareVersion
 	 * @param minorFirmwareVersion
 	 * @param modFirmwareVersion
+	 * @param language
 	 */
-	public FritzBoxFirmware(String boxtype, String majorFirmwareVersion, String minorFirmwareVersion, String modFirmwareVersion, String language) {
+	public FritzBoxFirmware(String FritzboxName, String boxtype, String majorFirmwareVersion, String minorFirmwareVersion, String modFirmwareVersion, String language) {
+		this.FritzboxName = FritzboxName;
 		this.boxtype = Byte.parseByte(boxtype);
 		this.majorFirmwareVersion = Byte.parseByte(majorFirmwareVersion);
 		this.minorFirmwareVersion = Byte.parseByte(minorFirmwareVersion);
@@ -43,22 +46,10 @@ public class FritzBoxFirmware {
 		this.language = language;
 	}
 
-	/**
-	 * Static method for firmware detection
-	 * 
-	 * @param box_address
-	 * @param box_password
-	 * @return New instance of FritzBoxFirmware
-	 * @throws WrongPasswordException
-	 * @throws IOException
-	 * @throws InvalidFirmwareException
-	 */
-/*
-	public static FritzBoxFirmware detectFirmwareVersion(String box_address, String box_password) throws WrongPasswordException, IOException, InvalidFirmwareException {
-		
-		return new FritzBoxFirmware(boxtypeString, majorFirmwareVersion, minorFirmwareVersion, modFirmwareVersion, language);
-	}
-*/
+	 public String getFritzboxName() {
+		 return FritzboxName;
+	 }
+	
 	/**
 	 * @return Returns the boxtype.
 	 */

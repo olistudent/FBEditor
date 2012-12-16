@@ -25,8 +25,6 @@ import de.moonflower.jfritz.struct.SIDLogin;
 public class ImportData implements Runnable {
 
 	public ImportData() {
-		Thread thread = new Thread(this);
-		thread.start();
 	}
 
 	public void run() {
@@ -36,13 +34,13 @@ public class ImportData implements Runnable {
 		PostMethod mPost = new PostMethod(url);
 		
 		try {
-			String sid = SIDLogin.getInstance().getSessionId();
+			String sid = SIDLogin.getSessionId();
 			
 			HttpClient client = new HttpClient();
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(8000);
 			
 			Part[] parts = null;
-			if (SIDLogin.getInstance().isSidLogin()) {
+			if (SIDLogin.isSidLogin()) {
 				// with session id
 				parts = new Part[3];
 				parts[0] = new StringPartNoTransferEncoding("sid", sid);
@@ -67,12 +65,7 @@ public class ImportData implements Runnable {
 			while ((len = bis.read(buf)) > 0)
 				sb.append(new String(buf, 0, len));
 			data = sb.toString();
-			
-		} catch (HttpException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WrongPasswordException e) {
 			e.printStackTrace();
 		}
 		finally {

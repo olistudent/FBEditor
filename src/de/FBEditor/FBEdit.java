@@ -1,27 +1,30 @@
 package de.FBEditor;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.EventQueue;
+//import java.awt.Color;
+//import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+//import java.awt.event.KeyEvent;
+//import java.awt.event.KeyListener;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
+//import java.awt.event.WindowEvent;
+//import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+//import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.SocketTimeoutException;
+//import java.net.SocketTimeoutException;
 
-import javax.swing.Icon;
+//import javax.swing.Icon;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -32,16 +35,22 @@ import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
+//import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
+//import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.Highlighter;
+//import javax.swing.text.Document;
+//import javax.swing.text.Element;
+//import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.StyledEditorKit;
+//import javax.swing.text.StyledEditorKit;
 import javax.swing.undo.CannotRedoException;
+
+import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.text.Element;
 
 import de.FBEditor.struct.CompoundUndoManager;
 import de.FBEditor.struct.ExampleFileFilter;
@@ -52,8 +61,8 @@ import de.FBEditor.struct.OverwriteCaret;
 import de.FBEditor.utils.CalcChecksum;
 import de.FBEditor.utils.Utils;
 import de.FBEditor.utils.Listener;
-import de.moonflower.jfritz.exceptions.InvalidFirmwareException;
-import de.moonflower.jfritz.exceptions.WrongPasswordException;
+//import de.moonflower.jfritz.exceptions.InvalidFirmwareException;
+//import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.utils.Debug;
 import de.moonflower.jfritz.utils.Encryption;
 
@@ -97,6 +106,7 @@ public class FBEdit extends JFrame implements Runnable
 	private static DocumentListener docListen;
 	private FindReplace findReplace = null;
 	private static JPopupMenu popup;
+	Thread thread = new Thread(this);
 
 	private static Vector<Locale> supported_languages;
     private static ResourceBundle messages;
@@ -104,16 +114,30 @@ public class FBEdit extends JFrame implements Runnable
 
 	public FBEdit() {
 
-		setLocation(100, 100);
-		setSize(600, 600);
+		// Try to load and set properties
+		properties = new MyProperties();
+		boolean loadProp = Utils.loadProperties(properties, PROPERTIES_FILE);
+		
+		  if (loadProp) {
+
+			  String position_top = properties.getProperty("position.top", "60");
+			  String position_left = properties.getProperty("position.left", "60");
+			  String position_height = properties.getProperty("position.height", "480");
+			  String position_width = properties.getProperty("position.width", "680");
+
+			  setLocation(Integer.parseInt(position_left), Integer.parseInt(position_top));
+			  setSize(Integer.parseInt(position_width), Integer.parseInt(position_height));
+
+		  } else {
+			  setLocation(60, 60);
+			  setSize(680, 480);
+		  }
+		
 		updateTitle();
 		setIconImage(getImageFromJAR("/icon.gif"));
 
 		pane = new JTextPane2();
 
-		// Try to load and set properties
-		properties = new MyProperties();
-		boolean loadProp = Utils.loadProperties(properties, PROPERTIES_FILE);
 		setProperties(properties);
 		if (!(loadProp)) {
 			getHost(true);
@@ -168,7 +192,6 @@ public class FBEdit extends JFrame implements Runnable
 		pane.setCaret(insertMode ? insertCaret : overwriteCaret);
 		pane.setCaretPosition(0);
 		
-		(new Thread(this)).start();
 	}
 
 	private void setProperties(MyProperties properties) {
@@ -186,8 +209,8 @@ public class FBEdit extends JFrame implements Runnable
 			myMenu.setstatusMsg(pane);
 			try {
 				Thread.sleep(200L);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			} catch (InterruptedException ex) {
+				Logger.getLogger(FBEdit.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}
@@ -250,11 +273,11 @@ public class FBEdit extends JFrame implements Runnable
 	void getFile() {
 		JTextPane2 pane2 = this.getJTextPane();
 		DocumentListener docListen2 = this.getDocListener();
-		pane2.setFont(new Font("Courrier", 0, 16));
+		pane2.setFont(new Font("Courier", 0, 16));
 		/* Speedup */
 		removeDocumentListener(pane2, docListen2);
 		pane2.setText(FBEdit.getMessage("box.get_config"));
-		new ImportData();
+		EventQueue.invokeLater(new ImportData());
 		fileName = "fritzbox.export";
 		jFile = null;
 	}
@@ -263,7 +286,8 @@ public class FBEdit extends JFrame implements Runnable
 	public void setData(String data) {
 		JTextPane2 pane2 = this.getJTextPane();
 
-		pane2.setFont(new Font("Courrier", 0, 12));
+		pane2.setText("");
+		pane2.setFont(new Font("Courier", 0, 12));
 		pane2.setEditable(false);
 		undoManager.pause();
 		pane2.setText(data);
@@ -280,20 +304,14 @@ public class FBEdit extends JFrame implements Runnable
 		int response = JOptionPane.showConfirmDialog(this, FBEdit.getMessage("box.affirmation"), FBEdit.getMessage("settings.backup"), 0, 0);
 		if (response == 0) {
 			String text = CalcChecksum.replaceChecksum(this.getJTextPane().getText());
-			/* NoChecks=yes einfügen */
-			if (NoChecks.equals("true")) {
-				int index = text.indexOf("**** CFGFILE:ar7.cfg");
-				text = text.substring(0, index) + "NoChecks=yes" + '\n' + text.substring(index);
-			}
 			if (text.startsWith("**** ") && text.endsWith(" ****\n")) {
-				boolean result = false;
-				try {
-					result = Utils.exportData(getframe(), getbox_address(), text);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (WrongPasswordException e) {
-					e.printStackTrace();
+				/* NoChecks=yes einfügen */
+				if (NoChecks.equals("true")) {
+					int index = text.indexOf("**** CFGFILE:ar7.cfg");
+					text = text.substring(0, index) + "NoChecks=yes" + '\n' + text.substring(index);
 				}
+				boolean result = false;
+				result = Utils.exportData(getframe(), getbox_address(), text);
 				if (result)
 					JOptionPane.showMessageDialog(this, FBEdit.getMessage("box.restart"), FBEdit.getMessage("settings.backup"), 1);
 
@@ -316,7 +334,7 @@ public class FBEdit extends JFrame implements Runnable
 			jFile = chooser.getSelectedFile().getAbsolutePath();
 			try {
 				FileInputStream fis = new FileInputStream(jFile);
-				byte donnees[] = new byte[fis.available()];
+				byte[] donnees = new byte[fis.available()];
 				fis.read(donnees);
 				setData(new String(donnees));
 				fis.close();
@@ -365,9 +383,6 @@ public class FBEdit extends JFrame implements Runnable
 		String new_box_address = JOptionPane.showInputDialog(this, FBEdit.getMessage("settings.host_ip"), box_address);
 		if (new_box_address != null && !new_box_address.equals(box_address)) {
 			box_address = new_box_address;
-
-			if (!first)
-				makeNewConnection(first);
 		}
 	}
 
@@ -405,7 +420,7 @@ public class FBEdit extends JFrame implements Runnable
 		return INSTANCE;
 	}
 
-	public static void main(String s[]) {
+	public static void main(String[] s) {
 		FBEdit fbedit = new FBEdit();
 
 		// Add document, window and key listener
@@ -427,7 +442,6 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	public static void makeNewConnection(Boolean firstStart) {
-		try {
 			FBEdit.getInstance().disableMenu();
 
 			fbConnection = new FritzBoxConnection(box_address, box_password);
@@ -440,15 +454,9 @@ public class FBEdit extends JFrame implements Runnable
 					FBEdit.getInstance().enableMenu(false);
 				if (firstStart && Boolean.parseBoolean(readOnStartup))
 					FBEdit.getInstance().getFile();
+			} else {
+				   JOptionPane.showMessageDialog(INSTANCE, FBEdit.getMessage("box.not_found"), FBEdit.getMessage("main.error"), 0);
 			}
-		} catch (WrongPasswordException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(INSTANCE, FBEdit.getMessage("box.not_found") , "Fehler", 0);
-		} catch (InvalidFirmwareException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public String getbox_address() {
