@@ -177,9 +177,11 @@ public class BoxInfo extends JDialog {
 	public void setPanelText(String boxName, String firmwareVersion, String modVersion) {
 		jLabel2.setText(boxName);
 		jLabel4.setText(firmwareVersion);
+		/*
 		if (modVersion.equals(""))
 			jLabel6.setText(FBEdit.getMessage("boxinfo.nomod"));
 		else
 			jLabel6.setText(modVersion);
+		*/
 	}
 }

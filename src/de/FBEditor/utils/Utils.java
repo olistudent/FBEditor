@@ -36,7 +36,7 @@ import de.moonflower.jfritz.utils.Encryption;
 import de.moonflower.jfritz.utils.HTMLUtil;
 
 public class Utils {
-	
+
 	// Check if we can connect to the given host
 	public static boolean checkhost(String host) throws IOException {
 		String[] temp;
@@ -60,7 +60,7 @@ public class Utils {
 		bool = true;
 		return bool;
 	}
-	
+
 	public static String pMatch(String s, String s1, int i) {
 		Pattern pattern = Pattern.compile(s, 2);
 		Matcher matcher = pattern.matcher(s1);
@@ -69,63 +69,72 @@ public class Utils {
 		else
 			return null;
 	}
-	
-	public static boolean exportData(FBEdit fbedit, String box_address, String data) {
+
+	public static boolean exportData(FBEdit fbedit, String box_address,
+			String data) {
 		boolean result = false;
 		try {
-		String url = (new StringBuilder("http://")).append(box_address).append("/cgi-bin/firmwarecfg").toString();
-		File uploadFile = createTempFile(data);
-		PostMethod mPost = new PostMethod(url);
+			String url = (new StringBuilder("http://")).append(box_address)
+					.append("/cgi-bin/firmwarecfg").toString();
+			File uploadFile = createTempFile(data);
+			PostMethod mPost = new PostMethod(url);
 
-		String sid = SIDLogin.getSessionId();
+			String sid = SIDLogin.getSessionId();
 
-		Part[] parts = null;
-		if (SIDLogin.isSidLogin()) {
-			// with session id
-			parts = new Part[3];
-			parts[0] = new StringPartNoTransferEncoding("sid", sid);
-			parts[1] = new StringPartNoTransferEncoding("ImportExportPassword", "");
-			parts[2] = new FilePart("ConfigImportFile", uploadFile.getName(), uploadFile);
-		}
-		else
-		{
-			// old style, no session id
-			parts = new Part[2];
-			parts[0] = new StringPartNoTransferEncoding("ImportExportPassword", "");
-			parts[1] = new FilePart("ConfigImportFile", uploadFile.getName(), uploadFile);
-		}
-		
-		mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost.getParams()));
+			Part[] parts = null;
+			if (SIDLogin.isSidLogin()) {
+				// with session id
+				parts = new Part[3];
+				parts[0] = new StringPartNoTransferEncoding("sid", sid);
+				parts[1] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", "");
+				parts[2] = new FilePart("ConfigImportFile",
+						uploadFile.getName(), uploadFile);
+			} else {
+				// old style, no session id
+				parts = new Part[2];
+				parts[0] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", "");
+				parts[1] = new FilePart("ConfigImportFile",
+						uploadFile.getName(), uploadFile);
+			}
 
-		HttpClient client = new HttpClient();
-		client.getHttpConnectionManager().getParams().setConnectionTimeout(8000);
+			mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost
+					.getParams()));
 
-		int statusCode1 = client.executeMethod(mPost);
+			HttpClient client = new HttpClient();
+			client.getHttpConnectionManager().getParams()
+					.setConnectionTimeout(8000);
 
-		BufferedInputStream bis = new BufferedInputStream(mPost.getResponseBodyAsStream());
-		byte buf[] = new byte[4096];
-		StringBuffer sb = new StringBuffer();
-		int len;
-		while ((len = bis.read(buf)) > 0)
-			sb.append(new String(buf, 0, len));
-		data = HTMLUtil.stripEntities(sb.toString());
-		data = HTMLUtil.stripNbsp(data);
-		bis.close();
-		
-		if (statusCode1 == 200 && checkResponse(data))
-			result = true;
-		else
-			JOptionPane.showMessageDialog(fbedit, FBEdit.getMessage(""), FBEdit.getMessage("error"), 0);
+			int statusCode1 = client.executeMethod(mPost);
 
-		mPost.releaseConnection();
+			BufferedInputStream bis = new BufferedInputStream(
+					mPost.getResponseBodyAsStream());
+			byte buf[] = new byte[4096];
+			StringBuffer sb = new StringBuffer();
+			int len;
+			while ((len = bis.read(buf)) > 0)
+				sb.append(new String(buf, 0, len));
+			data = HTMLUtil.stripEntities(sb.toString());
+			data = HTMLUtil.stripNbsp(data);
+			bis.close();
+
+			if (statusCode1 == 200 && checkResponse(data))
+				result = true;
+			else
+				JOptionPane.showMessageDialog(fbedit, FBEdit.getMessage(""),
+						FBEdit.getMessage("error"), 0);
+
+			mPost.releaseConnection();
 		} catch (IOException ex) {
-			   Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-		} 
-		
+			Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
 		return result;
 	}
-	
-	public static boolean loadProperties(MyProperties properties, String PROPERTIES_FILE) {
+
+	public static boolean loadProperties(MyProperties properties,
+			String PROPERTIES_FILE) {
 		// properties = new MyProperties();
 		try {
 			FileInputStream fis = new FileInputStream(PROPERTIES_FILE);
@@ -133,7 +142,8 @@ public class Utils {
 			fis.close();
 			return true;
 		} catch (FileNotFoundException e) {
-			System.out.println("File " + PROPERTIES_FILE + " not found, using default values");
+			System.out.println("File " + PROPERTIES_FILE
+					+ " not found, using default values");
 			properties.setProperty("box.address", "fritz.box");
 			properties.setProperty("box.password", "");
 			properties.setProperty("readOnStartup", "no");
@@ -146,11 +156,16 @@ public class Utils {
 
 	public static void saveProperties(String PROPERTIES_FILE, FBEdit fbedit) {
 		MyProperties properties = new MyProperties();
-		properties.setProperty("position.left", Integer.toString(fbedit.getLocation().x));
-		properties.setProperty("position.top", Integer.toString(fbedit.getLocation().y));
-		properties.setProperty("position.width", Integer.toString(fbedit.getSize().width));
-		properties.setProperty("position.height", Integer.toString(fbedit.getSize().height));
-		properties.setProperty("box.password", Encryption.encrypt(fbedit.getbox_password()));
+		properties.setProperty("position.left",
+				Integer.toString(fbedit.getLocation().x));
+		properties.setProperty("position.top",
+				Integer.toString(fbedit.getLocation().y));
+		properties.setProperty("position.width",
+				Integer.toString(fbedit.getSize().width));
+		properties.setProperty("position.height",
+				Integer.toString(fbedit.getSize().height));
+		properties.setProperty("box.password",
+				Encryption.encrypt(fbedit.getbox_password()));
 		properties.setProperty("box.address", fbedit.getbox_address());
 		properties.setProperty("readOnStartup", fbedit.getRASstate());
 		properties.setProperty("NoChecks", fbedit.getNoChecksState());
@@ -165,17 +180,17 @@ public class Utils {
 	}
 
 	private static File createTempFile(String data) throws IOException {
-			// Create temp file.
-			File temp = File.createTempFile("FRITZ.BOX", ".export");
+		// Create temp file.
+		File temp = File.createTempFile("FRITZ.BOX", ".export");
 
-			// Delete temp file when program exits.
-			temp.deleteOnExit();
+		// Delete temp file when program exits.
+		temp.deleteOnExit();
 
-			// Write to temp file
-			BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-			out.write(data);
-			out.close();
-			return temp;
+		// Write to temp file
+		BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+		out.write(data);
+		out.close();
+		return temp;
 	}
 
 	private static boolean checkResponse(String data) {

@@ -20,7 +20,7 @@ import de.moonflower.jfritz.struct.SIDLogin;
 
 /**
  * Import configuration from FBox
- *
+ * 
  */
 public class ImportData implements Runnable {
 
@@ -30,35 +30,40 @@ public class ImportData implements Runnable {
 	public void run() {
 		String data = "";
 		int statusCode = 0;
-		String url = (new StringBuilder("http://")).append(FBEdit.getInstance().getbox_address()).append("/cgi-bin/firmwarecfg").toString();
+		String url = (new StringBuilder("http://"))
+				.append(FBEdit.getInstance().getbox_address())
+				.append("/cgi-bin/firmwarecfg").toString();
 		PostMethod mPost = new PostMethod(url);
-		
+
 		try {
 			String sid = SIDLogin.getSessionId();
-			
+
 			HttpClient client = new HttpClient();
-			client.getHttpConnectionManager().getParams().setConnectionTimeout(8000);
-			
+			client.getHttpConnectionManager().getParams()
+					.setConnectionTimeout(8000);
+
 			Part[] parts = null;
 			if (SIDLogin.isSidLogin()) {
 				// with session id
 				parts = new Part[3];
 				parts[0] = new StringPartNoTransferEncoding("sid", sid);
-				parts[1] = new StringPartNoTransferEncoding("ImportExportPassword", "");
+				parts[1] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", "");
 				parts[2] = new StringPartNoTransferEncoding("ConfigExport", "");
-			}
-			else
-			{
+			} else {
 				// old style, no session id
 				parts = new Part[2];
-				parts[0] = new StringPartNoTransferEncoding("ImportExportPassword", "");
+				parts[0] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", "");
 				parts[1] = new StringPartNoTransferEncoding("ConfigExport", "");
 			}
 
-			mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost.getParams()));
+			mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost
+					.getParams()));
 
 			statusCode = client.executeMethod(mPost);
-			BufferedInputStream bis = new BufferedInputStream(mPost.getResponseBodyAsStream());
+			BufferedInputStream bis = new BufferedInputStream(
+					mPost.getResponseBodyAsStream());
 			byte buf[] = new byte[4096];
 			StringBuffer sb = new StringBuffer();
 			int len;
@@ -67,20 +72,21 @@ public class ImportData implements Runnable {
 			data = sb.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			mPost.releaseConnection();
 		}
 		if (!(statusCode == 200 && checkResponse(data))) {
-			JOptionPane.showMessageDialog(FBEdit.getInstance().getframe(), "Beim Einlesen der Daten ist ein Fehler aufgetreten!", "Fehler", 0);
+			JOptionPane.showMessageDialog(FBEdit.getInstance().getframe(),
+					"Beim Einlesen der Daten ist ein Fehler aufgetreten!",
+					"Fehler", 0);
 			data = "Fehler!";
 			// try to reconnect
 			FBEdit.makeNewConnection(false);
-		}	
+		}
 		// Put Export into Textpane
 		FBEdit.getInstance().setData(data);
 	}
-	
+
 	private boolean checkResponse(String data) {
 		return data.startsWith("****");
 	}

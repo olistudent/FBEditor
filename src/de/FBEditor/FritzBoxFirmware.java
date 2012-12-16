@@ -17,7 +17,7 @@ import de.moonflower.jfritz.utils.JFritzUtils;
 
 /**
  * Class modelling firmware and box information
- *
+ * 
  */
 public class FritzBoxFirmware {
 
@@ -37,7 +37,9 @@ public class FritzBoxFirmware {
 	 * @param modFirmwareVersion
 	 * @param language
 	 */
-	public FritzBoxFirmware(String FritzboxName, String boxtype, String majorFirmwareVersion, String minorFirmwareVersion, String modFirmwareVersion, String language) {
+	public FritzBoxFirmware(String FritzboxName, String boxtype,
+			String majorFirmwareVersion, String minorFirmwareVersion,
+			String modFirmwareVersion, String language) {
 		this.FritzboxName = FritzboxName;
 		this.boxtype = Byte.parseByte(boxtype);
 		this.majorFirmwareVersion = Byte.parseByte(majorFirmwareVersion);
@@ -46,10 +48,10 @@ public class FritzBoxFirmware {
 		this.language = language;
 	}
 
-	 public String getFritzboxName() {
-		 return FritzboxName;
-	 }
-	
+	public String getFritzboxName() {
+		return FritzboxName;
+	}
+
 	/**
 	 * @return Returns the boxtype.
 	 */
@@ -94,7 +96,8 @@ public class FritzBoxFirmware {
 		if (minorStr.length() == 1) {
 			minorStr = "0" + minorStr;
 		}
-		return boxtypeStr + "." + majorStr + "." + minorStr; // + modFirmwareVersion;
+		return boxtypeStr + "." + majorStr + "." + minorStr; // +
+																// modFirmwareVersion;
 	}
 
 	public String getBoxName() {

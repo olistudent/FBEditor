@@ -109,30 +109,35 @@ public class FBEdit extends JFrame implements Runnable
 	Thread thread = new Thread(this);
 
 	private static Vector<Locale> supported_languages;
-    private static ResourceBundle messages;
-    private static ResourceBundle en_messages;
+	private static ResourceBundle messages;
+	private static ResourceBundle en_messages;
 
 	public FBEdit() {
 
 		// Try to load and set properties
 		properties = new MyProperties();
 		boolean loadProp = Utils.loadProperties(properties, PROPERTIES_FILE);
-		
-		  if (loadProp) {
 
-			  String position_top = properties.getProperty("position.top", "60");
-			  String position_left = properties.getProperty("position.left", "60");
-			  String position_height = properties.getProperty("position.height", "480");
-			  String position_width = properties.getProperty("position.width", "680");
+		if (loadProp) {
 
-			  setLocation(Integer.parseInt(position_left), Integer.parseInt(position_top));
-			  setSize(Integer.parseInt(position_width), Integer.parseInt(position_height));
+			String position_top = properties.getProperty("position.top", "60");
+			String position_left = properties
+					.getProperty("position.left", "60");
+			String position_height = properties.getProperty("position.height",
+					"480");
+			String position_width = properties.getProperty("position.width",
+					"680");
 
-		  } else {
-			  setLocation(60, 60);
-			  setSize(680, 480);
-		  }
-		
+			setLocation(Integer.parseInt(position_left),
+					Integer.parseInt(position_top));
+			setSize(Integer.parseInt(position_width),
+					Integer.parseInt(position_height));
+
+		} else {
+			setLocation(60, 60);
+			setSize(680, 480);
+		}
+
 		updateTitle();
 		setIconImage(getImageFromJAR("/icon.gif"));
 
@@ -143,30 +148,33 @@ public class FBEdit extends JFrame implements Runnable
 			getHost(true);
 			getPassword(true);
 		}
-		
-	    // load supported languages
-        loadLanguages();
 
-        Debug.always("OS Language: " + System.getProperty("user.language"));
-        Debug.always("OS Country: " + System.getProperty("user.country"));
-        if ( language == null || language.equals("") )
-        {
-            Debug.info("No language set yet ... Setting language to OS language");
-            // Check if language is supported. If not switch to English
-            if ( supported_languages.contains(new Locale(System.getProperty("user.language"),System.getProperty("user.country"))))
-            {
-                language = System.getProperty("user.language")+"_"+System.getProperty("user.country");
-            } else {
-                Debug.warning("Your language ist not yet supported.");
-                language = "en_US";
-            }
-        }
-        Debug.always("Selected language: " + language);
+		// load supported languages
+		loadLanguages();
 
-        loadMessages(new Locale(language.substring(0, language.indexOf("_")), language.substring(language.indexOf("_")+1, language.length())));
+		Debug.always("OS Language: " + System.getProperty("user.language"));
+		Debug.always("OS Country: " + System.getProperty("user.country"));
+		if (language == null || language.equals("")) {
+			Debug.info("No language set yet ... Setting language to OS language");
+			// Check if language is supported. If not switch to English
+			if (supported_languages.contains(new Locale(System
+					.getProperty("user.language"), System
+					.getProperty("user.country")))) {
+				language = System.getProperty("user.language") + "_"
+						+ System.getProperty("user.country");
+			} else {
+				Debug.warning("Your language ist not yet supported.");
+				language = "en_US";
+			}
+		}
+		Debug.always("Selected language: " + language);
 
-        fileName = FBEdit.getMessage("main.unknown_file");
-        
+		loadMessages(new Locale(
+				language.substring(0, language.indexOf("_")),
+				language.substring(language.indexOf("_") + 1, language.length())));
+
+		fileName = FBEdit.getMessage("main.unknown_file");
+
 		undoManager = new CompoundUndoManager(pane);
 		action = new ActionListen(this);
 		cutAndPaste = new CutAndPastePopup(action);
@@ -191,12 +199,13 @@ public class FBEdit extends JFrame implements Runnable
 		insertCaret = pane.getCaret();
 		pane.setCaret(insertMode ? insertCaret : overwriteCaret);
 		pane.setCaretPosition(0);
-		
+
 	}
 
 	private void setProperties(MyProperties properties) {
 		box_address = properties.getProperty("box.address");
-		box_password = Encryption.decrypt(properties.getProperty("box.password"));
+		box_password = Encryption.decrypt(properties
+				.getProperty("box.password"));
 		readOnStartup = properties.getProperty("readOnStartup");
 		NoChecks = properties.getProperty("NoChecks");
 		language = properties.getProperty("language");
@@ -210,7 +219,8 @@ public class FBEdit extends JFrame implements Runnable
 			try {
 				Thread.sleep(200L);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(FBEdit.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(FBEdit.class.getName()).log(Level.SEVERE,
+						null, ex);
 			}
 		}
 	}
@@ -247,7 +257,7 @@ public class FBEdit extends JFrame implements Runnable
 		updateMenu(myMenu);
 		return;
 	}
-	
+
 	public JTextComponent getEditor() {
 		return this.undoManager.getEditor();
 	}
@@ -301,23 +311,31 @@ public class FBEdit extends JFrame implements Runnable
 	// Export auf die Box zurückspielen
 	void putFile() {
 		// Sicherheitsabfrage
-		int response = JOptionPane.showConfirmDialog(this, FBEdit.getMessage("box.affirmation"), FBEdit.getMessage("settings.backup"), 0, 0);
+		int response = JOptionPane.showConfirmDialog(this,
+				FBEdit.getMessage("box.affirmation"),
+				FBEdit.getMessage("settings.backup"), 0, 0);
 		if (response == 0) {
-			String text = CalcChecksum.replaceChecksum(this.getJTextPane().getText());
+			String text = CalcChecksum.replaceChecksum(this.getJTextPane()
+					.getText());
 			if (text.startsWith("**** ") && text.endsWith(" ****\n")) {
 				/* NoChecks=yes einfügen */
 				if (NoChecks.equals("true")) {
 					int index = text.indexOf("**** CFGFILE:ar7.cfg");
-					text = text.substring(0, index) + "NoChecks=yes" + '\n' + text.substring(index);
+					text = text.substring(0, index) + "NoChecks=yes" + '\n'
+							+ text.substring(index);
 				}
 				boolean result = false;
 				result = Utils.exportData(getframe(), getbox_address(), text);
 				if (result)
-					JOptionPane.showMessageDialog(this, FBEdit.getMessage("box.restart"), FBEdit.getMessage("settings.backup"), 1);
+					JOptionPane.showMessageDialog(this,
+							FBEdit.getMessage("box.restart"),
+							FBEdit.getMessage("settings.backup"), 1);
 
 				enableMenu(false);
 			} else {
-				JOptionPane.showMessageDialog(this, FBEdit.getMessage("box.settings_error"), FBEdit.getMessage("settings.backup"), 0);
+				JOptionPane.showMessageDialog(this,
+						FBEdit.getMessage("box.settings_error"),
+						FBEdit.getMessage("settings.backup"), 0);
 			}
 		}
 	}
@@ -365,22 +383,31 @@ public class FBEdit extends JFrame implements Runnable
 			pfos.print(text);
 			fos.close();
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this.getframe(), FBEdit.getMessage("export.save.error"), FBEdit.getMessage("main.error"), 0);
+			JOptionPane.showMessageDialog(this.getframe(),
+					FBEdit.getMessage("export.save.error"),
+					FBEdit.getMessage("main.error"), 0);
 		}
 		undoManager.discardAllEdits();
 	}
 
 	void about() {
-		JOptionPane.showMessageDialog(this, (new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n").append("by Oliver Metz\n\n").append(FBEdit.getMessage("main.thanks")).toString(), FBEdit.getMessage("menu.about"),
-				0, new ImageIcon(getImageFromJAR("/icon.gif")));
+		JOptionPane.showMessageDialog(
+				this,
+				(new StringBuilder("Fritz!Box Export Editor ")).append(version)
+						.append("\n").append("by Oliver Metz\n\n")
+						.append(FBEdit.getMessage("main.thanks")).toString(),
+				FBEdit.getMessage("menu.about"), 0, new ImageIcon(
+						getImageFromJAR("/icon.gif")));
 	}
 
 	void showBoxInfo() {
-		BoxInfo hardware = new BoxInfo(firmware.getBoxName(), firmware.getFirmwareVersion(), firmware.getModFirmwareVersion());
+		BoxInfo hardware = new BoxInfo(firmware.getBoxName(),
+				firmware.getFirmwareVersion(), firmware.getModFirmwareVersion());
 	}
 
 	void getHost(boolean first) {
-		String new_box_address = JOptionPane.showInputDialog(this, FBEdit.getMessage("settings.host_ip"), box_address);
+		String new_box_address = JOptionPane.showInputDialog(this,
+				FBEdit.getMessage("settings.host_ip"), box_address);
 		if (new_box_address != null && !new_box_address.equals(box_address)) {
 			box_address = new_box_address;
 		}
@@ -388,7 +415,9 @@ public class FBEdit extends JFrame implements Runnable
 
 	void getPassword(boolean first) {
 		JPasswordField field = new JPasswordField(box_password);
-		JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.password"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showConfirmDialog(this, field,
+				FBEdit.getMessage("settings.password"),
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 		field.requestFocus();
 		String newPass = new String(field.getPassword());
 		if (newPass != null && !newPass.equals(box_password)) {
@@ -442,21 +471,24 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	public static void makeNewConnection(Boolean firstStart) {
-			FBEdit.getInstance().disableMenu();
+		FBEdit.getInstance().disableMenu();
 
-			fbConnection = new FritzBoxConnection(box_address, box_password);
+		fbConnection = new FritzBoxConnection(box_address, box_password);
 
-			if (fbConnection.isConnected()) {
-				firmware = fbConnection.getFirmware();
-				if (firmware.getMajorFirmwareVersion() == 4 || firmware.getMajorFirmwareVersion() == 5)
-					FBEdit.getInstance().enableMenu(true);
-				else
-					FBEdit.getInstance().enableMenu(false);
-				if (firstStart && Boolean.parseBoolean(readOnStartup))
-					FBEdit.getInstance().getFile();
-			} else {
-				   JOptionPane.showMessageDialog(INSTANCE, FBEdit.getMessage("box.not_found"), FBEdit.getMessage("main.error"), 0);
-			}
+		if (fbConnection.isConnected()) {
+			firmware = fbConnection.getFirmware();
+			if (firmware.getMajorFirmwareVersion() == 4
+					|| firmware.getMajorFirmwareVersion() == 5)
+				FBEdit.getInstance().enableMenu(true);
+			else
+				FBEdit.getInstance().enableMenu(false);
+			if (firstStart && Boolean.parseBoolean(readOnStartup))
+				FBEdit.getInstance().getFile();
+		} else {
+			JOptionPane.showMessageDialog(INSTANCE,
+					FBEdit.getMessage("box.not_found"),
+					FBEdit.getMessage("main.error"), 0);
+		}
 	}
 
 	public String getbox_address() {
@@ -476,7 +508,8 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void updateTitle() {
-		setTitle((new StringBuilder(String.valueOf(progName))).append(" - ").append(fileName).toString());
+		setTitle((new StringBuilder(String.valueOf(progName))).append(" - ")
+				.append(fileName).toString());
 	}
 
 	void search() {
@@ -495,11 +528,13 @@ public class FBEdit extends JFrame implements Runnable
 		return undoManager;
 	}
 
-	private static void addDocumentListener(JTextPane2 pane2, DocumentListener doclisten) {
+	private static void addDocumentListener(JTextPane2 pane2,
+			DocumentListener doclisten) {
 		pane2.getDocument().addDocumentListener(doclisten);
 	}
 
-	private void removeDocumentListener(JTextPane2 pane2, DocumentListener docListen) {
+	private void removeDocumentListener(JTextPane2 pane2,
+			DocumentListener docListen) {
 		pane2.getDocument().removeDocumentListener(docListen);
 	}
 
@@ -542,14 +577,14 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	public Image getImageFromJAR(String fileName) {
-		return Toolkit.getDefaultToolkit().getImage(getClass().getResource(fileName));
+		return Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource(fileName));
 	}
 
 	/* readOnStartup lesen */
 	public String getRASstate() {
 		return readOnStartup;
 	}
-
 
 	/* readOnStartup setzen */
 	public void changeRAS() {
@@ -563,11 +598,10 @@ public class FBEdit extends JFrame implements Runnable
 	public String getNoChecksState() {
 		return NoChecks;
 	}
-	
+
 	public String getLanguage() {
 		return language;
 	}
-
 
 	/* NoChecks setzen */
 	public void changeNoChecks() {
@@ -594,53 +628,54 @@ public class FBEdit extends JFrame implements Runnable
 	public CutAndPastePopup getCutAndPaste() {
 		return cutAndPaste;
 	}
-	
-    private static void loadLanguages()
-    {
-        supported_languages = new Vector<Locale>();
-        supported_languages.add(new Locale("de","DE"));
-        supported_languages.add(new Locale("en","US"));
-        /*
-        supported_languages.add(new Locale("it","IT"));
-        supported_languages.add(new Locale("nl","NL"));
-        supported_languages.add(new Locale("pl","PL"));
-        supported_languages.add(new Locale("ru","RU"));
-        */
-    }
-    
-    /**
-     * Loads resource messages
-     * 
-     * @param locale
-     */
-    public static void loadMessages(Locale locale) {
-        try {
-            Debug.info("Loading locale: " + locale);
-            en_messages = ResourceBundle.getBundle("fbeditor", new Locale("en","US"));//$NON-NLS-1$
-            messages = ResourceBundle.getBundle("fbeditor", locale);//$NON-NLS-1$
-        } catch (MissingResourceException e) {
-            Debug.error("Can't find i18n resource! (\"fbeditor_" + locale + ".properties\")");//$NON-NLS-1$
-            JOptionPane.showMessageDialog(null, progName + " v"//$NON-NLS-1$
-                    + version + "\n\nCannot find the language file \"fbeditor_" + locale
-                    + ".properties\"!" + "\nProgram will exit!");//$NON-NLS-1$
-        }
-    }
-    
-    /**
-     * @return Returns an internationalized message.
-     */
-    public static String getMessage(String msg) {
-        String i18n = ""; //$NON-NLS-1$
-        try {
-            if (!messages.getString(msg).equals("")) {
-                i18n = messages.getString(msg);
-            } else {
-                i18n = msg;
-            }
-        } catch (MissingResourceException e) {
-            Debug.error("Can't find resource string for " + msg); //$NON-NLS-1$
-            i18n = en_messages.getString(msg);
-        }
-        return i18n;
-    }
+
+	private static void loadLanguages() {
+		supported_languages = new Vector<Locale>();
+		supported_languages.add(new Locale("de", "DE"));
+		supported_languages.add(new Locale("en", "US"));
+		/*
+		 * supported_languages.add(new Locale("it","IT"));
+		 * supported_languages.add(new Locale("nl","NL"));
+		 * supported_languages.add(new Locale("pl","PL"));
+		 * supported_languages.add(new Locale("ru","RU"));
+		 */
+	}
+
+	/**
+	 * Loads resource messages
+	 * 
+	 * @param locale
+	 */
+	public static void loadMessages(Locale locale) {
+		try {
+			Debug.info("Loading locale: " + locale);
+			en_messages = ResourceBundle.getBundle(
+					"fbeditor", new Locale("en", "US"));//$NON-NLS-1$
+			messages = ResourceBundle.getBundle("fbeditor", locale);//$NON-NLS-1$
+		} catch (MissingResourceException e) {
+			Debug.error("Can't find i18n resource! (\"fbeditor_" + locale + ".properties\")");//$NON-NLS-1$
+			JOptionPane.showMessageDialog(null, progName
+					+ " v"//$NON-NLS-1$
+					+ version + "\n\nCannot find the language file \"fbeditor_"
+					+ locale + ".properties\"!" + "\nProgram will exit!");//$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * @return Returns an internationalized message.
+	 */
+	public static String getMessage(String msg) {
+		String i18n = ""; //$NON-NLS-1$
+		try {
+			if (!messages.getString(msg).equals("")) {
+				i18n = messages.getString(msg);
+			} else {
+				i18n = msg;
+			}
+		} catch (MissingResourceException e) {
+			Debug.error("Can't find resource string for " + msg); //$NON-NLS-1$
+			i18n = en_messages.getString(msg);
+		}
+		return i18n;
+	}
 }
