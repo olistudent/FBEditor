@@ -65,7 +65,7 @@ public class JFritzUtils {
 
 		if (url != null) {
 			urlConn = url.openConnection();
-			// 5 Sekunden-Timeout für Verbindungsaufbau
+			// 5 Sekunden-Timeout fÃ¼r Verbindungsaufbau
 			urlConn.setConnectTimeout(5000);
 			urlConn.setReadTimeout(READ_TIMEOUT);
 
@@ -97,7 +97,7 @@ public class JFritzUtils {
 				String str;
 				while (null != ((str = HTMLUtil.stripEntities(d.readLine())))) {
 					// Password seems to be wrong
-					if ((str.indexOf("Das angegebene Kennwort ist ungültig") >= 0) //$NON-NLS-1$
+					if ((str.indexOf("Das angegebene Kennwort ist ungÃ¼ltig") >= 0) //$NON-NLS-1$
 						|| (str.indexOf("Password not valid") >= 0)
 						|| (str.indexOf("<!--loginPage-->") >= 0)
 						|| (str.indexOf("FRITZ!Box Anmeldung") >= 0))
@@ -167,7 +167,7 @@ public class JFritzUtils {
 
 		if (url != null) {
 			urlConn = url.openConnection();
-			// 5 Sekunden-Timeout für Verbindungsaufbau
+			// 5 Sekunden-Timeout fÃ¼r Verbindungsaufbau
 			urlConn.setConnectTimeout(5000);
 			urlConn.setReadTimeout(READ_TIMEOUT);
 			
@@ -203,7 +203,7 @@ public class JFritzUtils {
 				String str;
 				while (null != ((str = HTMLUtil.stripEntities(d.readLine())))) {
 					// Password seems to be wrong
-					if ((str.indexOf("Das angegebene Kennwort ist ungültig") >= 0) //$NON-NLS-1$
+					if ((str.indexOf("Das angegebene Kennwort ist ungÃ¼ltig") >= 0) //$NON-NLS-1$
 						|| (str.indexOf("Password not valid") >= 0)
 						|| (str.indexOf("<!--loginPage-->") >= 0)
 						|| (str.indexOf("FRITZ!Box Anmeldung") >= 0))
