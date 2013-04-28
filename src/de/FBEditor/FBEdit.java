@@ -47,7 +47,7 @@ import java.util.MissingResourceException;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.5.3";
+	private static final String version = "0.6";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
