@@ -384,6 +384,9 @@ public class FBEdit extends JFrame implements Runnable
 		if (new_box_address != null && !new_box_address.equals(box_address)) {
 			box_address = new_box_address;
 		}
+		
+		if (!first)
+			makeNewConnection(first);
 	}
 
 	void getPassword(boolean first) {
