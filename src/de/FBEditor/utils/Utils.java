@@ -1,7 +1,6 @@
 package de.FBEditor.utils;
 
-//import java.awt.Image;
-//import java.awt.Toolkit;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +13,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-//import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -30,7 +28,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 
 import de.FBEditor.FBEdit;
 import de.FBEditor.struct.MyProperties;
-//import de.moonflower.jfritz.exceptions.WrongPasswordException;
+
 import de.moonflower.jfritz.struct.SIDLogin;
 import de.moonflower.jfritz.utils.Encryption;
 import de.moonflower.jfritz.utils.HTMLUtil;

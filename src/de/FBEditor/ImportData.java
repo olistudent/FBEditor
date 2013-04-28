@@ -2,20 +2,13 @@ package de.FBEditor;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-
 import javax.swing.JOptionPane;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-
 import de.FBEditor.utils.StringPartNoTransferEncoding;
-import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.struct.SIDLogin;
 
 /**

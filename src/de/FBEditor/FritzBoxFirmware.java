@@ -1,20 +1,5 @@
 package de.FBEditor;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.text.DecimalFormat;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import de.moonflower.jfritz.exceptions.WrongPasswordException;
-import de.moonflower.jfritz.struct.SIDLogin;
-import de.moonflower.jfritz.utils.Debug;
-import de.moonflower.jfritz.utils.JFritzUtils;
-
 /**
  * Class modelling firmware and box information
  * 

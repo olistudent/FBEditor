@@ -1,28 +1,16 @@
 package de.FBEditor;
 
 import java.awt.EventQueue;
-//import java.awt.Color;
-//import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-//import java.awt.event.KeyEvent;
-//import java.awt.event.KeyListener;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
-//import java.awt.event.WindowEvent;
-//import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-//import java.io.InputStream;
 import java.io.PrintStream;
-//import java.net.SocketTimeoutException;
 
-//import javax.swing.Icon;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -35,34 +23,19 @@ import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-//import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-//import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
-//import javax.swing.text.Document;
-//import javax.swing.text.Element;
-//import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
-//import javax.swing.text.StyledEditorKit;
 import javax.swing.undo.CannotRedoException;
-
-import java.awt.FlowLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.text.Element;
 
 import de.FBEditor.struct.CompoundUndoManager;
 import de.FBEditor.struct.ExampleFileFilter;
 import de.FBEditor.struct.JTextPane2;
-import de.FBEditor.struct.MyHighlightPainter;
 import de.FBEditor.struct.MyProperties;
 import de.FBEditor.struct.OverwriteCaret;
 import de.FBEditor.utils.CalcChecksum;
 import de.FBEditor.utils.Utils;
 import de.FBEditor.utils.Listener;
-//import de.moonflower.jfritz.exceptions.InvalidFirmwareException;
-//import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.utils.Debug;
 import de.moonflower.jfritz.utils.Encryption;
 
@@ -74,7 +47,7 @@ import java.util.MissingResourceException;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.5.3";
+	private static final String version = "0.6";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;

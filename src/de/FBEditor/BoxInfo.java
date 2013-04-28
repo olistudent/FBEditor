@@ -3,16 +3,9 @@ package de.FBEditor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JDialog;

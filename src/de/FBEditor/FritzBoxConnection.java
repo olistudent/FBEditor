@@ -3,7 +3,6 @@ package de.FBEditor;
 import de.FBEditor.struct.HttpPost;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-//import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,10 +11,7 @@ import java.util.regex.Pattern;
 
 import de.FBEditor.utils.Utils;
 import de.FBEditor.struct.FBFWVN;
-//import de.moonflower.jfritz.exceptions.InvalidFirmwareException;
-//import de.moonflower.jfritz.exceptions.WrongPasswordException;
 import de.moonflower.jfritz.struct.SIDLogin;
-//import de.moonflower.jfritz.utils.JFritzUtils;
 import javax.swing.JOptionPane;
 
 /**

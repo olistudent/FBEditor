@@ -1,14 +1,5 @@
 package de.FBEditor.struct;
 
-//import java.io.*;
-//import java.lang.*;
-//import java.net.*;
-//import java.util.*;
-//import java.math.BigDecimal;
-//import java.math.BigInteger;
-//import java.lang.String;
-//import java.util.*;
-//import java.util.regex.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
