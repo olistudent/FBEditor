@@ -117,17 +117,13 @@ public class FBEdit extends JFrame implements Runnable
 		pane = new JTextPane2();
 
 		setProperties(properties);
-		if (!(loadProp)) {
-			getHost(true);
-			getPassword(true);
-		}
 
 		// load supported languages
 		loadLanguages();
 
 		Debug.always("OS Language: " + System.getProperty("user.language"));
 		Debug.always("OS Country: " + System.getProperty("user.country"));
-		if (language == null || language.equals("")) {
+		if (language == null || language.equals(false)) {
 			Debug.info("No language set yet ... Setting language to OS language");
 			// Check if language is supported. If not switch to English
 			if (supported_languages.contains(new Locale(System
@@ -147,6 +143,11 @@ public class FBEdit extends JFrame implements Runnable
 				language.substring(language.indexOf("_") + 1, language.length())));
 
 		fileName = FBEdit.getMessage("main.unknown_file");
+		
+		if (!(loadProp)) {
+			getHost(true);
+			getPassword(true);
+		}
 
 		undoManager = new CompoundUndoManager(pane);
 		action = new ActionListen(this);
