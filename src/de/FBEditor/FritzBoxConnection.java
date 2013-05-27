@@ -154,7 +154,8 @@ public class FritzBoxConnection {
 				boxtypeString = m.group(1);
 				majorFirmwareVersion = m.group(2);
 				minorFirmwareVersion = m.group(3);
-				modFirmwareVersion = m.group(4).trim();
+//				modFirmwareVersion = m.group(4).trim(); // Fehler nicht vorhanden
+				modFirmwareVersion = ""; // erkennt sonst die Box 701/900 nicht
 			}
 
 		}
