@@ -443,6 +443,9 @@ public class FBEdit extends JFrame implements Runnable
 		// TODO
 		// Debug.on();
 
+		// Start thread for status line updater
+		fbedit.thread.start();
+		
 		makeNewConnection(true);
 
 	}
