@@ -443,6 +443,8 @@ public class FBEdit extends JFrame implements Runnable
 		// TODO
 		// Debug.on();
 
+		fbedit.thread.start(); // Korrektur Statuszeile geht sonst nicht
+
 		makeNewConnection(true);
 
 	}
