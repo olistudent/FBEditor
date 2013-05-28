@@ -178,7 +178,7 @@ public class MyMenu {
 		Element map = pane2.getDocument().getDefaultRootElement();
 		int currLine = map.getElementIndex(off);
 		int numLines = map.getElementCount();
-		statusMsg.setText(' ' + FBEdit.getMessage("menu.line") + (currLine + 1) + " / " + numLines);
+		statusMsg.setText(' ' + FBEdit.getMessage("menu.line") + " " + (currLine + 1) + " / " + numLines);
 	}
 
 	JMenuItem undo;
