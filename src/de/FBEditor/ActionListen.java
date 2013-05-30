@@ -4,6 +4,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class ActionListen implements ActionListener {
+	
+	private enum AC {
+		EXIT("exit"), OPEN("open"), NEW("new"), SAVE("save"),
+		RECONNECT("RECONNECT"), ABOUT("about"), CONFIG_READ("config_read"), 
+		CONFIG_AUTO_READ("config_auto_read"), NOCHECKS("nochecks"), 
+		CONFIG_WRITE("config_write"), HOST_IP("host_ip"), PASSWORD("password"),
+		BOXINFO("boxinfo"), SEARCH("search"), REPLACE("replace"), CUT("cut"), 
+		COPY("copy"), INSERT("insert"), DELETE("delete"), MARKALL("markall"),
+		REVERT("revert"), RESTORE("restore"), NONE("none");
+		
+		private String command;
+		
+		AC(String command) {
+			this.command = command;
+		}
+		
+		public static AC fromString(String text) {
+		    if (text != null) {
+		      for (AC b : AC.values()) {
+		        if (text.equalsIgnoreCase(b.command)) {
+		          return b;
+		        }
+		      }
+		    }
+		    return NONE;
+		  }
+	}
 
 	public ActionListen(FBEdit fbedit) {
 		this.fbedit = fbedit;
@@ -13,70 +40,75 @@ class ActionListen implements ActionListener {
 		CutAndPastePopup cutAndPaste = fbedit.getCutAndPaste();
 		cutAndPaste.updateSource(fbedit.getEditor());
 		
-		switch (event.getActionCommand()) {
-		case "exit":
+		/* This is an ugly hack because java versions prior to 7
+		 * don't support strings in switch statement.
+		 */
+		AC MyAction = AC.fromString(event.getActionCommand());
+		
+		switch (MyAction) {
+		case EXIT:
 			fbedit.exit();
 			break;
-		case "open":
+		case OPEN:
 			fbedit.loadFile();
 			break;
-		case "new":
+		case NEW:
 			fbedit.newFile();
 			break;
-		case "save":
+		case SAVE:
 			fbedit.saveFile();
 			break;
-		case "reconnect":
+		case RECONNECT:
 			FBEdit.makeNewConnection(false);
 			break;
-		case "about":
+		case ABOUT:
 			fbedit.about();
 			break;
-		case "config_read":
+		case CONFIG_READ:
 			fbedit.getFile();
 			break;
-		case "config_auto_read":
+		case CONFIG_AUTO_READ:
 			fbedit.changeRAS();
-		case "nochecks":
+		case NOCHECKS:
 			fbedit.changeNoChecks();
 			break;
-		case "config_write":
+		case CONFIG_WRITE:
 			fbedit.putFile();
 			break;
-		case "host_ip":
+		case HOST_IP:
 			fbedit.getHost(false);
 			break;
-		case "password":
+		case PASSWORD:
 			fbedit.getPassword(false);
 			break;
-		case "boxinfo":
+		case BOXINFO:
 			fbedit.showBoxInfo();
 			break;
-		case "search":
+		case SEARCH:
 			fbedit.search();
 			break;
-		case "replace":
+		case REPLACE:
 			fbedit.replace();
 			break;
-		case "cut":
+		case CUT:
 			cutAndPaste.cut();
 			break;
-		case "copy":
+		case COPY:
 			cutAndPaste.copy();
 			break;
-		case "insert":
+		case INSERT:
 			cutAndPaste.paste();
 			break;
-		case "delete":
+		case DELETE:
 			cutAndPaste.delete();
 			break;
-		case "markall":
+		case MARKALL:
 			cutAndPaste.markall();
 			break;
-		case "revert":
+		case REVERT:
 			fbedit.undoredo(1);
 			break;
-		case "restore":
+		case RESTORE:
 			fbedit.undoredo(2);
 			break;
 		default:
