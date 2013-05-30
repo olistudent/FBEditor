@@ -86,7 +86,8 @@ public class FBEdit extends JFrame implements Runnable
 	private static ResourceBundle en_messages;
 
 	public FBEdit() {
-
+		String jvm_version = System.getProperty("java.version");
+		
 		// Try to load and set properties
 		properties = new MyProperties();
 		boolean loadProp = Utils.loadProperties(properties, PROPERTIES_FILE);
@@ -144,6 +145,7 @@ public class FBEdit extends JFrame implements Runnable
 
 		fileName = FBEdit.getMessage("main.unknown_file");
 		
+		Debug.always("Java version: " + jvm_version);
 		if (!(loadProp)) {
 			getHost(true);
 			getPassword(true);
