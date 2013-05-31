@@ -10,12 +10,14 @@ import java.util.regex.Pattern;
 public class FBFWVN {
 
  private boolean isOK = false;
+ private boolean isFritzboxLanguageOK = false;
  // private static String sFBFWV10 = "";
  private static String sFBFWV81 = "";
  private static String sFBFWV82 = "";
  private static String sFBFWV83 = "";
  private static String sFBFWV90 = "";
  private static String sFBFWV100 = "";
+ private static String sFBFWV110 = "";
  private static String sRetFBV = "";
  private static String sRetFBFW = "";
  private static String sRetFBFWV = "";
@@ -53,8 +55,9 @@ public class FBFWVN {
   sFBFWV100 = "";
 
   isOK = false;
+  isFritzboxLanguageOK = false;
 
-  Pattern status1Pattern = Pattern.compile("<body>([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^<]*)</body>", Pattern.CASE_INSENSITIVE);
+  Pattern status1Pattern = Pattern.compile("<body>([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)-([^-<]*)[|-]?([^-<]*)[|-]?([^-<]*)[|-]?([^-<]*)[|-]?([^-<]*)[|-]?([^<]*)</body>", Pattern.CASE_INSENSITIVE);
   Matcher status1Matcher = status1Pattern.matcher(sFBFWV_IN);
 
   if (status1Matcher.find(0) == true) {
@@ -84,6 +87,12 @@ public class FBFWVN {
      }
      if (status1Matcher.groupCount() >= 10) {
       sFBFWV100 = S10[10];
+     }
+     if (status1Matcher.groupCount() >= 11) {
+      sFBFWV110 = S10[11];
+      if (!"".equals(S10[11]) && S10[11].length() == 2) {
+       isFritzboxLanguageOK = true;
+      }
      }
 
      isOK = true;
@@ -178,6 +187,22 @@ public class FBFWVN {
   */
  public String getFritzboxOEM() {
   return sFBFWV100;
+ }
+ 
+ /**
+  * 
+  * @return
+  */
+ public String getFritzboxLanguage() {
+  return sFBFWV110;
+ }
+ 
+ /**
+  * 
+  * @return
+  */
+ public final boolean isFritzboxLanguage() {
+  return isFritzboxLanguageOK;
  }
 
 //  public final byte getBoxType() {
