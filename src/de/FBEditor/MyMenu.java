@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.text.Element;
 
-import de.FBEditor.struct.*;
+import de.FBEditor.struct.JTextPane2;
 
 /**
  * Class implementing the menu items
@@ -149,6 +149,11 @@ public class MyMenu {
 		mi = new JMenuItem(FBEdit.getMessage("menu.password"), 80);
 		fbedit.setCtrlAccelerator(mi, 'P');
 		mi.setActionCommand("password");
+		mi.addActionListener(action);
+		ret.add(mi);
+		mi = new JMenuItem(FBEdit.getMessage("menu.username"), 80);
+		fbedit.setCtrlAccelerator(mi, 'U');
+		mi.setActionCommand("username");
 		mi.addActionListener(action);
 		ret.add(mi);
 		readOnStartup = new JCheckBoxMenuItem(FBEdit.getMessage("menu.config_auto_read"), Boolean.parseBoolean(fbedit.getRASstate()));
