@@ -144,6 +144,7 @@ public class Utils {
 					+ " not found, using default values");
 			properties.setProperty("box.address", "fritz.box");
 			properties.setProperty("box.password", "");
+			properties.setProperty("box.username", "");
 			properties.setProperty("readOnStartup", "no");
 			properties.setProperty("NoChecks", "true");
 			properties.setProperty("language", "de_DE");
@@ -164,6 +165,7 @@ public class Utils {
 				Integer.toString(fbedit.getSize().height));
 		properties.setProperty("box.password",
 				Encryption.encrypt(fbedit.getbox_password()));
+		properties.setProperty("box.username", fbedit.getbox_username());
 		properties.setProperty("box.address", fbedit.getbox_address());
 		properties.setProperty("readOnStartup", fbedit.getRASstate());
 		properties.setProperty("NoChecks", fbedit.getNoChecksState());
