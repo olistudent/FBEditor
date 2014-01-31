@@ -4,10 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+//import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+//import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 public class HttpPost {
 
@@ -64,6 +68,9 @@ public class HttpPost {
    if (encodingStart != -1) {
     encoding = contentType.substring(encodingStart + 8);
    }
+   
+   encoding = encoding.replace(";", ""); // ; wird zurück gegeben und verursacht einen Fehler
+   
 //   System.out.println( encoding );
 
    if (connection.getResponseCode() == 200) {
@@ -145,6 +152,9 @@ public class HttpPost {
    if (encodingStart != -1) {
     encoding = contentType.substring(encodingStart + 8);
    }
+   
+   encoding = encoding.replace(";", ""); // ; wird zurück gegeben und verursacht einen Fehler
+   
 //   System.out.println( encoding );
 
    if (connection.getResponseCode() == 200) {
