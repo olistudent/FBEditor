@@ -359,7 +359,7 @@ public class SIDLogin {
 	}
 
 	public static boolean Logout() {
-		// "Von der BenutzeroberflÃ¤che abmelden"
+		// "Von der Benutzeroberfläche abmelden"
 
 		URL Url2;
 		String sUrl = "";
