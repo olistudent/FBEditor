@@ -8,7 +8,7 @@ package de.FBEditor;
 public class FritzBoxFirmware {
 
     private String FritzboxName;
-    private byte boxtype;
+    private int boxtype; // Muss Integer sein wegen neuen Firmware Typ > 127
     private byte majorFirmwareVersion;
     private byte minorFirmwareVersion;
     private String modFirmwareVersion;
@@ -27,7 +27,7 @@ public class FritzBoxFirmware {
             String majorFirmwareVersion, String minorFirmwareVersion,
             String modFirmwareVersion, String language) {
         this.FritzboxName = FritzboxName;
-        this.boxtype = Byte.parseByte(boxtype);
+        this.boxtype = Integer.parseInt(boxtype);
         this.majorFirmwareVersion = Byte.parseByte(majorFirmwareVersion);
         this.minorFirmwareVersion = Byte.parseByte(minorFirmwareVersion);
         this.modFirmwareVersion = modFirmwareVersion;
@@ -41,7 +41,7 @@ public class FritzBoxFirmware {
     /**
      * @return Returns the boxtype.
      */
-    public final byte getBoxType() {
+    public final int getBoxType() {
         return boxtype;
     }
 
@@ -70,7 +70,7 @@ public class FritzBoxFirmware {
      * @return Returns the majorFirmwareVersion.
      */
     public final String getFirmwareVersion() {
-        String boxtypeStr = Byte.toString(boxtype);
+        String boxtypeStr = Integer.toString(boxtype);
         String majorStr = Byte.toString(majorFirmwareVersion);
         String minorStr = Byte.toString(minorFirmwareVersion);
         if (boxtypeStr.length() == 1) {
@@ -150,6 +150,8 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 2170";
             case 54:
              return "FRITZ!Box 7270";
+            case 58:
+             return "FRITZ!Box 7170 (CH-AT-Edition)";
             case 60:
              return "FRITZ!Box 7113";
             case 65:
@@ -173,7 +175,7 @@ public class FritzBoxFirmware {
             case 93:
              return "Speedport W501V";
             case 96:
-             return "FRITZ!Box 3270";
+             return "FRITZ!Box 3270 v3";
             case 99:
              return "FRITZ!Box 7340";
             case 100:
@@ -182,12 +184,16 @@ public class FritzBoxFirmware {
              return "FRITZ!Box Fon WLAN Speedport W701V";
             case 102:
              return "FRITZ!Box Fon WLAN Speedport W900V";
+            case 103:
+             return "FRITZ!Box 3370";
             case 104:
              return "FRITZ!Box 6320 Cable";
             case 105:
              return "FRITZ!Box 6840 LTE";
             case 107:
              return "FRITZ!Box 7330";
+            case 108:
+             return "FRITZ!Box 6810 LTE";
             case 109:
              return "FRITZ!Box 7360 SL";
             case 110:
@@ -202,8 +208,18 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 7330 SL";
             case 117:
              return "FRITZ!Box 7312";
+            case 120:
+             return "FRITZ!Box 7272";
+            case 121:
+             return "FRITZ!Box 3390";
             case 124:
              return "FRITZ!Box 7360";
+            case 125:
+             return "FRITZ!Box 3270 v3 (IT-Edition)";
+            case 126:
+             return "FRITZ!Box 3272";
+            case 131:
+             return "FRITZ!Box 7362 SL";
             default:
              return "unknown";
            }
