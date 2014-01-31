@@ -53,6 +53,7 @@ public class FBFWVN {
   sFBFWV83 = "0";
   sFBFWV90 = "";
   sFBFWV100 = "";
+  sFBFWV110 = "";
 
   isOK = false;
   isFritzboxLanguageOK = false;
@@ -210,12 +211,14 @@ public class FBFWVN {
   * 
   * @return
   */
- public byte getBoxType() {
-//this.boxtype = Byte.parseByte(boxtype);
+ public int getBoxType() {  // Muss Integer sein wegen neuen Firmware Typ > 127
+ //public byte getBoxType() {  
+ //this.boxtype = Byte.parseByte(boxtype);
   //if (sFBFWV81 == "") {
   // return 0;
   //} else {
-  return Byte.parseByte(sFBFWV81);
+  // return Byte.parseByte(sFBFWV81);
+  return Integer.parseInt(sFBFWV81);  // Muss Integer sein wegen neuen Firmware Typ > 127
   //}
   //return sFBFWV81;
   // return boxtype;
