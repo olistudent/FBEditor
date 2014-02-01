@@ -88,6 +88,8 @@ public class FritzBoxFirmware {
 
      public String getBoxName() {
 
+ 	      System.out.println( "Debug FritzBoxFirmware: " + FritzboxName + " -> " + boxtype );
+ 	    
           if ((FritzboxName.length() > 0) && (boxtype > 0)) {
            return FritzboxName;
           } else {
