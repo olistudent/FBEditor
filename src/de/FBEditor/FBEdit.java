@@ -68,7 +68,7 @@ public class FBEdit extends JFrame implements Runnable
 
 	private static MyProperties properties;
 	private final CompoundUndoManager undoManager;
-	private static String progName = "Fritz!Box Export Editor";;
+	private static String progName = "Fritz!Box Export Editor";
 	private String fileName = "";
 	private boolean stoprequested = false;
 	private static CutAndPastePopup cutAndPaste;
