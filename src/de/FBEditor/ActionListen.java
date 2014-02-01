@@ -37,6 +37,7 @@ class ActionListen implements ActionListener {
 			break;
 		case "config_auto_read":
 			fbedit.changeRAS();
+			break;
 		case "nochecks":
 			fbedit.changeNoChecks();
 			break;
