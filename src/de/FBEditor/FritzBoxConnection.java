@@ -92,6 +92,7 @@ public class FritzBoxConnection {
 		sRetSID = sidLogin.getSessionId();
 
 		FBFWVN fbfwvn = new FBFWVN(getFirmwareStatus());
+//		FBFWVN fbfwvn = new FBFWVN("<html><body>FRITZ!Box Fon WLAN 7362 SL-B-101100-000008-630046-320710-787902-1310601-12345-avm-de</body></html>");
 
 		if (sidLogin.isSidLogin()) {
 			if (fbfwvn.isOK()) {
@@ -165,6 +166,8 @@ public class FritzBoxConnection {
 		firmware = new FritzBoxFirmware(FritzboxName, boxtypeString,
 				majorFirmwareVersion, minorFirmwareVersion, modFirmwareVersion,
 				language);
+
+	    System.out.println( "Debug boxtype: " + boxtypeString );
 
 	}
 
