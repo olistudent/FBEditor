@@ -46,7 +46,7 @@ import de.moonflower.jfritz.utils.Encryption;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.6.6";
+	private static final String version = "0.6.8";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
