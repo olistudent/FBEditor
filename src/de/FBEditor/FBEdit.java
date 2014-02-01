@@ -470,7 +470,7 @@ public class FBEdit extends JFrame implements Runnable
 		if (fbConnection.isConnected()) {
 			firmware = fbConnection.getFirmware();
 			if (firmware.getMajorFirmwareVersion() == 4
-					|| firmware.getMajorFirmwareVersion() == 5)
+					|| firmware.getMajorFirmwareVersion() >= 5) // ab Firmware xxx.05.xx / xxx.06.xx
 				FBEdit.getInstance().enableMenu(true);
 			else
 				FBEdit.getInstance().enableMenu(false);
