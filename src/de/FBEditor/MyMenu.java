@@ -103,8 +103,8 @@ public class MyMenu {
 		insert.addActionListener(action);
 		insert.setEnabled(false);
 		ret.add(insert);
-		delete = new JMenuItem(FBEdit.getMessage("menu.delete"), 105);
-		fbedit.setCtrlAccelerator(delete, 'V');
+		delete = new JMenuItem(FBEdit.getMessage("menu.delete"), 76);
+//		fbedit.setCtrlAccelerator(delete, 'L');
 		delete.setActionCommand("delete");
 		delete.addActionListener(action);
 		delete.setEnabled(false);
@@ -141,8 +141,8 @@ public class MyMenu {
 	JMenu createConfigMenu() {
 		JMenu ret = new JMenu(FBEdit.getMessage("menu.settings"));
 		ret.setMnemonic('B');
-		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.host_ip"), 72);
-		fbedit.setCtrlAccelerator(mi, 'H');
+		JMenuItem mi = new JMenuItem(FBEdit.getMessage("menu.host_ip"), 73);
+		fbedit.setCtrlAccelerator(mi, 'I');
 		mi.setActionCommand("host_ip");
 		mi.addActionListener(action);
 		ret.add(mi);
@@ -151,7 +151,7 @@ public class MyMenu {
 		mi.setActionCommand("password");
 		mi.addActionListener(action);
 		ret.add(mi);
-		mi = new JMenuItem(FBEdit.getMessage("menu.username"), 80);
+		mi = new JMenuItem(FBEdit.getMessage("menu.username"), 85);
 		fbedit.setCtrlAccelerator(mi, 'U');
 		mi.setActionCommand("username");
 		mi.addActionListener(action);
