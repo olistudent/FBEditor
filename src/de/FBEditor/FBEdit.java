@@ -46,7 +46,7 @@ import de.moonflower.jfritz.utils.Encryption;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.6.8";
+	private static final String version = "0.6.9";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -117,6 +117,12 @@ public class FBEdit extends JFrame implements Runnable
 		setIconImage(getImageFromJAR("/icon.gif"));
 
 		pane = new JTextPane2();
+
+		// Fehler wenn in FBEditor.properties.xml "box.username" fehlt 07.02.2014  
+		if (properties.getProperty("box.username") == null) {
+			Debug.always("box_username: " + properties.getProperty("box.username"));	
+			properties.setProperty("box.username", "");
+		}
 
 		setProperties(properties);
 
