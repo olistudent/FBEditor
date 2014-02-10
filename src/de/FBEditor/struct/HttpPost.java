@@ -64,6 +64,9 @@ public class HttpPost {
    if (encodingStart != -1) {
     encoding = contentType.substring(encodingStart + 8);
    }
+   
+   encoding = encoding.replace(";", ""); // ; wird zurück gegeben und verursacht einen Fehler
+   
 //   System.out.println( encoding );
 
    if (connection.getResponseCode() == 200) {
@@ -145,6 +148,9 @@ public class HttpPost {
    if (encodingStart != -1) {
     encoding = contentType.substring(encodingStart + 8);
    }
+   
+   encoding = encoding.replace(";", ""); // ; wird zurück gegeben und verursacht einen Fehler
+   
 //   System.out.println( encoding );
 
    if (connection.getResponseCode() == 200) {

@@ -1,6 +1,5 @@
 package de.FBEditor;
 
-import de.FBEditor.struct.HttpPost;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -9,10 +8,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.FBEditor.utils.Utils;
-import de.FBEditor.struct.FBFWVN;
-import de.moonflower.jfritz.struct.SIDLogin;
 import javax.swing.JOptionPane;
+
+import de.FBEditor.struct.FBFWVN;
+import de.FBEditor.struct.HttpPost;
+import de.FBEditor.utils.Utils;
+import de.moonflower.jfritz.struct.SIDLogin;
 
 /**
  * Class holding connection information
@@ -26,6 +27,7 @@ public class FritzBoxConnection {
 	private String urlstr;
 	private String urlstr1;
 	private String box_password;
+	private String box_username;
 	// private final static String[] POSTDATA_ACCESS_METHOD = {
 	// "getpage=../html/de/menus/menu2.html",
 	// "getpage=../html/en/menus/menu2.html", "getpage=../html/menus/menu2.html"
@@ -43,11 +45,12 @@ public class FritzBoxConnection {
 	// private final static String PATTERN_DETECT_LANGUAGE_DE = "Weitere";
 	// private final static String PATTERN_DETECT_LANGUAGE_EN = "More";
 
-	public FritzBoxConnection(String box_address, String box_password) {
+	public FritzBoxConnection(String box_address, String box_password, String box_username) {
 		updateURLstr(box_address);
 		try {
 			this.box_password = box_password;
-
+			this.box_username = box_username;
+			
 			sidLogin = new SIDLogin();
 
 			if (Utils.checkhost(box_address)) {
@@ -85,10 +88,11 @@ public class FritzBoxConnection {
 		Boolean speedport = false;
 		boolean detected = false;
 
-		sidLogin.check("", urlstr1, box_password, sRetSID);
+		sidLogin.check("", urlstr1, box_password, box_username, sRetSID);
 		sRetSID = sidLogin.getSessionId();
 
 		FBFWVN fbfwvn = new FBFWVN(getFirmwareStatus());
+//		FBFWVN fbfwvn = new FBFWVN("<html><body>FRITZ!Box Fon WLAN 7362 SL-B-101100-000008-630046-320710-787902-1310601-12345-avm-de</body></html>");
 
 		if (sidLogin.isSidLogin()) {
 			if (fbfwvn.isOK()) {
@@ -163,17 +167,20 @@ public class FritzBoxConnection {
 				majorFirmwareVersion, minorFirmwareVersion, modFirmwareVersion,
 				language);
 
+	    System.out.println( "Debug boxtype: " + boxtypeString );
+
 	}
 
-	public boolean reconnect(String box_address, String boxPassword) {
+	public boolean reconnect(String box_address, String box_password, String box_username) {
 		boolean result = false;
 		connected = false;
 		try {
 			updateURLstr(box_address);
-			this.box_password = boxPassword;
+			this.box_password = box_password;
+			this.box_username = box_username;
 			if (Utils.checkhost(box_address)) {
 				sRetSID = sidLogin.getSessionId();
-				sidLogin.check("", urlstr1, box_address, sRetSID);
+				sidLogin.check("", urlstr1, box_password, box_username, sRetSID);
 				sRetSID = sidLogin.getSessionId();
 				if (sidLogin.isSidLogin()) {
 					result = true;

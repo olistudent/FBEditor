@@ -50,7 +50,7 @@ public class SIDLogin {
 	}
 
 	public static void check(String box_name, String urlstr,
-			String box_password, String sRetSID) {
+			String box_password, String box_username, String sRetSID) {
 		try {
 			//
 			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
@@ -240,15 +240,18 @@ public class SIDLogin {
 							Debug.debug("Challenge: " + challenge
 									+ " Response: " + sidResponse);
 
+							// sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
+							// 		+ sidResponse;
 							sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
-									+ sidResponse;
+									+ sidResponse + "&username=" + box_username;
 							login_xml = http.Post(sUrl + LOGIN_SID_LUA,
 									sPostdata);
 
 							// System.out.println("Login: " + "   " +
 							// login_xml);
-							Debug.debug("login_xml Response: " + login_xml);
-
+							Debug.debug("login_lua Response: " + login_xml);
+							Debug.debug("login_lua Username: " + box_username);
+							
 							SIDwriteAccessPattern = Pattern
 									.compile(PATTERN_SID);
 							Matcher matcher1 = SIDwriteAccessPattern
@@ -271,7 +274,7 @@ public class SIDLogin {
 										sidLoginLua = true;
 										sessionId = sidMatcher.group(1);
 										TsessionId = "3s -> " + sessionId;
-										Debug.debug("login_xml sessionId Response: "
+										Debug.debug("login_lua sessionId Response: "
 												+ sessionId);
 									}
 

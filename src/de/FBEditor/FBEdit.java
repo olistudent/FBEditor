@@ -10,9 +10,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -34,20 +38,15 @@ import de.FBEditor.struct.JTextPane2;
 import de.FBEditor.struct.MyProperties;
 import de.FBEditor.struct.OverwriteCaret;
 import de.FBEditor.utils.CalcChecksum;
-import de.FBEditor.utils.Utils;
 import de.FBEditor.utils.Listener;
+import de.FBEditor.utils.Utils;
 import de.moonflower.jfritz.utils.Debug;
 import de.moonflower.jfritz.utils.Encryption;
-
-import java.util.ResourceBundle;
-import java.util.Vector;
-import java.util.Locale;
-import java.util.MissingResourceException;
 
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.6.4";
+	private static final String version = "0.6.9";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -62,13 +61,14 @@ public class FBEdit extends JFrame implements Runnable
 	private String jFile = "";
 	private static String box_address = "";
 	private static String box_password = "";
+	private static String box_username = "";
 	private static String readOnStartup = "false";
 	private static String NoChecks = "false";
 	private static String language = "false";
 
 	private static MyProperties properties;
 	private final CompoundUndoManager undoManager;
-	private static String progName = "Fritz!Box Export Editor";;
+	private static String progName = "Fritz!Box Export Editor";
 	private String fileName = "";
 	private boolean stoprequested = false;
 	private static CutAndPastePopup cutAndPaste;
@@ -86,6 +86,7 @@ public class FBEdit extends JFrame implements Runnable
 	private static ResourceBundle en_messages;
 
 	public FBEdit() {
+		
 		String jvm_version = System.getProperty("java.version");
 		
 		// Try to load and set properties
@@ -117,6 +118,12 @@ public class FBEdit extends JFrame implements Runnable
 
 		pane = new JTextPane2();
 
+		// Fehler wenn in FBEditor.properties.xml "box.username" fehlt 07.02.2014  
+		if (properties.getProperty("box.username") == null) {
+			Debug.always("box_username: " + properties.getProperty("box.username"));	
+			properties.setProperty("box.username", "");
+		}
+
 		setProperties(properties);
 
 		// load supported languages
@@ -146,6 +153,7 @@ public class FBEdit extends JFrame implements Runnable
 		fileName = FBEdit.getMessage("main.unknown_file");
 		
 		Debug.always("Java version: " + jvm_version);
+		
 		if (!(loadProp)) {
 			getHost(true);
 			getPassword(true);
@@ -182,6 +190,7 @@ public class FBEdit extends JFrame implements Runnable
 		box_address = properties.getProperty("box.address");
 		box_password = Encryption.decrypt(properties
 				.getProperty("box.password"));
+		box_username = properties.getProperty("box.username");
 		readOnStartup = properties.getProperty("readOnStartup");
 		NoChecks = properties.getProperty("NoChecks");
 		language = properties.getProperty("language");
@@ -377,6 +386,7 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void showBoxInfo() {
+		@SuppressWarnings("unused")
 		BoxInfo hardware = new BoxInfo(firmware.getBoxName(),
 				firmware.getFirmwareVersion(), firmware.getModFirmwareVersion());
 	}
@@ -405,6 +415,17 @@ public class FBEdit extends JFrame implements Runnable
 			if (!first)
 				makeNewConnection(first);
 		}
+	}
+	
+	void getUsername(boolean first) {
+		String new_box_username = JOptionPane.showInputDialog(this,
+				FBEdit.getMessage("settings.username"), box_username);
+		if (new_box_username != null && !new_box_username.equals(box_username)) {
+			box_username = new_box_username;
+		}
+		
+		if (!first)
+			makeNewConnection(first);
 	}
 
 	public void enableMenu(boolean bool) {
@@ -445,9 +466,8 @@ public class FBEdit extends JFrame implements Runnable
 		// TODO
 		// Debug.on();
 
-		// Start thread for status line updater
-		fbedit.thread.start();
-		
+		fbedit.thread.start(); // Korrektur Statuszeile geht sonst nicht
+
 		makeNewConnection(true);
 
 	}
@@ -455,12 +475,12 @@ public class FBEdit extends JFrame implements Runnable
 	public static void makeNewConnection(Boolean firstStart) {
 		FBEdit.getInstance().disableMenu();
 
-		fbConnection = new FritzBoxConnection(box_address, box_password);
+		fbConnection = new FritzBoxConnection(box_address, box_password, box_username);
 
 		if (fbConnection.isConnected()) {
 			firmware = fbConnection.getFirmware();
 			if (firmware.getMajorFirmwareVersion() == 4
-					|| firmware.getMajorFirmwareVersion() == 5)
+					|| firmware.getMajorFirmwareVersion() >= 5) // ab Firmware xxx.05.xx / xxx.06.xx
 				FBEdit.getInstance().enableMenu(true);
 			else
 				FBEdit.getInstance().enableMenu(false);
@@ -479,6 +499,10 @@ public class FBEdit extends JFrame implements Runnable
 
 	public String getbox_password() {
 		return box_password;
+	}
+	
+	public String getbox_username() {
+		return box_username;
 	}
 
 	public MyMenu getMenu() {
