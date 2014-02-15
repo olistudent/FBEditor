@@ -46,7 +46,7 @@ import de.moonflower.jfritz.utils.Encryption;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.6.9";
+	private static final String version = "0.7";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -268,7 +268,7 @@ public class FBEdit extends JFrame implements Runnable
 	void getFile() {
 		JTextPane2 pane2 = this.getJTextPane();
 		DocumentListener docListen2 = this.getDocListener();
-		pane2.setFont(new Font("Courier", 0, 16));
+		pane2.setFont(new Font("Segoe UI", 0, 16));
 		/* Speedup */
 		removeDocumentListener(pane2, docListen2);
 		pane2.setText(FBEdit.getMessage("box.get_config"));
@@ -282,7 +282,7 @@ public class FBEdit extends JFrame implements Runnable
 		JTextPane2 pane2 = this.getJTextPane();
 
 		pane2.setText("");
-		pane2.setFont(new Font("Courier", 0, 12));
+		pane2.setFont(new Font("Segoe UI", 0, 12));
 		pane2.setEditable(false);
 		undoManager.pause();
 		pane2.setText(data);
