@@ -146,7 +146,7 @@ public class Utils {
 			properties.setProperty("box.password", "");
 			properties.setProperty("box.username", "");
 			properties.setProperty("readOnStartup", "no");
-			properties.setProperty("NoChecks", "true");
+			properties.setProperty("NoChecks", "false");
 			properties.setProperty("language", "de_DE");
 		} catch (Exception exception) {
 		}
