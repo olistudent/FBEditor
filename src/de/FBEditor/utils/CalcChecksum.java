@@ -52,6 +52,7 @@ public class CalcChecksum {
 					return;
 				}
 				if (last != null) {
+					last = last.replace("\\\\", "\\");
 					last = last + '\n';
 					updateCRC(last);
 				}
