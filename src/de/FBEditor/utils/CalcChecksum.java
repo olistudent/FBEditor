@@ -7,13 +7,23 @@ import java.util.zip.CRC32;
 import de.moonflower.jfritz.utils.Debug;
 
 public class CalcChecksum {
-
+	
+	private static int type = 0;
+	private static boolean file = false;
+	private static CRC32 crc;
+	private static String expected = "";
+	private static String last;
+	
 	public CalcChecksum() {
+		/* Initialize crc32 */
 		crc = new CRC32();
 	}
 
 	private void calchk(String line) {
+		/* start of new section? */
 		if (type == 0) {
+			// Debug.debug(Long.toHexString(crc.getValue()));
+			
 			String filename;
 			if ((filename = Utils.pMatch("\\*\\*\\*\\* CFGFILE:(.*?)$", line, 1)) != null) {
 				Debug.debug(line);
@@ -35,6 +45,7 @@ public class CalcChecksum {
 					Debug.debug(line);
 				}
 			}
+			// parse filename
 			if (file) {
 				line = filename + '\0';
 				updateCRC(line);
@@ -42,7 +53,7 @@ public class CalcChecksum {
 				return;
 			}
 		} else {
-			if (type == 1) {
+			if (type == 1) { // cfg file (stripcslashes, add '\n' at the end)
 				if (line.indexOf("**** END OF FILE") == 0) {
 					type = 0;
 					if (last != null) {
@@ -52,26 +63,29 @@ public class CalcChecksum {
 					return;
 				}
 				if (last != null) {
+					last = last.replace("\\\\", "\\");
 					last = last + '\n';
 					updateCRC(last);
 				}
 				last = line;
 				return;
 			}
-			if (type == 2) {
+			if (type == 2) {  // bin file
 				if (line.indexOf("**** END OF FILE") == 0) {
 					type = 0;
 					return;
 				}
-				String hex = line.trim().toLowerCase();
+				String hex = line.trim().toLowerCase().replace("\n", "");
 				for (int i = 0; i < hex.length(); i += 2) {
 					int b = Integer.parseInt(hex.substring(i, i + 2), 16);
+					
+					// FIXME: This is very slow!
 					updateCRC(b);
 				}
 
 				return;
 			}
-			if (type == 3) {
+			if (type == 3) { // variable (remove "=", add '\0' to the end
 				if (line.indexOf("****") != -1) {
 					type = 0;
 					calchk(line);
@@ -89,8 +103,10 @@ public class CalcChecksum {
 	}
 
 	public long getChecksum(String text) {
+		text = text.replace("\r", ""); // Entferne alle CR's, nur Temporaer zur Berechnung 
 		Pattern p = Pattern.compile("(.*?)\\n", 2);
 		for (Matcher matcher = p.matcher(text); matcher.find(); calchk(matcher.group(0).replace("\n", ""))) {
+			@SuppressWarnings("unused")
 			String temp = matcher.group(0);
 		}
 
@@ -106,31 +122,22 @@ public class CalcChecksum {
 			Debug.debug("CHECKSUM FIXED");
 			return false;
 		} else {
-			Debug.debug("CHECKSUM OK");
+			Debug.debug("CHECKSUM OK: " + checksum);
 			return true;
 		}
 	}
 
 	private void updateCRC(String line) {
 		crc.update(line.getBytes());
-		Debug.debug(Long.toHexString(crc.getValue()));
 	}
 
 	private void updateCRC(int b) {
 		crc.update(b);
-		Debug.debug(Long.toHexString(crc.getValue()));
 	}
 	
 	/*
-	 * dummy function, checksum calculation doesn't work at the moment
-	 */
-	public static String replaceChecksum(String text) {
-		return text;
-	}
-	/*
 	 * Calculate new checksum and replace if different
  	 */
-	/*
 	public static String replaceChecksum(String text) {
 		String newText = "";
 		String checksum;
@@ -147,12 +154,4 @@ public class CalcChecksum {
 		}
 		return newText;
 	}
-*/
-
-	private static int type = 0;
-	private static boolean file = false;
-	private static CRC32 crc;
-	private static String expected = "";
-	private static String last;
-
 }
