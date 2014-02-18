@@ -75,7 +75,7 @@ public class CalcChecksum {
 					type = 0;
 					return;
 				}
-				String hex = line.trim().toLowerCase();
+				String hex = line.trim().toLowerCase().replace("\n", "");
 				for (int i = 0; i < hex.length(); i += 2) {
 					int b = Integer.parseInt(hex.substring(i, i + 2), 16);
 					
@@ -103,8 +103,10 @@ public class CalcChecksum {
 	}
 
 	public long getChecksum(String text) {
+		text = text.replace("\r", ""); // Remove all CRs for calculation
 		Pattern p = Pattern.compile("(.*?)\\n", 2);
 		for (Matcher matcher = p.matcher(text); matcher.find(); calchk(matcher.group(0).replace("\n", ""))) {
+			@SuppressWarnings("unused")
 			String temp = matcher.group(0);
 		}
 
@@ -116,11 +118,10 @@ public class CalcChecksum {
 		if (checksum.length() < 8)
 			checksum = '0' + checksum;
 		if (!checksum.equals(expected)) {
-			Debug.debug("WRONG CHECKSUM " + checksum + " vs. " + expected);
-			Debug.debug("CHECKSUM FIXED");
+			Debug.debug("CHECKSUM FIXED: " + checksum + "(old: " + expected + ")");
 			return false;
 		} else {
-			Debug.debug("CHECKSUM OK");
+			Debug.debug("CHECKSUM OK: " + checksum);
 			return true;
 		}
 	}
