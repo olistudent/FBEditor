@@ -1,6 +1,5 @@
 package de.FBEditor;
 
-
 /**
  * Class modelling firmware and box information
  * 
@@ -33,10 +32,10 @@ public class FritzBoxFirmware {
         this.modFirmwareVersion = modFirmwareVersion;
         this.language = language;
     }
-
-    public String getFritzboxName() {
-        return FritzboxName;
-    }
+    
+	public String getFritzboxName() {
+		return FritzboxName;
+	}
 
     /**
      * @return Returns the boxtype.
@@ -45,26 +44,26 @@ public class FritzBoxFirmware {
         return boxtype;
     }
 
-    /**
-     * @return Returns the majorFirmwareVersion.
-     */
-    public final byte getMajorFirmwareVersion() {
-        return majorFirmwareVersion;
-    }
+	/**
+	 * @return Returns the majorFirmwareVersion.
+	 */
+	public final byte getMajorFirmwareVersion() {
+		return majorFirmwareVersion;
+	}
 
-    /**
-     * @return Returns the minorFirmwareVersion.
-     */
-    public final byte getMinorFirmwareVersion() {
-        return minorFirmwareVersion;
-    }
+	/**
+	 * @return Returns the minorFirmwareVersion.
+	 */
+	public final byte getMinorFirmwareVersion() {
+		return minorFirmwareVersion;
+	}
 
-    /**
-     * @return Returns the minorFirmwareVersion.
-     */
-    public final String getModFirmwareVersion() {
-        return modFirmwareVersion;
-    }
+	/**
+	 * @return Returns the minorFirmwareVersion.
+	 */
+	public final String getModFirmwareVersion() {
+		return modFirmwareVersion;
+	}
 
     /**
      * @return Returns the majorFirmwareVersion.
@@ -86,7 +85,7 @@ public class FritzBoxFirmware {
                                                                 // modFirmwareVersion;
     }
 
-     public String getBoxName() {
+	public String getBoxName() {
 
  	      System.out.println( "Debug FritzBoxFirmware: " + FritzboxName + " -> " + boxtype );
  	    

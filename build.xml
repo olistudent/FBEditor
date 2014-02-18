@@ -28,8 +28,8 @@
     <javac srcdir="${src.dir}" 
        destdir="${classes.dir}" 
        debug="yes"
-       source="1.6"
-       target="1.6"
+       source="1.7"
+       target="1.7"
        includeantruntime="false">
        <classpath refid="classpath" />
     </javac>

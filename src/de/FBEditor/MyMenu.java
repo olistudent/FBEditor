@@ -163,8 +163,7 @@ public class MyMenu {
 		NoChecks = new JCheckBoxMenuItem(FBEdit.getMessage("menu.nochecks"), Boolean.parseBoolean(fbedit.getNoChecksState()));
 		NoChecks.setActionCommand("nochecks");
 		NoChecks.addActionListener(action);
-		// Disable NoChecks because it doesn't work at the moment
-		NoChecks.setEnabled(false);
+		// NoChecks.setEnabled(false);
 		ret.add(NoChecks);
 		return ret;
 	}

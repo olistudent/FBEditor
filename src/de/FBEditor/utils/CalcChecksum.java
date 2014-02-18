@@ -1,5 +1,6 @@
 package de.FBEditor.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -76,12 +77,15 @@ public class CalcChecksum {
 					return;
 				}
 				String hex = line.trim().toLowerCase().replace("\n", "");
+				String bin_line = "";
 				for (int i = 0; i < hex.length(); i += 2) {
-					int b = Integer.parseInt(hex.substring(i, i + 2), 16);
+					//int b = Integer.parseInt(hex.substring(i, i + 2), 16);
 					
 					// FIXME: This is very slow!
-					updateCRC(b);
+					//updateCRC(b);
+					bin_line += (char) Integer.parseInt(hex.substring(i, i + 2), 16);
 				}
+				updateCRC(bin_line);
 
 				return;
 			}
@@ -103,7 +107,7 @@ public class CalcChecksum {
 	}
 
 	public long getChecksum(String text) {
-		text = text.replace("\r", ""); // Entferne alle CR's, nur Temporaer zur Berechnung 
+		text = text.replace("\r", ""); // Remove all CRs for calculation
 		Pattern p = Pattern.compile("(.*?)\\n", 2);
 		for (Matcher matcher = p.matcher(text); matcher.find(); calchk(matcher.group(0).replace("\n", ""))) {
 			@SuppressWarnings("unused")
@@ -118,8 +122,7 @@ public class CalcChecksum {
 		if (checksum.length() < 8)
 			checksum = '0' + checksum;
 		if (!checksum.equals(expected)) {
-			Debug.debug("WRONG CHECKSUM " + checksum + " vs. " + expected);
-			Debug.debug("CHECKSUM FIXED");
+			Debug.debug("CHECKSUM FIXED: " + checksum + "(old: " + expected + ")");
 			return false;
 		} else {
 			Debug.debug("CHECKSUM OK: " + checksum);
@@ -128,12 +131,18 @@ public class CalcChecksum {
 	}
 
 	private void updateCRC(String line) {
-		crc.update(line.getBytes());
+		try {
+			crc.update(line.getBytes("ISO-8859-1"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+/*
 	private void updateCRC(int b) {
 		crc.update(b);
 	}
+*/
 	
 	/*
 	 * Calculate new checksum and replace if different
