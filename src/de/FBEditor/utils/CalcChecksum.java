@@ -1,5 +1,6 @@
 package de.FBEditor.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -76,12 +77,15 @@ public class CalcChecksum {
 					return;
 				}
 				String hex = line.trim().toLowerCase().replace("\n", "");
+				String bin_line = "";
 				for (int i = 0; i < hex.length(); i += 2) {
-					int b = Integer.parseInt(hex.substring(i, i + 2), 16);
+					//int b = Integer.parseInt(hex.substring(i, i + 2), 16);
 					
 					// FIXME: This is very slow!
-					updateCRC(b);
+					//updateCRC(b);
+					bin_line += (char) Integer.parseInt(hex.substring(i, i + 2), 16);
 				}
+				updateCRC(bin_line);
 
 				return;
 			}
@@ -127,12 +131,18 @@ public class CalcChecksum {
 	}
 
 	private void updateCRC(String line) {
-		crc.update(line.getBytes());
+		try {
+			crc.update(line.getBytes("ISO-8859-1"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+/*
 	private void updateCRC(int b) {
 		crc.update(b);
 	}
+*/
 	
 	/*
 	 * Calculate new checksum and replace if different
