@@ -2,6 +2,8 @@ package de.FBEditor;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -153,6 +155,19 @@ public class FBEdit extends JFrame implements Runnable
 		fileName = FBEdit.getMessage("main.unknown_file");
 		
 		Debug.always("Java version: " + jvm_version);
+		
+		Font font = null;
+		try {
+			font = Font.createFont( Font.TRUETYPE_FONT, getClass().getResourceAsStream( "/de/font/CONSOLA.TTF") );
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont( font );
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(font);
 		
 		if (!(loadProp)) {
 			getHost(true);
