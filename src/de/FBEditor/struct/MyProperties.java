@@ -61,7 +61,13 @@ public class MyProperties extends Properties {
 	}
 
 	public String getProperty(String key, String defaultValue) {
-		return super.getProperty(key, defaultValue);
+                // Fehler: defaultValue wurde nicht Gesetzt bei Leerstring korrigiert 22.02.2014
+	        String val = super.getProperty(key, defaultValue);
+                if (val.trim().equals("")) {
+                        System.out.println("importPropertiesDefaultValue: " + defaultValue);
+                        super.setProperty(key, defaultValue);
+                }
+	        return super.getProperty(key, defaultValue);
 	}
 
 	public Object remove(Object key) {
