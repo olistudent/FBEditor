@@ -57,6 +57,11 @@ public class MyProperties extends Properties {
 	}
 
 	public String getProperty(String key) {
+		// Fehler: NullPointerException wenn der key Fehlt korrigiert 22.02.2014
+		if (super.getProperty(key) == null) {
+			super.setProperty(key, "");
+			System.out.println("import getProperties NullPointerException: " + key);
+		}
 		return super.getProperty(key);
 	}
 
