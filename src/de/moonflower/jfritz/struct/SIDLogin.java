@@ -1,21 +1,21 @@
 package de.moonflower.jfritz.struct;
 
 //import java.io.IOException;
-import de.FBEditor.struct.HttpPost;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-//import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.net.URL;
 
-//import de.moonflower.jfritz.exceptions.WrongPasswordException;
+import de.FBEditor.struct.HttpPost;
 import de.moonflower.jfritz.utils.Debug;
+//import java.util.Vector;
+//import de.moonflower.jfritz.exceptions.WrongPasswordException;
 
 //import de.moonflower.jfritz.utils.JFritzUtils;
 public class SIDLogin {
@@ -27,6 +27,7 @@ public class SIDLogin {
 	private static String sessionId;
 	private static String TsessionId;
 	private static String sidResponse;
+	private final static String LOGIN_SID_XML = "/cgi-bin/webcm"; // 01.03.2014
 	private final static String LOGIN_SID_LUA = "/login_sid.lua";
 	private final static String POSTDATA_LOGIN_SID_LUA_RESPONSE = "page=/login_sid.lua&response=";
 	private final static String POSTDATA_LOGIN_XML = "getpage=../html/login_sid.xml";
@@ -64,8 +65,10 @@ public class SIDLogin {
 			HttpPost http = new HttpPost(); // 23.11.2012
 			TsessionId = "1 --- " + urlstr;
 
-			String login_xml = http.Post(urlstr, "sid=" + sRetSID + "&"
-					+ POSTDATA_LOGIN_XML); // 23.11.2012
+			// String login_xml = http.Post(urlstr, "sid=" + sRetSID + "&"
+			// + POSTDATA_LOGIN_XML); // 23.11.2012
+			String login_xml = http.Post(sUrl + LOGIN_SID_XML, "sid=" + sRetSID
+					+ "&" + POSTDATA_LOGIN_XML); // 01.03.2014
 			TsessionId = "1";
 			Pattern writeAccessPattern = Pattern.compile(PATTERN_WRITE_ACCESS);
 			Matcher matcher = writeAccessPattern.matcher(login_xml);
@@ -119,8 +122,12 @@ public class SIDLogin {
 						// Debug.debug("Challenge: " + challenge + " Response: "
 						// + sidResponse);
 
-						login_xml = http.Post(urlstr, "sid=" + sRetSID + "&"
-								+ POSTDATA_LOGIN_XML_RESPONSE + sidResponse); // 22.11.2012
+						// login_xml = http.Post(urlstr, "sid=" + sRetSID + "&"
+						// + POSTDATA_LOGIN_XML_RESPONSE + sidResponse); //
+						// 22.11.2012
+						login_xml = http.Post(sUrl + LOGIN_SID_XML, "sid="
+								+ sRetSID + "&" + POSTDATA_LOGIN_XML_RESPONSE
+								+ sidResponse); // 01.03.2014
 
 						// Debug.debug("login_xml Response: " + login_xml);
 
@@ -129,16 +136,21 @@ public class SIDLogin {
 						Matcher matcher1 = writeAccessPattern
 								.matcher(login_xml);
 
+						// 01.03.2014
+						Pattern sidPattern = Pattern.compile(PATTERN_SID);
+						Matcher sidMatcher = sidPattern.matcher(login_xml);
+
 						if (matcher1.find()) {
 
 							writeAccess = Integer.parseInt(matcher1.group(1));
 
 							if (writeAccess == 1) { // answer Response
 
-								Pattern sidPattern = Pattern
-										.compile(PATTERN_SID);
-								Matcher sidMatcher = sidPattern
-										.matcher(login_xml);
+								// 01.03.2014
+								// Pattern sidPattern = Pattern
+								// .compile(PATTERN_SID);
+								// Matcher sidMatcher = sidPattern
+								// .matcher(login_xml);
 
 								if (sidMatcher.find()) {
 									sidLogin = true;
@@ -150,6 +162,10 @@ public class SIDLogin {
 								}
 
 							} else {
+								if (sidMatcher.find()) {
+									sessionId = sidMatcher.group(1); // 01.03.2014
+									TsessionId = "1s0 -> " + sessionId;
+								}
 								sidLogin = false;
 							}
 
@@ -241,7 +257,7 @@ public class SIDLogin {
 									+ " Response: " + sidResponse);
 
 							// sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
-							// 		+ sidResponse;
+							// + sidResponse;
 							sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
 									+ sidResponse + "&username=" + box_username;
 							login_xml = http.Post(sUrl + LOGIN_SID_LUA,
@@ -251,7 +267,7 @@ public class SIDLogin {
 							// login_xml);
 							Debug.debug("login_lua Response: " + login_xml);
 							Debug.debug("login_lua Username: " + box_username);
-							
+
 							SIDwriteAccessPattern = Pattern
 									.compile(PATTERN_SID);
 							Matcher matcher1 = SIDwriteAccessPattern
@@ -260,6 +276,9 @@ public class SIDLogin {
 							if (matcher1.find()) {
 
 								SIDwriteAccess = matcher1.group(1);
+
+								// Debug.debug("login_lua SIDwriteAccesse: " +
+								// SIDwriteAccess);
 
 								if (!"0000000000000000".equals(SIDwriteAccess)) { // answer
 																					// Response
@@ -279,6 +298,8 @@ public class SIDLogin {
 									}
 
 								} else {
+									sessionId = SIDwriteAccess; // 01.03.2014
+									TsessionId = "3s0 -> " + sessionId;
 									sidLogin = false;
 									sidLoginLua = false;
 								}
