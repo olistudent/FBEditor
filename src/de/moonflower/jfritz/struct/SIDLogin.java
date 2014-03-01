@@ -53,6 +53,7 @@ public class SIDLogin {
 	public static void check(String box_name, String urlstr,
 			String box_password, String box_username, String sRetSID) {
 		try {
+			isLoginOld = false; // 01.03.2014
 			//
 			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
 			// box_password = "0000";
@@ -332,6 +333,7 @@ public class SIDLogin {
 				} else {
 					sidLogin = false;
 					sidLoginLua = false;
+					sessionId = "0000000000000000"; // 01.03.2014
 					TsessionId = "1 -> 1";
 
 					sPostdata = "getpage=../html/de/menus/menu2.html&login:command/password="
@@ -341,6 +343,8 @@ public class SIDLogin {
 
 					if ("".equals(login_xml)) {
 						isLoginOld = true; // sidLogin = true;
+					} else { // 01.03.2014
+						isLoginOld = false; // sidLogin = false;
 					}
 					// System.out.println("Login: " + isLoginOld + "   " +
 					// login_xml);
