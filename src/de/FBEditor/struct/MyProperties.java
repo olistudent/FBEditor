@@ -57,11 +57,22 @@ public class MyProperties extends Properties {
 	}
 
 	public String getProperty(String key) {
+		// Fehler: NullPointerException wenn der key Fehlt korrigiert 22.02.2014
+		if (super.getProperty(key) == null) {
+			super.setProperty(key, "");
+			System.out.println("import getProperties NullPointerException: " + key);
+		}
 		return super.getProperty(key);
 	}
 
 	public String getProperty(String key, String defaultValue) {
-		return super.getProperty(key, defaultValue);
+                // Fehler: defaultValue wurde nicht Gesetzt bei Leerstring korrigiert 22.02.2014
+	        String val = super.getProperty(key, defaultValue);
+                if (val.trim().equals("")) {
+                        System.out.println("importPropertiesDefaultValue: " + defaultValue);
+                        super.setProperty(key, defaultValue);
+                }
+	        return super.getProperty(key, defaultValue);
 	}
 
 	public Object remove(Object key) {

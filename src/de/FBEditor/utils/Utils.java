@@ -131,6 +131,28 @@ public class Utils {
 		return result;
 	}
 
+	public static boolean createDefaultProperties(MyProperties properties) {
+		// properties = new MyProperties();
+		// Set Properties Default Values // 22.02.2014
+		// Muss immer vor Load and Save File aufgerufen werden
+
+		System.out.println("Properties " + "Set" + " using default values");
+
+		properties.setProperty("position.top", "60");
+		properties.setProperty("position.left", "60");
+		properties.setProperty("position.height", "480");
+		properties.setProperty("position.width", "680");
+
+		properties.setProperty("box.address", "fritz.box");
+		properties.setProperty("box.password", "");
+		properties.setProperty("box.username", "");
+		properties.setProperty("readOnStartup", "no");
+		properties.setProperty("NoChecks", "false"); // 17.02.2014
+		properties.setProperty("language", "de_DE");
+
+		return true;
+	}
+
 	public static boolean loadProperties(MyProperties properties,
 			String PROPERTIES_FILE) {
 		// properties = new MyProperties();
@@ -146,7 +168,7 @@ public class Utils {
 			properties.setProperty("box.password", "");
 			properties.setProperty("box.username", "");
 			properties.setProperty("readOnStartup", "no");
-			properties.setProperty("NoChecks", "false");
+			properties.setProperty("NoChecks", "false"); // 17.02.2014
 			properties.setProperty("language", "de_DE");
 		} catch (Exception exception) {
 		}

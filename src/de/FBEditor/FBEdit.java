@@ -2,6 +2,8 @@ package de.FBEditor;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -46,7 +48,7 @@ import de.moonflower.jfritz.utils.Encryption;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.7";
+	private static final String version = "0.7.2";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -153,6 +155,19 @@ public class FBEdit extends JFrame implements Runnable
 		fileName = FBEdit.getMessage("main.unknown_file");
 		
 		Debug.always("Java version: " + jvm_version);
+		
+		Font font = null;
+		try {
+			font = Font.createFont( Font.TRUETYPE_FONT, getClass().getResourceAsStream( "/de/font/CONSOLA.TTF") );
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont( font );
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(font);
 		
 		if (!(loadProp)) {
 			getHost(true);
@@ -268,7 +283,11 @@ public class FBEdit extends JFrame implements Runnable
 	void getFile() {
 		JTextPane2 pane2 = this.getJTextPane();
 		DocumentListener docListen2 = this.getDocListener();
-		pane2.setFont(new Font("Segoe UI", 0, 16));
+//		pane2.setFont(new Font("Courier", 0, 16));
+// Consolas Font Pack for Microsoft Visual Studio 2005 or 2008
+// Download: http://www.microsoft.com/en-us/download/details.aspx?id=17879
+//		pane2.setFont(new Font("Segoe UI", 0, 16)); // Proportional Font, Nein Danke nicht mein Fall
+		pane2.setFont(new Font("Consolas", 0, 16));
 		/* Speedup */
 		removeDocumentListener(pane2, docListen2);
 		pane2.setText(FBEdit.getMessage("box.get_config"));
@@ -282,7 +301,11 @@ public class FBEdit extends JFrame implements Runnable
 		JTextPane2 pane2 = this.getJTextPane();
 
 		pane2.setText("");
-		pane2.setFont(new Font("Segoe UI", 0, 12));
+//		pane2.setFont(new Font("Courier", 0, 12));
+// Consolas Font Pack for Microsoft Visual Studio 2005 or 2008
+// Download: http://www.microsoft.com/en-us/download/details.aspx?id=17879
+//		pane2.setFont(new Font("Segoe UI", 0, 12)); // Proportional Font, Nein Danke nicht mein Fall
+		pane2.setFont(new Font("Consolas", 0, 12));
 		pane2.setEditable(false);
 		undoManager.pause();
 		pane2.setText(data);
