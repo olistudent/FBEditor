@@ -35,6 +35,7 @@ public class SIDLogin {
 	private final static String PATTERN_WRITE_ACCESS = "<iswriteaccess>([^<]*)</iswriteaccess>";
 	private final static String PATTERN_CHALLENGE = "<Challenge>([^<]*)</Challenge>";
 	private final static String PATTERN_SID = "<SID>([^<]*)</SID>";
+	private final static String PATTERN_SID2 = "sid=([^[0-9a-fA-F]<]*)";
 	private static SIDLogin INSTANCE;
 	private static String UrlLogoutFB = "";
 
@@ -54,6 +55,8 @@ public class SIDLogin {
 			String box_password, String box_username, String sRetSID) {
 		try {
 			isLoginOld = false; // 01.03.2014
+			sidLogin = false; // 01.03.2014
+			sidLoginLua = false; // 01.03.2014
 			//
 			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
 			// box_password = "0000";
@@ -196,8 +199,8 @@ public class SIDLogin {
 				// Debug.errDlg(Integer.toString(writeAccess) + " " +
 				// sessionId);
 			} else {
-				sidLogin = false;
-				sidLoginLua = false;
+				// 01.03.2014 sidLogin = false;
+				// 01.03.2014 sidLoginLua = false;
 
 				login_xml = http.Post(sUrl + LOGIN_SID_LUA, "sid=" + sRetSID); // 23.11.2012
 				// System.out.println(login_xml);
@@ -404,33 +407,63 @@ public class SIDLogin {
 
 		if (sidLogin == true) {
 
-			login_xml = http
-					.Post(UrlLogoutFB,
-							"sid="
-									+ sessionId
-									+ "&security:command/logout=&getpage=../html/confirm_logout.html"); // 23.11.2012
+			// 01.03.2014
+			if (sidLoginLua == true) {
 
-			if ("".equals(login_xml)) {
-				sessionId = "0000000000000000";
-				sidLogin = false;
-				sidLoginLua = false;
-				isLoginOld = false;
-				isLogOut = true;
+				login_xml = http.Post(sUrl + "/logout.lua", "sid=" + sessionId
+						+ "&logout=1"); // 23.11.2012
+//				Debug.debug("LogOut: " + login_xml);
+
+				if ("".equals(login_xml)) {
+					sessionId = "0000000000000000";
+					sidLogin = false;
+					sidLoginLua = false;
+					isLoginOld = false;
+					isLogOut = true;
+//					Debug.debug("LogOut1: " + sessionId);
+
+				} else {
+
+					Pattern sidPattern = Pattern.compile(PATTERN_SID2);
+					Matcher sidMatcher = sidPattern.matcher(login_xml);
+					if (sidMatcher.find()) {
+						sessionId = sidMatcher.group(1);
+						if (!"0000000000000000".equals(sessionId)) {
+							sidLogin = true;
+							sidLoginLua = true;
+							isLoginOld = false;
+							isLogOut = false;
+						} else {
+							sessionId = "0000000000000000";
+							sidLogin = false;
+							sidLoginLua = false;
+							isLoginOld = false;
+							isLogOut = true;
+						}
+//						Debug.debug("LogOut2: " + sessionId);
+					}
+
+				}
+
+			} else {
+
+				login_xml = http
+						.Post(UrlLogoutFB,
+								"sid="
+										+ sessionId
+										+ "&security:command/logout=&getpage=../html/confirm_logout.html"); // 23.11.2012
+
+				if ("".equals(login_xml)) {
+					sessionId = "0000000000000000";
+					sidLogin = false;
+					sidLoginLua = false;
+					isLoginOld = false;
+					isLogOut = true;
+//					Debug.debug("LogOut3: " + sessionId);
+				}
 			}
 
-			// System.out.println("Logout: " + sessionId + "   " + login_xml);
-
-		} else if (sidLoginLua == true) {
-
-			login_xml = http.Post(sUrl + "/logout.lua", "sid=" + sessionId); // 23.11.2012
-
-			if ("".equals(login_xml)) {
-				sessionId = "0000000000000000";
-				sidLogin = false;
-				sidLoginLua = false;
-				isLoginOld = false;
-				isLogOut = true;
-			}
+			// Debug.debug("Logout: " + sessionId + "   " + login_xml);
 
 		} else if (isLoginOld == true) {
 
