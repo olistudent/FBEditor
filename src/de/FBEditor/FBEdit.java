@@ -377,23 +377,31 @@ public class FBEdit extends JFrame implements Runnable
 		chooser.setFileFilter(filter);
 
 		chooser.setSelectedFile(new File(fileName));
-		chooser.showSaveDialog(this);
+		int returnVal = chooser.showSaveDialog(this);
 
-		fileName = chooser.getSelectedFile().getName();
-		jFile = chooser.getSelectedFile().getAbsolutePath();
+		// int javax.swing.JFileChooser.CANCEL_OPTION = 1 [0x1]
+		// CANCEL_OPTION Return value if cancel is chosen.
+		// int javax.swing.JFileChooser.APPROVE_OPTION = 0 [0x0]
+		// APPROVE_OPTION Return value if approve (yes, ok) is chosen. 
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-		try {
-			FileOutputStream fos = new FileOutputStream(jFile);
-			PrintStream pfos = new PrintStream(fos);
-			String text = CalcChecksum.replaceChecksum(pane2.getText());
-			pfos.print(text);
-			fos.close();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this.getframe(),
-					FBEdit.getMessage("export.save.error"),
-					FBEdit.getMessage("main.error"), 0);
+        	fileName = chooser.getSelectedFile().getName();
+    		jFile = chooser.getSelectedFile().getAbsolutePath();
+
+	    	try {
+		    	FileOutputStream fos = new FileOutputStream(jFile);
+    			PrintStream pfos = new PrintStream(fos);
+	    		String text = CalcChecksum.replaceChecksum(pane2.getText());
+    			pfos.print(text);
+	    		fos.close();
+    		} catch (IOException e) {
+	    		JOptionPane.showMessageDialog(this.getframe(),
+		    			FBEdit.getMessage("export.save.error"),
+			    		FBEdit.getMessage("main.error"), 0);
+    		}
+	    	undoManager.discardAllEdits();
+
 		}
-		undoManager.discardAllEdits();
 	}
 
 	void about() {
