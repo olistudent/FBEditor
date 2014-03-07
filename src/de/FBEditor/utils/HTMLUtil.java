@@ -1,4 +1,5 @@
 package de.FBEditor.utils;
+
 import java.util.HashMap;
 
 /**
