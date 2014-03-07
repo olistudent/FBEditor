@@ -22,14 +22,12 @@ public class FBFWVN {
  private static String sRetFBFW = "";
  private static String sRetFBFWV = "";
 
- // public static String sRetFBV = "";
- // public static String sRetFBFWV = "";
  /**
   * 
   * @param sFBFWV_IN
   */
  public FBFWVN(String sFBFWV_IN) {
-  //sRetFBFWV = sFBFWV_IN;
+ // sRetFBFWV = sFBFWV_IN;
   FBFWVN0(sFBFWV_IN);
  }
 
@@ -37,7 +35,7 @@ public class FBFWVN {
   * 
   * @param sFBFWV_IN
   */
- public final void FBFWVN0(String sFBFWV_IN) //public void FBFWVN0(String sFBFWV_IN)
+ public final void FBFWVN0(String sFBFWV_IN)
  {
 
   if (sFBFWV_IN == null) {
@@ -121,7 +119,7 @@ public class FBFWVN {
   * @return
   */
  public String getFBFWVN(String sFBFWV_IN) {
-  // if (sFBFWV_IN == null) sFBFWV_IN = "";
+ // if (sFBFWV_IN == null) sFBFWV_IN = "";
   FBFWVN0(sFBFWV_IN);
   return sFBFWV81;
  }
@@ -206,22 +204,16 @@ public class FBFWVN {
   return isFritzboxLanguageOK;
  }
 
-//  public final byte getBoxType() {
  /**
   * 
   * @return
   */
  public int getBoxType() {  // Muss Integer sein wegen neuen Firmware Typ > 127
- //public byte getBoxType() {  
- //this.boxtype = Byte.parseByte(boxtype);
-  //if (sFBFWV81 == "") {
-  // return 0;
-  //} else {
-  // return Byte.parseByte(sFBFWV81);
+// public byte getBoxType() {  
+ // return Byte.parseByte(sFBFWV81);
   return Integer.parseInt(sFBFWV81);  // Muss Integer sein wegen neuen Firmware Typ > 127
-  //}
-  //return sFBFWV81;
-  // return boxtype;
+ // return sFBFWV81;
+ // return boxtype;
  }
 
  /**
@@ -230,8 +222,8 @@ public class FBFWVN {
   */
  public final byte getMajorFirmwareVersion() {
   return Byte.parseByte(sFBFWV82);
-//   return sFBFWV82;
-  //return majorFirmwareVersion;
+ // return sFBFWV82;
+ // return majorFirmwareVersion;
  }
 
  /**
