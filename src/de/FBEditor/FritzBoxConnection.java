@@ -1,8 +1,6 @@
 package de.FBEditor;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -12,8 +10,8 @@ import javax.swing.JOptionPane;
 
 import de.FBEditor.struct.FBFWVN;
 import de.FBEditor.struct.HttpPost;
+import de.FBEditor.struct.SIDLogin; // 01.03.2014
 import de.FBEditor.utils.Utils;
-import de.moonflower.jfritz.struct.SIDLogin;
 
 /**
  * Class holding connection information
@@ -22,35 +20,22 @@ public class FritzBoxConnection {
 
 	private boolean connected = false;
 	private static FritzBoxFirmware firmware;
+	@SuppressWarnings("unused")
 	private SIDLogin sidLogin;
 	private String postdata;
 	private String urlstr;
 	private String urlstr1;
 	private String box_password;
 	private String box_username;
-	// private final static String[] POSTDATA_ACCESS_METHOD = {
-	// "getpage=../html/de/menus/menu2.html",
-	// "getpage=../html/en/menus/menu2.html", "getpage=../html/menus/menu2.html"
-	// };
-	// private final static String[] POSTDATA_DETECT_FIRMWARE = {
-	// "&var%3Alang=de&var%3Amenu=home&var%3Apagename=home&login%3Acommand%2F%LOGINMODE%=",
-	// "&var%3Alang=en&var%3Amenu=home&var%3Apagename=home&login%3Acommand%2F%LOGINMODE%="
-	// };
 	private static String sRetSID = "0000000000000000";
 
-	// private final static String PATTERN_DETECT_FIRMWARE =
-	// "[Firmware|Labor][-| ][V|v]ersion[^\\d]*(\\d\\d\\d*).(\\d\\d).(\\d\\d\\d*)([^<]*)";
-	// private final static String PATTERN_DETECT_FIRMWARE_SPEEDPORT =
-	// "Firmware Version:</td> <td>(\\d\\d\\d*).(\\d\\d).(\\d\\d\\d*)([^<]*)";
-	// private final static String PATTERN_DETECT_LANGUAGE_DE = "Weitere";
-	// private final static String PATTERN_DETECT_LANGUAGE_EN = "More";
-
-	public FritzBoxConnection(String box_address, String box_password, String box_username) {
+	public FritzBoxConnection(String box_address, String box_password,
+			String box_username) {
 		updateURLstr(box_address);
 		try {
 			this.box_password = box_password;
 			this.box_username = box_username;
-			
+
 			sidLogin = new SIDLogin();
 
 			if (Utils.checkhost(box_address)) {
@@ -67,39 +52,26 @@ public class FritzBoxConnection {
 		urlstr1 = urlstr;
 	}
 
-	private String updatePostData() {
-		postdata = "";
-		if (!sidLogin.isSidLogin()) {
-			try {
-				postdata = this.postdata.replace("%LOGINMODE%", "password");
-				postdata = postdata
-						+ URLEncoder.encode(box_password, "ISO-8859-1");
-			} catch (UnsupportedEncodingException ex) {
-				Logger.getLogger(FritzBoxConnection.class.getName()).log(
-						Level.SEVERE, null, ex);
-			}
-		}
-		return postdata;
-	}
-
 	void getAccessMethod() {
 		String data = "";
 		String language = "de";
+		@SuppressWarnings("unused")
 		Boolean speedport = false;
 		boolean detected = false;
 
-		sidLogin.check("", urlstr1, box_password, box_username, sRetSID);
-		sRetSID = sidLogin.getSessionId();
+		SIDLogin.check("", urlstr1, box_password, box_username, sRetSID);
+		sRetSID = SIDLogin.getSessionId();
 
 		FBFWVN fbfwvn = new FBFWVN(getFirmwareStatus());
-//		FBFWVN fbfwvn = new FBFWVN("<html><body>FRITZ!Box Fon WLAN 7362 SL-B-101100-000008-630046-320710-787902-1310601-12345-avm-de</body></html>");
+		// FBFWVN fbfwvn = new
+		// FBFWVN("<html><body>FRITZ!Box Fon WLAN 7362 SL-B-101100-000008-630046-320710-787902-1310601-12345-avm-de</body></html>");
 
-		if (sidLogin.isSidLogin()) {
+		if (SIDLogin.isSidLogin()) {
 			if (fbfwvn.isOK()) {
 				detected = true;
 			}
 
-		} else if (sidLogin.isLogin()) {
+		} else if (SIDLogin.isLogin()) {
 			detected = true;
 		}
 
@@ -123,6 +95,11 @@ public class FritzBoxConnection {
 			majorFirmwareVersion = fbfwvn.getMajorFBFWVN();
 			minorFirmwareVersion = fbfwvn.getMinorFBFWVN();
 			modFirmwareVersion = fbfwvn.getModFBFWVN();
+
+			// language != "de" 01.03.2014
+			if (fbfwvn.isFritzboxLanguage()) {
+				language = fbfwvn.getFritzboxLanguage().toLowerCase();
+			}
 
 		} else {
 
@@ -149,17 +126,33 @@ public class FritzBoxConnection {
 			System.out.println(url);
 			System.out.println("QueryOld: " + isQueryOld + "     "
 					+ sRetQueryOld + "     " + sRetQueryNew);
-
+			// data = "131.06.55-12345"; // Test 01.03.2014
+			//data = "33.04.57-12345"; // Test 01.03.2014
 			Pattern normalFirmware;
-			normalFirmware = Pattern.compile("([0-9]*).([0-9]*).([0-9]*)");
+			// normalFirmware = Pattern.compile("([0-9]*).([0-9]*).([0-9]*)");
+			normalFirmware = Pattern
+					.compile("([0-9]*).([0-9]*).([0-9]*)[|-]?([^[0-9]<]*)"); // 01.03.2014 mit mod
 
 			Matcher m = normalFirmware.matcher(data);
 			if (m.find()) {
 				boxtypeString = m.group(1);
 				majorFirmwareVersion = m.group(2);
 				minorFirmwareVersion = m.group(3);
-//				modFirmwareVersion = m.group(4).trim(); // Fehler nicht vorhanden
+
+				// modFirmwareVersion = m.group(4).trim(); // Fehler nicht
+				// vorhanden
 				modFirmwareVersion = ""; // erkennt sonst die Box 701/900 nicht
+
+				try { // Test 01.03.2014
+					modFirmwareVersion = m.group(4);
+					System.out.println("modFirmwareVersion: " + m.group(4));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("error modFirmwareVersion: "
+							+ m.group(4));
+
+				}
 			}
 
 		}
@@ -167,11 +160,12 @@ public class FritzBoxConnection {
 				majorFirmwareVersion, minorFirmwareVersion, modFirmwareVersion,
 				language);
 
-	    System.out.println( "Debug boxtype: " + boxtypeString );
+		System.out.println("Debug boxtype: " + boxtypeString);
 
 	}
 
-	public boolean reconnect(String box_address, String box_password, String box_username) {
+	public boolean reconnect(String box_address, String box_password,
+			String box_username) {
 		boolean result = false;
 		connected = false;
 		try {
@@ -179,10 +173,10 @@ public class FritzBoxConnection {
 			this.box_password = box_password;
 			this.box_username = box_username;
 			if (Utils.checkhost(box_address)) {
-				sRetSID = sidLogin.getSessionId();
-				sidLogin.check("", urlstr1, box_password, box_username, sRetSID);
-				sRetSID = sidLogin.getSessionId();
-				if (sidLogin.isSidLogin()) {
+				sRetSID = SIDLogin.getSessionId();
+				SIDLogin.check("", urlstr1, box_password, box_username, sRetSID);
+				sRetSID = SIDLogin.getSessionId();
+				if (SIDLogin.isSidLogin()) {
 					result = true;
 					connected = true;
 				}

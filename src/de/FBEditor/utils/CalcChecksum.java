@@ -5,8 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
-import de.moonflower.jfritz.utils.Debug;
-
 public class CalcChecksum {
 	
 	private static int type = 0;

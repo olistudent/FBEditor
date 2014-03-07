@@ -11,7 +11,8 @@ public class FritzBoxFirmware {
     private byte majorFirmwareVersion;
     private byte minorFirmwareVersion;
     private String modFirmwareVersion;
-    private String language;
+    @SuppressWarnings("unused")
+	private String language;
 
     /**
      * Firmware Constructor using Strings

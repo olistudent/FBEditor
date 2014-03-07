@@ -2,7 +2,7 @@
  * Created on 08.06.2005
  *  
  */
-package de.moonflower.jfritz.utils;
+package de.FBEditor.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Key;

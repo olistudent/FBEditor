@@ -1,19 +1,20 @@
 package de.FBEditor;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JDialog;
-import java.awt.GridBagLayout;
 import javax.swing.JScrollPane;
-import java.awt.GridBagConstraints;
 
-import de.moonflower.jfritz.exceptions.WrongPasswordException;
+import de.FBEditor.exceptions.InvalidFirmwareException;
+import de.FBEditor.exceptions.WrongPasswordException;
 
 public class BoxInfo extends JDialog {
 
@@ -176,5 +177,10 @@ public class BoxInfo extends JDialog {
 		else
 			jLabel6.setText(modVersion);
 		*/
+		if (modVersion.equals("")) {
+			jLabel6.setText(FBEdit.getMessage("boxinfo.nomod"));
+		} else {
+			jLabel6.setText(modVersion);
+		}
 	}
 }

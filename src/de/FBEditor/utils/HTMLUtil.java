@@ -1,4 +1,4 @@
-package de.moonflower.jfritz.utils;
+package de.FBEditor.utils;
 import java.util.HashMap;
 
 /**

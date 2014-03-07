@@ -43,6 +43,7 @@ public class FindReplace extends JDialog {
 		JButton jButton1 = new JButton();
 		JButton jButton4 = new JButton();
 		JButton jButton2 = new JButton();
+		@SuppressWarnings("unused")
 		JButton jButton3 = new JButton();
 		JButton jButton5 = new JButton();
 		
@@ -185,6 +186,7 @@ public class FindReplace extends JDialog {
 		JTextPane2.replaceText(pane, TFreplace.getText());
 	}
 
+	@SuppressWarnings("unused")
 	private void replaceAllActionPerformed() {
 		JTextPane2.replaceAll(pane, TFreplace.getText());
 	}

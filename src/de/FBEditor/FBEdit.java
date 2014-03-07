@@ -2,6 +2,8 @@ package de.FBEditor;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -38,10 +40,10 @@ import de.FBEditor.struct.JTextPane2;
 import de.FBEditor.struct.MyProperties;
 import de.FBEditor.struct.OverwriteCaret;
 import de.FBEditor.utils.CalcChecksum;
+import de.FBEditor.utils.Debug;
+import de.FBEditor.utils.Encryption;
 import de.FBEditor.utils.Listener;
 import de.FBEditor.utils.Utils;
-import de.moonflower.jfritz.utils.Debug;
-import de.moonflower.jfritz.utils.Encryption;
 
 public class FBEdit extends JFrame implements Runnable
 
@@ -91,22 +93,32 @@ public class FBEdit extends JFrame implements Runnable
 		
 		// Try to load and set properties
 		properties = new MyProperties();
+		Utils.createDefaultProperties(properties); // Set Properties Default Values // 22.02.2014
 		boolean loadProp = Utils.loadProperties(properties, PROPERTIES_FILE);
 
 		if (loadProp) {
 
 			String position_top = properties.getProperty("position.top", "60");
-			String position_left = properties
-					.getProperty("position.left", "60");
-			String position_height = properties.getProperty("position.height",
-					"480");
-			String position_width = properties.getProperty("position.width",
-					"680");
+			String position_left = properties.getProperty("position.left", "60");
+			String position_height = properties.getProperty("position.height", "480");
+			String position_width = properties.getProperty("position.width", "680");
 
-			setLocation(Integer.parseInt(position_left),
-					Integer.parseInt(position_top));
-			setSize(Integer.parseInt(position_width),
-					Integer.parseInt(position_height));
+			System.out.println("position_top: " + position_top);
+			System.out.println("position_left: " + position_left);
+			System.out.println("position_height: " + position_height);
+			System.out.println("position_width: " + position_width);
+			
+			System.out.println("box.address: " + box_address);
+			System.out.println("box.password: " + box_password);
+			System.out.println("box.username: " + box_username);
+			System.out.println("readOnStartup: " + readOnStartup);
+			System.out.println("NoChecks: " + NoChecks);
+			System.out.println("language: " + language);
+
+			setLocation(Integer.parseInt(position_left.trim()),
+					Integer.parseInt(position_top.trim()));
+			setSize(Integer.parseInt(position_width.trim()),
+					Integer.parseInt(position_height.trim()));
 
 		} else {
 			setLocation(60, 60);
@@ -117,12 +129,6 @@ public class FBEdit extends JFrame implements Runnable
 		setIconImage(getImageFromJAR("/icon.gif"));
 
 		pane = new JTextPane2();
-
-		// Fehler wenn in FBEditor.properties.xml "box.username" fehlt 07.02.2014  
-		if (properties.getProperty("box.username") == null) {
-			Debug.always("box_username: " + properties.getProperty("box.username"));	
-			properties.setProperty("box.username", "");
-		}
 
 		setProperties(properties);
 
@@ -153,7 +159,20 @@ public class FBEdit extends JFrame implements Runnable
 		fileName = FBEdit.getMessage("main.unknown_file");
 		
 		Debug.always("Java version: " + jvm_version);
-		
+
+		Font font = null;
+		try {
+			font = Font.createFont( Font.TRUETYPE_FONT, getClass().getResourceAsStream( "/de/FBEditor/font/Consola.ttf") );
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont( font );
+			System.out.println("Font: : " + font.getName());
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (!(loadProp)) {
 			getHost(true);
 			getPassword(true);
@@ -268,7 +287,9 @@ public class FBEdit extends JFrame implements Runnable
 	void getFile() {
 		JTextPane2 pane2 = this.getJTextPane();
 		DocumentListener docListen2 = this.getDocListener();
-		pane2.setFont(new Font("Segoe UI", 0, 16));
+// Consolas Font Pack for Microsoft Visual Studio 2005 or 2008
+// Download: http://www.microsoft.com/en-us/download/details.aspx?id=17879
+		pane2.setFont(new Font("Consolas", 0, 16));
 		/* Speedup */
 		removeDocumentListener(pane2, docListen2);
 		pane2.setText(FBEdit.getMessage("box.get_config"));
@@ -282,7 +303,7 @@ public class FBEdit extends JFrame implements Runnable
 		JTextPane2 pane2 = this.getJTextPane();
 
 		pane2.setText("");
-		pane2.setFont(new Font("Segoe UI", 0, 12));
+		pane2.setFont(new Font("Consolas", 0, 12));
 		pane2.setEditable(false);
 		undoManager.pause();
 		pane2.setText(data);
@@ -639,6 +660,8 @@ public class FBEdit extends JFrame implements Runnable
 		supported_languages = new Vector<Locale>();
 		supported_languages.add(new Locale("de", "DE"));
 		supported_languages.add(new Locale("en", "US"));
+//		supported_languages.add(new Locale("es", "ES"));
+
 		/*
 		 * supported_languages.add(new Locale("it","IT"));
 		 * supported_languages.add(new Locale("nl","NL"));

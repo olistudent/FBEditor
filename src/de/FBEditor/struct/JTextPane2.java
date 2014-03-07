@@ -191,6 +191,7 @@ public class JTextPane2 extends JTextPane implements KeyListener {
 	}
 
 	private static void removeHighlights(JTextComponent textComp) {
+		@SuppressWarnings("unused")
 		MyHighlightPainter myHighlightPainter = new MyHighlightPainter(Color.yellow);
 		Highlighter hilite = textComp.getHighlighter();
 		javax.swing.text.Highlighter.Highlight hilites[] = hilite.getHighlights();
@@ -204,6 +205,7 @@ public class JTextPane2 extends JTextPane implements KeyListener {
 	public static final int MACOS_LINE_END = 1;
 	public static final int UNIX_LINE_END = 2;
 	private String myLineTerm;
+	@SuppressWarnings("unused")
 	private String origLineTerm;
 	int maxCharacters;
 	private boolean insertMode;

@@ -2,15 +2,8 @@
  * Created on 20.05.2005
  *
  */
-package de.moonflower.jfritz.utils;
+package de.FBEditor.utils;
 
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -19,6 +12,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  * Write debug messages to STDOUT or FILE. Show Error-Dialog with a special
@@ -38,6 +36,7 @@ public class Debug {
 	public static final LogSeverity LS_INFO = new LogSeverity(4, "LS_INFO", ": INFO");
 	public static final LogSeverity LS_DEBUG = new LogSeverity(5, "LS_DEBUG", ": DEBUG");
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 9211082107025215527L;
 
 	private static LogSeverity debugLevel;
@@ -161,6 +160,7 @@ public class Debug {
 			int selectedLogSeverityIndex = log_severity_box.getSelectedIndex();
 			LogSeverity selectedLogSeverity = (LogSeverity) log_severity_box.getItemAt(selectedLogSeverityIndex);
 			log_area.setText("");
+			@SuppressWarnings("resource")
 			BufferedReader in = new BufferedReader(new FileReader(debugLogFile));
 			String zeile = null;
 			while ((zeile = in.readLine()) != null) {

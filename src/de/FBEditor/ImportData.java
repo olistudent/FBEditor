@@ -8,8 +8,9 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+
 import de.FBEditor.utils.StringPartNoTransferEncoding;
-import de.moonflower.jfritz.struct.SIDLogin;
+import de.FBEditor.struct.SIDLogin;
 
 /**
  * Import configuration from FBox

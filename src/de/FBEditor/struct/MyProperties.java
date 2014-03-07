@@ -30,6 +30,14 @@ import org.xml.sax.SAXParseException;
 
 public class MyProperties extends Properties {
 
+	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
+	private static final String PROPS_DTD_URI = "http://java.sun.com/dtd/properties.dtd";
+	@SuppressWarnings("unused")
+	private static final String PROPS_DTD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- DTD for properties --><!ELEMENT properties ( comment?, entry* ) ><!ATTLIST properties version CDATA #FIXED \"1.0\"><!ELEMENT comment (#PCDATA) ><!ELEMENT entry (#PCDATA) ><!ATTLIST entry  key CDATA #REQUIRED>";
+	@SuppressWarnings("unused")
+	private static final String EXTERNAL_XML_VERSION = "1.0";
+
 	public MyProperties() {
 	}
 
@@ -43,7 +51,8 @@ public class MyProperties extends Properties {
 		}
 	}
 
-	public synchronized void storeToXML(OutputStream os, String comment) throws IOException {
+	public synchronized void storeToXML(OutputStream os, String comment)
+			throws IOException {
 		if (os == null) {
 			throw new NullPointerException();
 		} else {
@@ -57,10 +66,24 @@ public class MyProperties extends Properties {
 	}
 
 	public String getProperty(String key) {
+		// Fehler: NullPointerException wenn der key Fehlt korrigiert 22.02.2014
+		if (super.getProperty(key) == null) {
+			super.setProperty(key, "");
+			System.out.println("import getProperties NullPointerException: "
+					+ key);
+		}
 		return super.getProperty(key);
 	}
 
 	public String getProperty(String key, String defaultValue) {
+		// Fehler: defaultValue wurde nicht gesetzt bei Leerstring korrigiert
+		// 22.02.2014
+		String val = super.getProperty(key, defaultValue);
+
+		if (val.trim().equals("")) {
+			System.out.println("importPropertiesDefaultValue: " + defaultValue);
+			super.setProperty(key, defaultValue);
+		}
 		return super.getProperty(key, defaultValue);
 	}
 
@@ -68,21 +91,31 @@ public class MyProperties extends Properties {
 		return super.remove(key);
 	}
 
-	public static void load(Properties props, InputStream in) throws IOException, SAXException {
+	public static void load(Properties props, InputStream in)
+			throws IOException, SAXException {
 		Document doc = null;
 		doc = getLoadingDoc(in);
 		Element propertiesElement = (Element) doc.getChildNodes().item(1);
 		String xmlVersion = propertiesElement.getAttribute("version");
 		if (xmlVersion.compareTo("1.0") > 0) {
-			throw new SAXException((new StringBuilder("Exported Properties file format version ")).append(xmlVersion).append(" is not supported. This java installation can read").append(" versions ").append("1.0").append(" or older. You").append(
-					" may need to install a newer version of JDK.").toString());
+			throw new SAXException(
+					(new StringBuilder(
+							"Exported Properties file format version "))
+							.append(xmlVersion)
+							.append(" is not supported. This java installation can read")
+							.append(" versions ")
+							.append("1.0")
+							.append(" or older. You")
+							.append(" may need to install a newer version of JDK.")
+							.toString());
 		} else {
 			importProperties(props, propertiesElement);
 			return;
 		}
 	}
 
-	public static Document getLoadingDoc(InputStream in) throws SAXException, IOException {
+	public static Document getLoadingDoc(InputStream in) throws SAXException,
+			IOException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setIgnoringElementContentWhitespace(true);
 		dbf.setValidating(true);
@@ -92,7 +125,8 @@ public class MyProperties extends Properties {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			db.setEntityResolver(new EntityResolver() {
 
-				public InputSource resolveEntity(String pid, String sid) throws SAXException {
+				public InputSource resolveEntity(String pid, String sid)
+						throws SAXException {
 					if (sid.equals("http://java.sun.com/dtd/properties.dtd")) {
 						InputSource is = new InputSource(
 								new StringReader(
@@ -100,7 +134,9 @@ public class MyProperties extends Properties {
 						is.setSystemId("http://java.sun.com/dtd/properties.dtd");
 						return is;
 					} else {
-						throw new SAXException((new StringBuilder("Invalid system identifier: ")).append(sid).toString());
+						throw new SAXException((new StringBuilder(
+								"Invalid system identifier: ")).append(sid)
+								.toString());
 					}
 				}
 
@@ -127,10 +163,12 @@ public class MyProperties extends Properties {
 		}
 	}
 
-	public static void importProperties(Properties props, Element propertiesElement) {
+	public static void importProperties(Properties props,
+			Element propertiesElement) {
 		NodeList entries = propertiesElement.getChildNodes();
 		int numEntries = entries.getLength();
-		int start = numEntries > 0 && entries.item(0).getNodeName().equals("comment") ? 1 : 0;
+		int start = numEntries > 0
+				&& entries.item(0).getNodeName().equals("comment") ? 1 : 0;
 		for (int i = start; i < numEntries; i++) {
 			Element entry = (Element) entries.item(i);
 			if (entry.hasAttribute("key")) {
@@ -142,7 +180,8 @@ public class MyProperties extends Properties {
 
 	}
 
-	public static void save(Properties props, OutputStream os, String comment, String encoding) throws IOException {
+	public static void save(Properties props, OutputStream os, String comment,
+			String encoding) throws IOException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = null;
 		try {
@@ -150,29 +189,35 @@ public class MyProperties extends Properties {
 		} catch (ParserConfigurationException parserconfigurationexception) {
 		}
 		Document doc = db.newDocument();
-		Element properties = (Element) doc.appendChild(doc.createElement("properties"));
+		Element properties = (Element) doc.appendChild(doc
+				.createElement("properties"));
 		if (comment != null) {
-			Element comments = (Element) properties.appendChild(doc.createElement("comment"));
+			Element comments = (Element) properties.appendChild(doc
+					.createElement("comment"));
 			comments.appendChild(doc.createTextNode(comment));
 		}
-		Set keys = props.keySet();
+		Set<?> keys = props.keySet();
 		String key;
 		Element entry;
-		for (Iterator i = keys.iterator(); i.hasNext(); entry.appendChild(doc.createTextNode(props.getProperty(key)))) {
+		for (Iterator<?> i = keys.iterator(); i.hasNext(); entry
+				.appendChild(doc.createTextNode(props.getProperty(key)))) {
 			key = (String) (String) i.next();
-			entry = (Element) properties.appendChild(doc.createElement("entry"));
+			entry = (Element) properties
+					.appendChild(doc.createElement("entry"));
 			entry.setAttribute("key", key);
 		}
 
 		emitDocument(doc, os, encoding);
 	}
 
-	static void emitDocument(Document doc, OutputStream os, String encoding) throws IOException {
+	static void emitDocument(Document doc, OutputStream os, String encoding)
+			throws IOException {
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t = null;
 		try {
 			t = tf.newTransformer();
-			t.setOutputProperty("doctype-system", "http://java.sun.com/dtd/properties.dtd");
+			t.setOutputProperty("doctype-system",
+					"http://java.sun.com/dtd/properties.dtd");
 			t.setOutputProperty("indent", "yes");
 			t.setOutputProperty("method", "xml");
 			t.setOutputProperty("encoding", encoding);
@@ -189,8 +234,4 @@ public class MyProperties extends Properties {
 		}
 	}
 
-	private static final long serialVersionUID = 1L;
-	private static final String PROPS_DTD_URI = "http://java.sun.com/dtd/properties.dtd";
-	private static final String PROPS_DTD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- DTD for properties --><!ELEMENT properties ( comment?, entry* ) ><!ATTLIST properties version CDATA #FIXED \"1.0\"><!ELEMENT comment (#PCDATA) ><!ELEMENT entry (#PCDATA) ><!ATTLIST entry  key CDATA #REQUIRED>";
-	private static final String EXTERNAL_XML_VERSION = "1.0";
 }
