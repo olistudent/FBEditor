@@ -13,8 +13,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
+import de.FBEditor.CutAndPastePopup;
+import de.FBEditor.FBEdit;
+import de.FBEditor.FindReplace;
 import de.FBEditor.struct.JTextPane2;
-import de.FBEditor.*;
 
 public class Listener {
 
