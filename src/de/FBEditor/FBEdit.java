@@ -668,7 +668,7 @@ public class FBEdit extends JFrame implements Runnable
 		supported_languages = new Vector<Locale>();
 		supported_languages.add(new Locale("de", "DE"));
 		supported_languages.add(new Locale("en", "US"));
-//		supported_languages.add(new Locale("es", "ES"));
+		supported_languages.add(new Locale("es", "ES"));
 
 		/*
 		 * supported_languages.add(new Locale("it","IT"));
