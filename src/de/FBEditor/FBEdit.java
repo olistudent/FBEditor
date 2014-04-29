@@ -48,7 +48,7 @@ import de.FBEditor.utils.Utils;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.7";
+	private static final String version = "0.7.2";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -107,13 +107,6 @@ public class FBEdit extends JFrame implements Runnable
 			System.out.println("position_left: " + position_left);
 			System.out.println("position_height: " + position_height);
 			System.out.println("position_width: " + position_width);
-			
-			System.out.println("box.address: " + box_address);
-			System.out.println("box.password: " + box_password);
-			System.out.println("box.username: " + box_username);
-			System.out.println("readOnStartup: " + readOnStartup);
-			System.out.println("NoChecks: " + NoChecks);
-			System.out.println("language: " + language);
 
 			setLocation(Integer.parseInt(position_left.trim()),
 					Integer.parseInt(position_top.trim()));
@@ -329,6 +322,7 @@ public class FBEdit extends JFrame implements Runnable
 					int index = text.indexOf("**** CFGFILE:ar7.cfg");
 					text = text.substring(0, index) + "NoChecks=yes" + '\n'
 							+ text.substring(index);
+					text = CalcChecksum.replaceChecksum(text); // Neue Checksumme mit NoChecks
 				}
 				boolean result = false;
 				result = Utils.exportData(getframe(), getbox_address(), text);
@@ -478,6 +472,13 @@ public class FBEdit extends JFrame implements Runnable
 		return INSTANCE;
 	}
 
+       private static void sleep(long millis) {
+               try {
+ 			Thread.sleep(millis);
+               } catch (InterruptedException ignored) {
+               }
+       }       
+
 	public static void main(String[] s) {
 		FBEdit fbedit = new FBEdit();
 
@@ -496,6 +497,8 @@ public class FBEdit extends JFrame implements Runnable
 		// Debug.on();
 
 		fbedit.thread.start(); // Korrektur Statuszeile geht sonst nicht
+
+		sleep(2000);
 
 		makeNewConnection(true);
 
