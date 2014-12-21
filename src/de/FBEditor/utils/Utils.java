@@ -1,5 +1,6 @@
 package de.FBEditor.utils;
 
+import static de.FBEditor.FBEdit.fbConnection;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -68,6 +69,11 @@ public class Utils {
 	public static boolean exportData(FBEdit fbedit, String box_address,
 			String data) {
 		boolean result = false;
+
+		// 14.12.2014
+		FritzBoxFirmware firmware = null;
+		firmware = fbConnection.getFirmware();
+
 		try {
 			String url = (new StringBuilder("http://")).append(box_address)
 					.append("/cgi-bin/firmwarecfg").toString();
@@ -79,12 +85,30 @@ public class Utils {
 			Part[] parts = null;
 			if (SIDLogin.isSidLogin()) {
 				// with session id
-				parts = new Part[3];
-				parts[0] = new StringPartNoTransferEncoding("sid", sid);
-				parts[1] = new StringPartNoTransferEncoding(
-						"ImportExportPassword", "");
-				parts[2] = new FilePart("ConfigImportFile",
+				// 14.12.2014 ab Firmware xxx.06.xx with "apply"
+				if (firmware.getMajorFirmwareVersion() >= 6) { // ab Firmware xxx.06.xx with "apply"
+					System.out.println("DEBUG: firmware.getMajorFirmwareVersion() >= 6: " + firmware.getMajorFirmwareVersion());
+					parts = new Part[4];
+					parts[0] = new StringPartNoTransferEncoding("sid", sid);
+					//parts[1] = new StringPartNoTransferEncoding(
+					//	"ImportExportPassword", "");
+					parts[1] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", ConfigImExPwd);
+					parts[2] = new FilePart("ConfigImportFile",
 						uploadFile.getName(), uploadFile);
+					parts[3] = new StringPartNoTransferEncoding(
+						"apply", "");
+				} else {
+					System.out.println("DEBUG: firmware.getMajorFirmwareVersion(): " + firmware.getMajorFirmwareVersion());
+					parts = new Part[3];
+					parts[0] = new StringPartNoTransferEncoding("sid", sid);
+					//parts[1] = new StringPartNoTransferEncoding(
+					//      "ImportExportPassword", "");
+					parts[1] = new StringPartNoTransferEncoding(
+						"ImportExportPassword", ConfigImExPwd);
+					parts[2] = new FilePart("ConfigImportFile",
+						uploadFile.getName(), uploadFile);
+				}
 			} else {
 				// old style, no session id
 				parts = new Part[2];
