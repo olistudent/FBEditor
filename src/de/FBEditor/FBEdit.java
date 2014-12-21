@@ -48,7 +48,7 @@ import de.FBEditor.utils.Utils;
 public class FBEdit extends JFrame implements Runnable
 
 {
-	private static final String version = "0.7.2";
+	private static final String version = "0.7.2.1";
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
