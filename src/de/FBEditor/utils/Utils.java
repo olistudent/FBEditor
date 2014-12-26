@@ -28,6 +28,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import de.FBEditor.FBEdit;
+import de.FBEditor.FritzBoxFirmware;
 import de.FBEditor.struct.MyProperties;
 import de.FBEditor.struct.SIDLogin;
 
