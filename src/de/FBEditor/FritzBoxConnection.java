@@ -64,10 +64,10 @@ public final class FritzBoxConnection {
 		sRetSID = SIDLogin.getSessionId();
 
 		FBFWVN fbfwvn = new FBFWVN(getFirmwareStatus());
-		//FBFWVN fbfwvn = new
+		// FBFWVN fbfwvn = new
 		// FBFWVN("<html><body>FRITZ!Box Fon WLAN 7362 SL-B-101100-000008-630046-320710-787902-1310601-12345-avm-de</body></html>");
 		// 15.04.2015
-		//FBFWVN("<html><body>FRITZ!Box Fon WLAN 7390-B-010702-000024-006117-745743-147902-overwrite feature CONFIG_WLAN_HOTSPOT=y-840623-overwrite feature CONFIG_WLAN_HOTSPOT=y-29836-avm</body></html>");
+		// FBFWVN("<html><body>FRITZ!Box Fon WLAN 7390-B-010702-000024-006117-745743-147902-overwrite feature CONFIG_WLAN_HOTSPOT=y-840623-overwrite feature CONFIG_WLAN_HOTSPOT=y-29836-avm</body></html>");
 
 		if (SIDLogin.isSidLogin()) {
 			if (fbfwvn.isOK()) {
