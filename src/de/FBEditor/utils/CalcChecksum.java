@@ -32,6 +32,11 @@ public class CalcChecksum {
 				file = true;
 				Debug.debug(line);
 				type = 2;
+			} else if ((filename = Utils.pMatch("\\*\\*\\*\\* CRYPTEDBINFILE:(.*?)$", line, 1)) != null) {
+				file = true;
+				Debug.debug(line);
+				type = 4;
+				// CRYPTEDBINFILE bin file 19.04.2015
 			} else {
 				if (Utils.pMatch("\\*\\*\\*\\* (.+) CONFIGURATION EXPORT", line, 0) != null) {
 					file = false;
@@ -81,6 +86,20 @@ public class CalcChecksum {
 					
 					// FIXME: This is very slow!
 					//updateCRC(b);
+					bin_line += (char) Integer.parseInt(hex.substring(i, i + 2), 16);
+				}
+				updateCRC(bin_line);
+
+				return;
+			}
+			if (type == 4) {  // CRYPTEDBINFILE bin file 19.04.2015
+				if (line.indexOf("**** END OF FILE") == 0) {
+					type = 0;
+					return;
+				}
+				String hex = line.trim().toLowerCase().replace("\n", "");
+				String bin_line = "";
+				for (int i = 0; i < hex.length(); i += 2) {
 					bin_line += (char) Integer.parseInt(hex.substring(i, i + 2), 16);
 				}
 				updateCRC(bin_line);
