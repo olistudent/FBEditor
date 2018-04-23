@@ -1,5 +1,6 @@
 package de.FBEditor.utils;
 
+import static de.FBEditor.FBEdit.fbConnection;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -27,6 +28,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
 import de.FBEditor.FBEdit;
+import de.FBEditor.FritzBoxFirmware;
 import de.FBEditor.struct.MyProperties;
 import de.FBEditor.struct.SIDLogin;
 
@@ -68,28 +70,75 @@ public class Utils {
 	public static boolean exportData(FBEdit fbedit, String box_address,
 			String data) {
 		boolean result = false;
+
+        // 14.12.2014
+        FritzBoxFirmware firmware = null;
+        firmware = fbConnection.getFirmware();
+//*
 		try {
 			String url = (new StringBuilder("http://")).append(box_address)
 					.append("/cgi-bin/firmwarecfg").toString();
 			File uploadFile = createTempFile(data);
+//*
 			PostMethod mPost = new PostMethod(url);
+
+		        // Kennwort der Sicherungsdatei
+			String ConfigImExPwd = "";
+/*
+			String box_ConfigImExPwd = FBEdit.getInstance().getbox_ConfigImExPwd();
+			System.out.println("box.ConfigImExPwd: " + box_ConfigImExPwd);
+
+			if ( !"".equals(box_ConfigImExPwd) ) {
+				// Hier kann man ein PopUp Dialog verwenden
+				// mit der Frage, mit oder ohne Kennwort Speichern
+
+				FBEdit.getInstance().getConfigImExPwd(false);
+
+	            if ( FBEdit.isConfigImExPwdOk() == true ) {
+			    	box_ConfigImExPwd = FBEdit.getInstance().getbox_ConfigImExPwd();
+		    		// ConfigImExPwd = ""; // Abbrechen -> ohne Kennwort
+	    			ConfigImExPwd = box_ConfigImExPwd; // OK -> mit Kennwort	
+	            }
+				System.out.println("ConfigImExPwd: " + ConfigImExPwd + " -> " + FBEdit.isConfigImExPwdOk());
+			}
+*/
 
 			String sid = SIDLogin.getSessionId();
 
 			Part[] parts = null;
 			if (SIDLogin.isSidLogin()) {
 				// with session id
-				parts = new Part[3];
-				parts[0] = new StringPartNoTransferEncoding("sid", sid);
-				parts[1] = new StringPartNoTransferEncoding(
-						"ImportExportPassword", "");
-				parts[2] = new FilePart("ConfigImportFile",
-						uploadFile.getName(), uploadFile);
+				// 14.12.2014 ab Firmware xxx.06.xx with "apply"
+				if (firmware.getMajorFirmwareVersion() >= 6) { // ab Firmware xxx.06.xx with "apply"
+                	System.out.println("DEBUG: firmware.getMajorFirmwareVersion() >= 6: " + firmware.getMajorFirmwareVersion());
+                	parts = new Part[4];
+                	parts[0] = new StringPartNoTransferEncoding("sid", sid);
+                	//parts[1] = new StringPartNoTransferEncoding(
+                	//		"ImportExportPassword", "");
+                	parts[1] = new StringPartNoTransferEncoding(
+                			"ImportExportPassword", ConfigImExPwd);
+                	parts[2] = new FilePart("ConfigImportFile",
+                			uploadFile.getName(), uploadFile);
+                	parts[3] = new StringPartNoTransferEncoding(
+                			"apply", "");
+				} else {
+					System.out.println("DEBUG: firmware.getMajorFirmwareVersion(): " + firmware.getMajorFirmwareVersion());
+					parts = new Part[3];
+					parts[0] = new StringPartNoTransferEncoding("sid", sid);
+					//parts[1] = new StringPartNoTransferEncoding(
+					//		"ImportExportPassword", "");
+					parts[1] = new StringPartNoTransferEncoding(
+							"ImportExportPassword", ConfigImExPwd);
+					parts[2] = new FilePart("ConfigImportFile",
+							uploadFile.getName(), uploadFile);
+				}
 			} else {
 				// old style, no session id
 				parts = new Part[2];
+				//parts[0] = new StringPartNoTransferEncoding(
+				//		"ImportExportPassword", "");
 				parts[0] = new StringPartNoTransferEncoding(
-						"ImportExportPassword", "");
+						"ImportExportPassword", ConfigImExPwd);
 				parts[1] = new FilePart("ConfigImportFile",
 						uploadFile.getName(), uploadFile);
 			}
@@ -121,10 +170,11 @@ public class Utils {
 						FBEdit.getMessage("error"), 0);
 
 			mPost.releaseConnection();
+//*/
 		} catch (IOException ex) {
 			Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
+//*/
 		return result;
 	}
 
@@ -143,6 +193,7 @@ public class Utils {
 		properties.setProperty("box.address", "fritz.box");
 		properties.setProperty("box.password", "");
 		properties.setProperty("box.username", "");
+//		properties.setProperty("box.ConfigImExPwd", "");
 		properties.setProperty("readOnStartup", "no");
 //		properties.setProperty("NoChecks", "true"); // 17.02.2014
 		properties.setProperty("NoChecks", "false"); // 17.02.2014
@@ -165,6 +216,7 @@ public class Utils {
 			properties.setProperty("box.address", "fritz.box");
 			properties.setProperty("box.password", "");
 			properties.setProperty("box.username", "");
+//			properties.setProperty("box.ConfigImExPwd", "");
 			properties.setProperty("readOnStartup", "no");
 //			properties.setProperty("NoChecks", "true"); // 17.02.2014
 			properties.setProperty("NoChecks", "false"); // 17.02.2014
@@ -176,18 +228,19 @@ public class Utils {
 
 	public static void saveProperties(String PROPERTIES_FILE, FBEdit fbedit) {
 		MyProperties properties = new MyProperties();
-		properties.setProperty("position.left",
-				Integer.toString(fbedit.getLocation().x));
 		properties.setProperty("position.top",
 				Integer.toString(fbedit.getLocation().y));
-		properties.setProperty("position.width",
-				Integer.toString(fbedit.getSize().width));
+		properties.setProperty("position.left",
+				Integer.toString(fbedit.getLocation().x));
 		properties.setProperty("position.height",
 				Integer.toString(fbedit.getSize().height));
+		properties.setProperty("position.width",
+				Integer.toString(fbedit.getSize().width));
+		properties.setProperty("box.address", fbedit.getbox_address());
 		properties.setProperty("box.password",
 				Encryption.encrypt(fbedit.getbox_password()));
 		properties.setProperty("box.username", fbedit.getbox_username());
-		properties.setProperty("box.address", fbedit.getbox_address());
+//		properties.setProperty("box.ConfigImExPwd", fbedit.getbox_ConfigImExPwd());
 		properties.setProperty("readOnStartup", fbedit.getRASstate());
 		properties.setProperty("NoChecks", fbedit.getNoChecksState());
 		properties.setProperty("language", fbedit.getLanguage());
@@ -215,7 +268,7 @@ public class Utils {
 	}
 
 	private static boolean checkResponse(String data) {
-		return (data.indexOf("fehlgeschlagen") == -1);
+		return (!data.contains("fehlgeschlagen"));
 	}
 
 }
