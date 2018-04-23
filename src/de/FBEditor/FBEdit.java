@@ -91,6 +91,16 @@ public class FBEdit extends JFrame implements Runnable
 		
 		String jvm_version = System.getProperty("java.version");
 		
+		// Try to set a more native look and feel on supported platforms
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "AgentX");
+		} catch (final Exception e) {
+			//TODO catch exception
+			e.printStackTrace();
+		}
+		
 		// Try to load and set properties
 		properties = new MyProperties();
 		Utils.createDefaultProperties(properties); // Set Properties Default Values // 22.02.2014
