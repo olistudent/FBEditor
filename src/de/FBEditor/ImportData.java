@@ -2,6 +2,7 @@ package de.FBEditor;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -9,8 +10,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 
+import de.FBEditor.struct.SIDLogin; // 01.03.2014
 import de.FBEditor.utils.StringPartNoTransferEncoding;
-import de.FBEditor.struct.SIDLogin;
 
 /**
  * Import configuration from FBox
@@ -29,6 +30,26 @@ public class ImportData implements Runnable {
 				.append("/cgi-bin/firmwarecfg").toString();
 		PostMethod mPost = new PostMethod(url);
 
+        // Kennwort der Sicherungsdatei
+		String ConfigImExPwd = "";
+/*
+		String box_ConfigImExPwd = FBEdit.getInstance().getbox_ConfigImExPwd();
+		System.out.println("box.ConfigImExPwd: " + box_ConfigImExPwd);
+
+		if ( !"".equals(box_ConfigImExPwd) ) {
+            // Hier kann man ein PopUp Dialog verwenden
+			// mit der Frage, mit oder ohne Kennwort Lesen
+
+            FBEdit.getInstance().getConfigImExPwd(false);
+
+            if ( FBEdit.isConfigImExPwdOk() == true ) {
+		    	box_ConfigImExPwd = FBEdit.getInstance().getbox_ConfigImExPwd();
+	    		// ConfigImExPwd = ""; // Abbrechen -> ohne Kennwort
+    			ConfigImExPwd = box_ConfigImExPwd; // OK -> mit Kennwort	
+            }
+			System.out.println("ConfigImExPwd: " + ConfigImExPwd + " -> " + FBEdit.isConfigImExPwdOk());
+		}
+*/
 		try {
 			String sid = SIDLogin.getSessionId();
 
@@ -41,14 +62,18 @@ public class ImportData implements Runnable {
 				// with session id
 				parts = new Part[3];
 				parts[0] = new StringPartNoTransferEncoding("sid", sid);
+				//parts[1] = new StringPartNoTransferEncoding(
+				//		"ImportExportPassword", "");
 				parts[1] = new StringPartNoTransferEncoding(
-						"ImportExportPassword", "");
+						"ImportExportPassword", ConfigImExPwd);
 				parts[2] = new StringPartNoTransferEncoding("ConfigExport", "");
 			} else {
 				// old style, no session id
 				parts = new Part[2];
+				//parts[0] = new StringPartNoTransferEncoding(
+				//		"ImportExportPassword", "");
 				parts[0] = new StringPartNoTransferEncoding(
-						"ImportExportPassword", "");
+						"ImportExportPassword", ConfigImExPwd);
 				parts[1] = new StringPartNoTransferEncoding("ConfigExport", "");
 			}
 
@@ -70,10 +95,14 @@ public class ImportData implements Runnable {
 			mPost.releaseConnection();
 		}
 		if (!(statusCode == 200 && checkResponse(data))) {
+
 			JOptionPane.showMessageDialog(FBEdit.getInstance().getframe(),
-					"Beim Einlesen der Daten ist ein Fehler aufgetreten!",
-					"Fehler", 0);
-			data = "Fehler!";
+					FBEdit.getMessage("utils.read_error") + "\n" + upnp(),
+					FBEdit.getMessage("main.error"), 0);
+
+//			data = FBEdit.getMessage("main.error") + "!";
+			data = upnp(); // 27.04.2018
+
 			// try to reconnect
 			FBEdit.makeNewConnection(false);
 		}
@@ -83,5 +112,19 @@ public class ImportData implements Runnable {
 
 	private boolean checkResponse(String data) {
 		return data.startsWith("****");
+	}
+	
+	private String upnp() { // 27.04.2018
+
+		String s2FA = "";
+
+		s2FA = FBEdit.getInstance().getupnp2FAsid();
+		
+		if (!s2FA.equals("")) {
+			return s2FA;	
+		}
+		
+//		return "sid=" + UPNPUtils.getSIDUPNP() + "\n" + "2FA -> " + UPNPUtils.get2FAUPNP() + "\n";
+		return FBEdit.getMessage("main.error") + "!";
 	}
 }
