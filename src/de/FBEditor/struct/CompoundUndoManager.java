@@ -2,9 +2,11 @@ package de.FBEditor.struct;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentEvent.EventType;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CompoundEdit;
@@ -28,6 +30,8 @@ public class CompoundUndoManager extends UndoManager implements UndoableEditList
 		}
 	}
 
+	private boolean startCombine = false;
+
 	public CompoundUndoManager(JTextComponent editor) {
 		this.editor = editor;
 		editor.getDocument().addUndoableEditListener(this);
@@ -46,28 +50,54 @@ public class CompoundUndoManager extends UndoManager implements UndoableEditList
 	}
 
 	public void undoableEditHappened(UndoableEditEvent e) {
+
 		if (compoundEdit == null) {
 			compoundEdit = startCompoundEdit(e.getEdit());
 			lastLength = editor.getDocument().getLength();
+			startCombine = false;
 			return;
 		}
-		javax.swing.text.AbstractDocument.DefaultDocumentEvent event = (javax.swing.text.AbstractDocument.DefaultDocumentEvent) e.getEdit();
-		if (event.getType().equals(javax.swing.event.DocumentEvent.EventType.CHANGE)) {
-			compoundEdit.addEdit(e.getEdit());
-			return;
+
+		if (e.getEdit() instanceof DefaultDocumentEvent) { // Java 9 / 10 05.05.2018
+		
+			 // Java 6 to 8
+			DefaultDocumentEvent event = (DefaultDocumentEvent) e.getEdit();
+
+			if (event.getType().equals(EventType.CHANGE)) {
+				compoundEdit.addEdit(e.getEdit());
+				return;
+			}
+
+			int offsetChange = editor.getCaretPosition() - lastOffset;
+			int lengthChange = editor.getDocument().getLength() - lastLength;
+
+			if (Math.abs(offsetChange) == 1 && Math.abs(lengthChange) == 1) {
+				compoundEdit.addEdit(e.getEdit());
+				lastOffset = editor.getCaretPosition();
+				lastLength = editor.getDocument().getLength();
+				return;
+			} else {
+				compoundEdit.end();
+				compoundEdit = startCompoundEdit(e.getEdit());
+				return;
+			}
+
+		} else { // Java 9 to 10 // 05.05.2018
+
+			if (startCombine && !e.getEdit().isSignificant()) {
+		        compoundEdit.addEdit(e.getEdit());
+		        startCombine = false;
+				lastOffset = editor.getCaretPosition();
+				lastLength = editor.getDocument().getLength();
+		        return;
+			} else {
+				compoundEdit.end();
+				compoundEdit = startCompoundEdit(e.getEdit());
+				return;
+			}
+
 		}
-		int offsetChange = editor.getCaretPosition() - lastOffset;
-		int lengthChange = editor.getDocument().getLength() - lastLength;
-		if (Math.abs(offsetChange) == 1 && Math.abs(lengthChange) == 1) {
-			compoundEdit.addEdit(e.getEdit());
-			lastOffset = editor.getCaretPosition();
-			lastLength = editor.getDocument().getLength();
-			return;
-		} else {
-			compoundEdit.end();
-			compoundEdit = startCompoundEdit(e.getEdit());
-			return;
-		}
+
 	}
 
 	private CompoundEdit startCompoundEdit(UndoableEdit anEdit) {
@@ -107,6 +137,14 @@ public class CompoundUndoManager extends UndoManager implements UndoableEditList
 	
 	public JTextComponent getEditor() {
 		return this.editor;
+	}
+
+	/**
+	 * Start to combine the next operations together.  Only the next operation is combined.
+	 * The flag is then automatically reset.
+	 */
+	public void startCombine() {
+		startCombine = true;
 	}
 
 	private static final long serialVersionUID = 1L;
