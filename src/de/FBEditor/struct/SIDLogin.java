@@ -46,12 +46,19 @@ public class SIDLogin {
 		INSTANCE = null;
 	}
 
+	public static void Login(String box_name, String urlstr,
+			String box_password, String box_username, String sRetSID) {
+		
+		check(box_name, urlstr, box_password, box_username, sRetSID);
+		
+	}
+
 	public static void check(String box_name, String urlstr,
 			String box_password, String box_username, String sRetSID) {
 		try {
-			isLoginOld = false;
-			sidLogin = false;
-			sidLoginLua = false;
+			isLoginOld = false; // 01.03.2014
+			sidLogin = false; // 01.03.2014
+			sidLoginLua = false; // 01.03.2014
 			//
 			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
 			// box_password = "0000";
