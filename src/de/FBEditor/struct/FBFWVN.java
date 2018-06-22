@@ -73,10 +73,9 @@ public class FBFWVN {
      // 15.04.2015
      ss = status1Matcher.group(i);
      S10[i - ii] = ss;
-     //System.out.println(S10[i]);
     }
 
-    if (S10[8].length() >= 5) {
+    if (S10[8].length() >= 5 && S10[8].length() <= 7) {
      sFBFW = S10[1] + " " + S10[8].substring(0, S10[8].length() - 4) + "." + S10[8].substring(S10[8].length() - 4, S10[8].length() - 2) + "." + S10[8].substring(S10[8].length() - 2, S10[8].length());
      sFBV = S10[1];
      sFBFWV = S10[8].substring(0, S10[8].length() - 4) + "." + S10[8].substring(S10[8].length() - 4, S10[8].length() - 2) + "." + S10[8].substring(S10[8].length() - 2, S10[8].length());
@@ -87,13 +86,31 @@ public class FBFWVN {
      sFBFWV83 = S10[8].substring(S10[8].length() - 2, S10[8].length());
      // sFBFWV90 = S10[9];
 
+    } else if (S10[8].length() == 8) { // 22.06.2018
+
+     sFBFW = S10[1] + " " + S10[8].substring(0, S10[8].length() - 5) + "." + S10[8].substring(S10[8].length() - 5, S10[8].length() - 3) + "." + S10[8].substring(S10[8].length() - 3, S10[8].length());
+     sFBV = S10[1];
+     sFBFWV = S10[8].substring(0, S10[8].length() - 5) + "." + S10[8].substring(S10[8].length() - 5, S10[8].length() - 3) + "." + S10[8].substring(S10[8].length() - 3, S10[8].length());
+
+     sFBFWV81 = S10[8].substring(0, S10[8].length() - 5);
+     sFBFWV82 = S10[8].substring(S10[8].length() - 5, S10[8].length() - 3);
+     sFBFWV83 = S10[8].substring(S10[8].length() - 3, S10[8].length());
+
+    }
+
+    if (S10[8].length() >= 5) {
+
      if (status1Matcher.groupCount() >= 9) {
       sFBFWV90 = S10[9];
      }
      if (status1Matcher.groupCount() >= 10) {
       sFBFWV100 = S10[10];
      }
+     // 15.08.2015
      if (status1Matcher.groupCount() >= 11) {
+      if (!"".equals(S10[11]) && S10[11].length() > 2) {
+       S10[11] = S10[11].substring(0, 2);
+      }
       sFBFWV110 = S10[11];
       if (!"".equals(S10[11]) && S10[11].length() == 2) {
        isFritzboxLanguageOK = true;
