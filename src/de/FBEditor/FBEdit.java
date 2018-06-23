@@ -53,7 +53,8 @@ public class FBEdit extends JFrame implements Runnable
 {
 //	private static final String version = "0.7.2.1"; // 14.12.2014
 //	private static final String version = "0.7.2.1c"; // 15.04.2015 "0.7.2.2" // 27.04.2018 "0.7.2.3" // 05.05.2018 Bug Fix Java 9/10 "0.7.2.3"
-	private static final String version = "0.7.2.1d"; // 22.06.2018 "0.7.2.1" language Italien
+//	private static final String version = "0.7.2.1d"; // 22.06.2018 "0.7.2.4" language Italien
+	private static final String version = "0.7.2.1e"; // 23.06.2018 "0.7.2.5" Fixed typo error language Italien
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
