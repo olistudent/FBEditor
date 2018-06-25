@@ -54,7 +54,9 @@ public class FBEdit extends JFrame implements Runnable
 //	private static final String version = "0.7.2.1"; // 14.12.2014
 //	private static final String version = "0.7.2.1c"; // 15.04.2015 "0.7.2.2" // 27.04.2018 "0.7.2.3" // 05.05.2018 Bug Fix Java 9/10 "0.7.2.3"
 //	private static final String version = "0.7.2.1d"; // 22.06.2018 "0.7.2.4" language Italien
-	private static final String version = "0.7.2.1e"; // 23.06.2018 "0.7.2.5" Fixed typo error language Italien
+//	private static final String version = "0.7.2.1e"; // 23.06.2018 "0.7.2.5" Fixed typo error language Italien
+	private static final String version = "0.7.2.1g"; // 25.06.2018 "0.7.2.7" language setting manuell
+
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
 	public static FritzBoxConnection fbConnection = null;
@@ -75,6 +77,7 @@ public class FBEdit extends JFrame implements Runnable
 	private static String readOnStartup = "false";
 	private static String NoChecks = "false";
 	private static String language = "false";
+	private static String language_manuell = "no"; // 25.06.2018 no or yes Setting Language Manuell
 
 	private static MyProperties properties;
 	private final CompoundUndoManager undoManager;
@@ -97,7 +100,6 @@ public class FBEdit extends JFrame implements Runnable
 	
 	private boolean macos = false; // 27.04.2018
 
-	@SuppressWarnings("unlikely-arg-type")
 	public FBEdit() {
 		
 		String jvm_version = System.getProperty("java.version");
@@ -180,7 +182,13 @@ public class FBEdit extends JFrame implements Runnable
 		Debug.always("OS Language: " + System.getProperty("user.language"));
 		Debug.always("OS Country: " + System.getProperty("user.country"));
 
-		if (language == null || !language.equals(System.getProperty("user.language") + "_" + System.getProperty("user.country"))) { // 22.06.2018
+//		language_manuell = "yes"; // 25.06.2018 Test
+//		language = "es_ES"; // 25.06.2018 Test
+//		language = "it_IT"; // 25.06.2018 Test
+
+		if (language_manuell == null || language.length() != 5 || !language.contains("_")) language_manuell = "no"; // 25.06.2018
+
+		if (language == null || (!language.equals(System.getProperty("user.language") + "_" + System.getProperty("user.country")) && language_manuell.equals("no"))) { // 22.06.2018
 			Debug.info("No language set yet ... Setting language to OS language");
 			// Check if language is supported. If not switch to English
 			if (supported_languages.contains(new Locale(System
@@ -192,8 +200,19 @@ public class FBEdit extends JFrame implements Runnable
 				Debug.warning("Your language ist not yet supported.");
 				language = "en_US";
 			}
+		} else if (language_manuell.equals("yes")) { // 25.06.2018
+			Debug.info("No language set yet ... Setting language to manuell yes");
+			// Check if language is supported. If not switch to English
+			Debug.always("language manuell: " + language.substring(0, 2) + " " + language.substring(3, 5));
+			if (supported_languages.contains(new Locale(language.substring(0, 2), language.substring(3, 5)))) {
+			} else {
+				Debug.warning("Your language ist not yet supported.");
+				language = "en_US";
+			}
 		}
+
 		Debug.always("Selected language: " + language);
+		Debug.always("Selected language setting manuell: " + language_manuell); // 25.06.2018
 
 		loadMessages(new Locale(
 				language.substring(0, language.indexOf("_")),
@@ -753,6 +772,15 @@ public class FBEdit extends JFrame implements Runnable
 
 	public String getLanguage() {
 		return language;
+	}
+
+	// 25.06.2018 no or yes Setting Language Manuell
+	public static void setLanguageManuell(String languageM) {
+		language_manuell = languageM;
+	}
+
+	public String getLanguageManuell() { // 25.06.2018
+		return language_manuell;
 	}
 
 	/* NoChecks setzen */
