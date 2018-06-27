@@ -53,6 +53,12 @@ class ActionListen implements ActionListener {
 		case "username":
 			fbedit.getUsername(false);
 			break;
+		case "box_login_lua": // 25.06.2018
+			fbedit.changeBoxLoginLua();
+			break;
+		case "program_start_dialog": // 25.06.2018
+			fbedit.changeProgramStartDialog();
+			break;
 //		case "configimexpwd":
 //			fbedit.getConfigImExPwd(false);
 //			break;
