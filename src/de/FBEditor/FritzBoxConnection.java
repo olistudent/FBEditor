@@ -60,7 +60,13 @@ public final class FritzBoxConnection {
 		Boolean speedport = false;
 		boolean detected = false;
 
-		SIDLogin.Login("", urlstr1, box_password, box_username, sRetSID);
+//		SIDLogin.Login("", urlstr1, box_password, box_username, sRetSID);
+		System.out.println("LoginLua: " + FBEdit.getInstance().getBoxLoginLuaState());
+		if (FBEdit.getInstance().getBoxLoginLuaState().equalsIgnoreCase("true")) { // 25.06.2018
+			SIDLogin.LoginLua("", urlstr1, box_password, box_username, sRetSID);
+		} else {
+			SIDLogin.Login("", urlstr1, box_password, box_username, sRetSID);
+		}
 		sRetSID = SIDLogin.getSessionId();
 
 		FBFWVN fbfwvn = new FBFWVN(getFirmwareStatus());
@@ -200,7 +206,11 @@ public final class FritzBoxConnection {
 			this.box_username = box_username;
 			if (Utils.checkhost(box_address)) {
 				sRetSID = SIDLogin.getSessionId();
-				SIDLogin.check("", urlstr1, box_password, box_username, sRetSID);
+				if (FBEdit.getInstance().getBoxLoginLuaState().equalsIgnoreCase("true")) { // 25.06.2018
+					SIDLogin.LoginLua("", urlstr1, box_password, box_username, sRetSID);
+				} else {
+					SIDLogin.Login("", urlstr1, box_password, box_username, sRetSID);
+				}
 				sRetSID = SIDLogin.getSessionId();
 				if (SIDLogin.isSidLogin()) {
 					result = true;
