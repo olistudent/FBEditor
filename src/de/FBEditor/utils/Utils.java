@@ -194,11 +194,13 @@ public class Utils {
 		properties.setProperty("box.password", "");
 		properties.setProperty("box.username", "");
 //		properties.setProperty("box.ConfigImExPwd", "");
-		properties.setProperty("readOnStartup", "no");
+		properties.setProperty("readOnStartup", "false"); // 25.06.2018
 //		properties.setProperty("NoChecks", "true"); // 17.02.2014
 		properties.setProperty("NoChecks", "false"); // 17.02.2014
 		properties.setProperty("language", "de_DE");
 		properties.setProperty("language.setting.manuell", "no"); // 25.06.2018
+		properties.setProperty("program.start.dialog", "false"); // 25.06.2018
+		properties.setProperty("box.login.lua", "true"); // 25.06.2018
 
 		return true;
 	}
@@ -218,11 +220,13 @@ public class Utils {
 			properties.setProperty("box.password", "");
 			properties.setProperty("box.username", "");
 //			properties.setProperty("box.ConfigImExPwd", "");
-			properties.setProperty("readOnStartup", "no");
+			properties.setProperty("readOnStartup", "false"); // 25.06.2018
 //			properties.setProperty("NoChecks", "true"); // 17.02.2014
 			properties.setProperty("NoChecks", "false"); // 17.02.2014
 			properties.setProperty("language", "de_DE");
 			properties.setProperty("language.setting.manuell", "no"); // 25.06.2018
+			properties.setProperty("program.start.dialog", "false"); // 25.06.2018
+			properties.setProperty("box.login.lua", "true"); // 25.06.2018
 		} catch (Exception exception) {
 		}
 		return false;
@@ -246,7 +250,9 @@ public class Utils {
 		properties.setProperty("readOnStartup", fbedit.getRASstate());
 		properties.setProperty("NoChecks", fbedit.getNoChecksState());
 		properties.setProperty("language", fbedit.getLanguage());
-		properties.setProperty("language.setting.manuell", fbedit.getLanguageManuell()); // 25.06.2018
+		properties.setProperty("language.setting.manuell", fbedit.getLanguageManuellState()); // 25.06.2018
+		properties.setProperty("program.start.dialog", fbedit.getProgramStartDialogState()); // 25.06.2018
+		properties.setProperty("box.login.lua", fbedit.getBoxLoginLuaState()); // 25.06.2018
 		try {
 			FileOutputStream fos = new FileOutputStream(PROPERTIES_FILE);
 			properties.storeToXML(fos, "Properties for FBEditor");
