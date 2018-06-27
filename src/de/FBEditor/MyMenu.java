@@ -163,6 +163,11 @@ public class MyMenu {
 		mi.addActionListener(action);
 		ret.add(mi);
 */
+		// 25.06.2018
+		box_login_lua = new JCheckBoxMenuItem(FBEdit.getMessage("box.login_lua"), Boolean.parseBoolean(fbedit.getBoxLoginLuaState()));
+		box_login_lua.setActionCommand("box_login_lua");
+		box_login_lua.addActionListener(action);
+		ret.add(box_login_lua);
 		readOnStartup = new JCheckBoxMenuItem(FBEdit.getMessage("menu.config_auto_read"), Boolean.parseBoolean(fbedit.getRASstate()));
 		readOnStartup.setActionCommand("config_auto_read");
 		readOnStartup.addActionListener(action);
@@ -173,6 +178,11 @@ public class MyMenu {
 		// Disable NoChecks because it doesn't work at the moment
 //		NoChecks.setEnabled(false); // 17.02.2014
 		ret.add(NoChecks);
+		// 25.06.2018
+		ProgramStartDialog = new JCheckBoxMenuItem(FBEdit.getMessage("menu.program_start_dialog"), Boolean.parseBoolean(fbedit.getProgramStartDialogState()));
+		ProgramStartDialog.setActionCommand("program_start_dialog");
+		ProgramStartDialog.addActionListener(action);
+		ret.add(ProgramStartDialog);
 		return ret;
 	}
 
@@ -203,8 +213,10 @@ public class MyMenu {
 	JMenuItem delete;
 	JMenuItem hardmenu;
 	JMenuItem reconnect;
+	JCheckBoxMenuItem box_login_lua; // 25.06.2018
 	JCheckBoxMenuItem readOnStartup;
 	JCheckBoxMenuItem NoChecks;
+	JCheckBoxMenuItem ProgramStartDialog; // 25.06.2018
 	JLabel statusMsg;
 	private ActionListen action;
 	private FBEdit fbedit;
