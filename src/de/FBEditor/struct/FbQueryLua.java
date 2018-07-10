@@ -11,7 +11,6 @@ public class FbQueryLua
   }
   
   private static String sLeft(String sStr, int nPos)
-  //private static String sLeft(String sStr, int nPos)
   {
    String returnString = "";
    
@@ -76,8 +75,7 @@ public class FbQueryLua
    if (sStr.length() > 0) {
 
     for ( int i = 0; i <= sStr.length(); i++ ) {
-//     if (FbQueryLua.sRight(sTmp, 1) == "\n" )
-   	 if ( sRight(sTmp, 1).equals("\n") )
+     if ( sRight(sTmp, 1).equals("\n") )
      {
       sTmp = sLeft(sTmp, sTmp.length() -1);
 //      System.out.println(sTmp.length() + " D LF " + i);
@@ -114,16 +112,14 @@ public class FbQueryLua
 
   //@SuppressWarnings({"SuspiciousIndentAfterControlStatement", "ConvertToStringSwitch"})
   public static int sQueryLuaAll(String sRetIn, String v5string, String v5name, String v5value, int v5index)
-//  public static FbQueryLua sQueryLuaAll(String sRetIn, String v5string, String v5name, String v5value, int v5index)
   {
    String sStrIn = ""; String sTmpFirst = ""; String sTmpLast = "";
-//   String sTmp = "";
    String sTmp1 = ""; String sTmp2 = ""; String sTmp3 = ""; String sTmp4 = "";
 
    int nTmp = 0; int nTmp1 = 0; int nTmp2 = 0;
-//   int nTmp3 = 0;
    int nTmp4 = 0;
    int nRet = 0; int nDQ = 0; int nLF = 0; int nAMP = 0; int nKomma = 0;
+   int nDP; int nSP; // 04.07.2018
 
    String sQueryStringIn = ""; String sQueryName = ""; String sQueryRetValue = ""; String sQueryNameIn = "";
    String[] sQueryNameArray = new String[10];
@@ -145,14 +141,14 @@ public class FbQueryLua
 //    System.out.println(sQueryStringIn);
    }
 
-//System.out.println(sLeft(sQueryStringIn, 1));
+//   System.out.println(sLeft(sQueryStringIn, 1));
 //   System.out.println(FbQueryLua.sLeft(sQueryStringIn, 1));
-//sTmp1 = sLeft(sQueryStringIn, 1);
-//System.out.println(sTmp1);
-//   if ( sLeft(sQueryStringIn, 1) == "&" )
+//   sTmp1 = sLeft(sQueryStringIn, 1);
+//   System.out.println(sTmp1);
+
    if ( sLeft(sQueryStringIn, 1).equals("&") )
    {
-//System.out.println(FbQueryLua.sLeft(sQueryStringIn, 1));
+//    System.out.println(FbQueryLua.sLeft(sQueryStringIn, 1));
     sQueryStringIn = sRight(sQueryStringIn, sQueryStringIn.length() -1);
 //    System.out.println(sQueryStringIn);
    }
@@ -161,15 +157,17 @@ public class FbQueryLua
 //   System.out.println(sStrIn.length() + " sStrIn");
 //   System.out.println("sStrIn: " + sStrIn);
    
-//   if ( (sLeft(sStrIn, 2) == "{\n") && (sRight(sStrIn, 1) == "}") )
-   if ( (sLeft(sStrIn, 2).equals("{\n") ) && (sRight(sStrIn, 1).equals("}") ) )
-   {
-    sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -2);
+   if ( (sLeft(sStrIn, 1).equals("{")) && (sRight(sStrIn, 1).equals("}")) ) { // 04.07.2018
+    if ( (sLeft(sStrIn, 2).equals("{\n") ) && (sRight(sStrIn, 1).equals("}") ) ) {
+     sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -2);
+    } else if ( (sLeft(sStrIn, 1).equals("{")) && (sRight(sStrIn, 1).equals("}")) ) { // 04.07.2018
+     sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -1); // 04.07.2018
+    }
+
 //    System.out.println(sStrIn);
 //    System.out.println(sStrIn.length());
 
     for ( int i = 1; i <= sStrIn.length(); i++ ) {
-//     if ( sMid(sStrIn, i, 1) == "\n" ) nLF = nLF + 1;
      if ( sMid(sStrIn, i, 1).equals("\n") ) nLF = nLF + 1;
      //     System.out.println(i + ": " + nLF);
     }
@@ -177,7 +175,6 @@ public class FbQueryLua
 //    System.out.println(nLF);
 
     for ( int i = 1; i <= sQueryStringIn.length(); i++ ) {
-//     if ( sMid(sQueryStringIn, i, 1) == "&" ) nAMP = nAMP + 1;
      if ( sMid(sQueryStringIn, i, 1).equals("&") ) nAMP = nAMP + 1;
 //     System.out.println(i + ": " + nAMP);
     }
@@ -186,23 +183,21 @@ public class FbQueryLua
 
     if ( nLF >= nAMP )
     {
-//     String[] sQueryNameArray = new String[nLF + 1];
      sQueryNameArray = new String[nLF + 1];
     } else {
-//     String[] sQueryNameArray = new String[nAMP + 1];
      sQueryNameArray = new String[nAMP + 1];
     }
+
 //    System.out.println(sQueryNameArray.length);
-//char chr0 = 0;
-//sQueryNameArray[sQueryNameArray.length -1] = chr0;
-//sQueryNameArray[sQueryNameArray.length -1] = "";
+//    char chr0 = 0;
+//    sQueryNameArray[sQueryNameArray.length -1] = chr0;
+//    sQueryNameArray[sQueryNameArray.length -1] = "";
 
     for ( nTmp = 1; nTmp <= nAMP; nTmp++ ) {
 
      sTmp1 = "";
 
      for ( nTmp2 = 1; nTmp2 <= sQueryStringIn.length(); nTmp2++ ) {
-//      if ( sMid(sQueryStringIn, nTmp2, 1) == "&" )
       if ( sMid(sQueryStringIn, nTmp2, 1).equals("&") )
       {
        sQueryStringIn = sRight(sQueryStringIn, sQueryStringIn.length() - nTmp2);
@@ -215,8 +210,7 @@ public class FbQueryLua
      sTmp3 = sTmp1; sTmp4 = "";
 
      for ( nTmp4 = 1; nTmp4 <= sTmp3.length(); nTmp4++ ) {
-//      if ( sMid(sTmp3, nTmp4, 1) == "=" )
-   	  if ( sMid(sTmp3, nTmp4, 1).equals("=") )
+      if ( sMid(sTmp3, nTmp4, 1).equals("=") )
       {
        sTmp3 = sRight(sTmp3, sTmp3.length() - nTmp4);
        break;
@@ -231,8 +225,7 @@ public class FbQueryLua
      } else {
       if ( nIsSID == 0 )
       {
-//       if ( sTmp4.toLowerCase().trim() == "sid" )
-   	   if ( sTmp4.toLowerCase().trim().equals("sid") )
+       if ( sTmp4.toLowerCase().trim().equals("sid") )
        {
         nIsSID = 1;
        } else {
@@ -264,7 +257,6 @@ public class FbQueryLua
       {
        sQueryName = sQueryNameArray[nTmp];
        if ( "".equals(sQueryName) || sQueryName == null )
-//       if ( sQueryName.equals("") || sQueryName == null )
        {
         char chr = 0;
 //        sQueryName = chr;
@@ -279,16 +271,14 @@ public class FbQueryLua
 //       sQueryName = "0001";
 //       sQueryName = "\0";
       }
-//char chr = 0;
+//      char chr = 0;
 //      System.out.println(sQueryName + "---" + "\u0000" + "--" + "");
       if ( sQueryName.length() >= 1 )
 //      System.out.println("---: " + (int) sQueryName.charAt(0));
 
       for ( nTmp2 = 1; nTmp2 <= sStrIn.length(); nTmp2++ )
       {
-
-//       if ( sMid(sStrIn, nTmp2, 1) == "\n" )
-   	   if ( sMid(sStrIn, nTmp2, 1).equals("\n") )
+       if ( sMid(sStrIn, nTmp2, 1).equals("\n") )
        {
         sStrIn = sRight(sStrIn, sStrIn.length() - nTmp2);
         break;
@@ -296,22 +286,23 @@ public class FbQueryLua
         sTmp1 = sTmp1 + sMid(sStrIn, nTmp2, 1);
        }
       }
+
 //      if ( sTmp1.trim() == "" ) System.out.println( "--> " + sTmp1 + "" + "\r\n" + nTmp);
 
       sTmp2 = "";
       nDQ = 0;
       sTmpFirst = "";
       sTmpLast = "";
+      nDP = 0; nSP = 0; // 04.07.2018
 
       for ( nTmp1 = 1; nTmp1 <= sTmp1.length(); nTmp1++ )
       {
 
-//       if ( sMid(sTmp1, nTmp1, 1) == "\"" )
-   	if ( sMid(sTmp1, nTmp1, 1).equals("\"") )
+       if ( sMid(sTmp1, nTmp1, 1).equals("\"") )
        {
-        nDQ = nDQ + 1;
-//       } else if ( sMid(sTmp1, nTmp1, 1) == ":" ) {
-       } else if ( sMid(sTmp1, nTmp1, 1).equals(":") ) {  
+        nDQ = nDQ + 1; nDP = 0; // 04.07.2018
+       } else if ( sMid(sTmp1, nTmp1, 1).equals(":") ) {
+        nDP = 1; // 04.07.2018
         if ( nDQ == 1 )
         {
          sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
@@ -324,33 +315,37 @@ public class FbQueryLua
          }
         }
 
-//       } else if ( sMid(sTmp1, nTmp1, 1) == "," ) {
        } else if ( sMid(sTmp1, nTmp1, 1).equals(",") ) {
-        if ( nDQ == 2 )
-        {
-         nKomma = 1;
+
+        if ( nDQ == 2 || nDP == 2 ) { // 04.07.2018
+         nKomma = 1; nDP = 0; nSP = 0; sTmp2 = "";
         }
 
        } else {
-        if ( nDQ == 2 )
-        {
-         nDQ = 0;
-        }
-        if ( nDQ == 1 )
-        {
-         sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
-        }
 
+    	if ( nDQ == 2 ) nDQ = 0; // 04.07.2018
+
+    	if ( nDP == 2 || nDQ == 1 ) { // 04.07.2018
+    	 sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
+    	} else if ( (nDP == 1) && (nDQ == 0) ) {
+    	 if ( (nDP == 1) && (nSP == 0) && (sMid(sTmp1, nTmp1, 1).equals(" ")) ) {
+    	  nSP = 1; nDP = 2;
+    	 } else if ( (nDP == 1) && (nSP == 0) && (!sMid(sTmp1, nTmp1, 1).equals(" ")) ) {
+    	  sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
+    	  nSP = 0; nDP = 2;
+    	 }
+    	}
        }
       
       }
 
       sTmpLast = sTmp2;
-//System.out.println(sTmpFirst);
-//System.out.println(sTmpLast);
-//System.out.println(sQueryName);
-//      if ( sTmpFirst.toLowerCase() == sQueryName.toLowerCase() )
-   	  if ( sTmpFirst.toLowerCase().equals(sQueryName.toLowerCase()) )
+
+//      System.out.println(sTmpFirst);
+//      System.out.println(sTmpLast);
+//      System.out.println(sQueryName);
+
+      if ( sTmpFirst.toLowerCase().equals(sQueryName.toLowerCase()) )
       {
        v5value = sTmpLast.trim(); nRet = 1;
        sQueryRetValue = sQueryRetValue + sTmpLast.trim() + "\n";
@@ -359,8 +354,8 @@ public class FbQueryLua
       }
 
       if ( nKomma == 1 ) nKomma = 0;
-//System.out.println(sQueryRetValue);
-   	  if ( (sQueryNameIn.toLowerCase().equals(sQueryName.toLowerCase()) ) && (nQueryIndex == nTmp) )
+//      System.out.println(sQueryRetValue);
+      if ( (sQueryNameIn.toLowerCase().equals(sQueryName.toLowerCase()) ) && (nQueryIndex == nTmp) )
       {
        sQueryRetValue = sTmpLast.trim() + "\n\n";
        break;
@@ -368,9 +363,11 @@ public class FbQueryLua
 
      }
     }
+
     if ( nRet == 1 ) v5value = sQueryRetValue; else v5value = "";
- //System.out.println(sQueryRetValue);
+//    System.out.println(sQueryRetValue);
    }
+
    if ( nRet == 1 ) sRetv5value = sQueryRetValue; else sRetv5value = "";
 //   System.out.println(sQueryRetValue);
    return nRet;
@@ -379,41 +376,42 @@ public class FbQueryLua
 //   return this;
   }
 
-
   public static int sQueryLua(String sRetIn, String v5name, String v5value)
   {
-  // 13.07.2013
+  // 13.07.2013 // 04.07.2018
    String sStrIn; String sTmpFirst; String sTmpLast;
-//   String sTmp;
    String sTmp1; String sTmp2;
    int nRet;
    int nTmp; int nTmp1; int nTmp2;
-//   int nTmp3;
    int nKomma; int nDQ; int nLF;
+
+   int nDP; int nSP; // 04.07.2018
 
    sStrIn = sRetIn; nRet = 0; nLF = 0; v5value = ""; nKomma = 0;
 
    sStrIn = sRtrimLF(sStrIn);
 
-   if ( (sLeft(sStrIn, 2).equals("{\n")) && (sRight(sStrIn, 1).equals("}")) )
-   {
-
-    sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -2);
+   if ( (sLeft(sStrIn, 1).equals("{")) && (sRight(sStrIn, 1).equals("}")) ) { // 04.07.2018
+    if ( (sLeft(sStrIn, 2).equals("{\n") ) && (sRight(sStrIn, 1).equals("}") ) ) {
+     sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -2);
+    } else if ( (sLeft(sStrIn, 1).equals("{")) && (sRight(sStrIn, 1).equals("}")) ) { // 04.07.2018
+     sStrIn = sLeft(sStrIn, sStrIn.length() -1); sStrIn = sRight(sStrIn, sStrIn.length() -1); // 04.07.2018
+    }
 
     for ( int i = 1; i <= sStrIn.length(); i++ ) {
-      if ( sMid(sStrIn, i, 1).equals("\n") ) nLF = nLF + 1;
-      //     System.out.println(i + ": " + nLF);
+     if ( sMid(sStrIn, i, 1).equals("\n") ) nLF = nLF + 1;
+     // System.out.println(i + ": " + nLF);
     }
     if ( nLF >= 0 ) nLF = nLF + 1;
-    //  System.out.println(nLF);
+    // System.out.println(nLF);
 
-	   for ( nTmp = 1; nTmp <= nLF; nTmp++ ) {
+    for ( nTmp = 1; nTmp <= nLF; nTmp++ ) {
 
      sTmp1 = "";
 
      for ( nTmp2 = 1; nTmp2 <= sStrIn.length(); nTmp2++ )
      {
-  	   if ( sMid(sStrIn, nTmp2, 1).equals("\n") )
+      if ( sMid(sStrIn, nTmp2, 1).equals("\n") )
       {
        sStrIn = sRight(sStrIn, sStrIn.length() - nTmp2);
        break;
@@ -422,16 +420,16 @@ public class FbQueryLua
       }
      }
 
-  //   msgbox sStrIn + vbCrLf + CStr(nTmp2) + vbCrLf + CStr(nTmp) + vbCrLf + sTmp1 + vbCrLf + CStr(Len(sTmp1))
-
      sTmp2 = ""; nDQ = 0; sTmpFirst = ""; sTmpLast = "";
+     nDP = 0; nSP = 0; // 04.07.2018
 
      for ( nTmp1 = 1; nTmp1 <= sTmp1.length(); nTmp1++ )
      {
       switch (sMid(sTmp1, nTmp1, 1)) {
-       case "\"" : nDQ = nDQ + 1; break;
+       case "\"" : nDQ = nDQ + 1; nDP = 0; break; // 04.07.2018
        case ":":
-    	   if ( nDQ == 1 ) {
+    	nDP = 1; // 04.07.2018
+    	if ( nDQ == 1 ) {
          sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
         } else {
          sTmpFirst = sTmp2;
@@ -440,32 +438,37 @@ public class FbQueryLua
         }
         break;
        case ",":
-        if ( nDQ == 2 ) nKomma = 1;
-        break;
-	      default:
-		      if ( nDQ == 2 ) nKomma = 0;
-		      if ( nDQ == 1 ) {
-         sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
+        if ( nDQ == 2 || nDP == 2 ) { // 04.07.2018
+         nKomma = 1; nDP = 0; nSP = 0; sTmp2 = "";
         }
         break;
+       default:
+    	if ( nDQ == 2 ) nDQ = 0; // 04.07.2018
+
+    	if ( nDP == 2 || nDQ == 1 ) { // 04.07.2018
+    	 sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
+    	} else if ( (nDP == 1) && (nDQ == 0) ) {
+    	 if ( (nDP == 1) && (nSP == 0) && (sMid(sTmp1, nTmp1, 1).equals(" ")) ) {
+    	  nSP = 1; nDP = 2;
+    	 } else if ( (nDP == 1) && (nSP == 0) && (!sMid(sTmp1, nTmp1, 1).equals(" ")) ) {
+    	  sTmp2 = sTmp2 + sMid(sTmp1, nTmp1, 1);
+    	  nSP = 0; nDP = 2;
+         }
+      	}
+        break;
       }
-	 }
+     }
 
      sTmpLast = sTmp2;
 
      // 26.05.2011
-  	 if ( sTmpFirst.toLowerCase().equals(v5name.toLowerCase()) ) {
+     if ( sTmpFirst.toLowerCase().equals(v5name.toLowerCase()) ) {
       v5value = sTmpLast.trim(); nRet = 1;
-	 }
-
-  // msgbox sTmpFirst + vbCrLf + sTmpLast
-  // msgbox v5name + vbCrLf + v5value
+     }
 
      if ( nKomma == 1 ) nKomma = 0;
 
     }
-
-  //  msgbox sStrIn + vbCrLf + CStr(nLF) + vbCrLf + sTmp1 + vbCrLf + v5name + vbCrLf + v5value
 
    }
 
