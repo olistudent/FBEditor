@@ -300,8 +300,12 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 7582";
             case 159:
              return "FRITZ!Box 6430 Cable";
+            case 161:
+             return "FRITZ!Box 6591 Cable";
             case 162:
              return "FRITZ!Box 6890 LTE";
+            case 164:
+             return "FRITZ!Box 7530";
             default:
              return "unknown";
            }

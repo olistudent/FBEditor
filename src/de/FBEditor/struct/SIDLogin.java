@@ -17,6 +17,8 @@ public class SIDLogin {
 
 	private static boolean sidLogin;
 	private static boolean sidLoginLua;
+	@SuppressWarnings("unused")
+	private static boolean nLoginLua; // 25.06.2018
 	private static boolean isLoginOld;
 	private static boolean isLogOut;
 	private static String sessionId;
@@ -37,6 +39,7 @@ public class SIDLogin {
 	public SIDLogin() {
 		sidLogin = false;
 		sidLoginLua = false;
+		nLoginLua = false; // 25.06.2018
 		isLoginOld = false;
 		isLogOut = false;
 		sessionId = "0000000000000000";
@@ -53,12 +56,21 @@ public class SIDLogin {
 		
 	}
 
+	public static void LoginLua(String box_name, String urlstr,
+			String box_password, String box_username, String sRetSID) { // 25.06.2018
+
+		nLoginLua = true; // 25.06.2018
+		checkLua(box_name, urlstr, box_password, box_username, sRetSID);
+		
+	}
+
 	public static void check(String box_name, String urlstr,
 			String box_password, String box_username, String sRetSID) {
+
 		try {
-			isLoginOld = false; // 01.03.2014
-			sidLogin = false; // 01.03.2014
-			sidLoginLua = false; // 01.03.2014
+			isLoginOld = false;
+			sidLogin = false;
+			sidLoginLua = false;
 			//
 			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
 			// box_password = "0000";
@@ -357,11 +369,171 @@ public class SIDLogin {
 				}
 
 			}
+
 		} catch (MalformedURLException ex) {
 			Logger.getLogger(SIDLogin.class.getName()).log(Level.SEVERE, null,
 					ex);
 		}
+	}
 
+	public static void checkLua(String box_name, String urlstr,
+			String box_password, String box_username, String sRetSID) { // 25.06.2018
+
+		try {
+			isLoginOld = false;
+			sidLogin = false;
+			sidLoginLua = false;
+			//
+			// urlstr = "http://" + "192.168.178.1" + "/cgi-bin/webcm";
+			// box_password = "0000";
+			URL Url2 = new URL(urlstr);
+			UrlLogoutFB = Url2.getProtocol() + "://" + Url2.getHost()
+					+ "/cgi-bin/webcm";
+			String sUrl = Url2.getProtocol() + "://" + Url2.getHost() + "";
+			String sPostdata = "";
+
+			HttpPost http = new HttpPost(); // 23.11.2012
+			TsessionId = "1 --- " + urlstr;
+			// 01.03.2014 sidLogin = false;
+			// 01.03.2014 sidLoginLua = false;
+
+			String login_xml = http.Post(sUrl + LOGIN_SID_LUA, "sid=" + sRetSID); // 23.11.2012
+			// System.out.println(login_xml);
+			TsessionId = "3";
+			Pattern SIDwriteAccessPattern = Pattern.compile(PATTERN_SID);
+			Matcher matcherSID = SIDwriteAccessPattern.matcher(login_xml);
+
+			if (matcherSID.find()) {
+
+				String SIDwriteAccess = matcherSID.group(1);
+
+				if ("0000000000000000".equals(SIDwriteAccess)) { // answer
+																	// challenge
+					String challenge = "";
+					Pattern challengePattern = Pattern
+							.compile(PATTERN_CHALLENGE);
+					Matcher challengeMatcher = challengePattern
+							.matcher(login_xml);
+					if (challengeMatcher.find()) {
+						challenge = challengeMatcher.group(1);
+						TsessionId = "3 -> " + challenge;
+						// replace all unicodecharacters greater than 255
+						// with
+						// the character '.'
+						for (int i = 0; i < box_password.length(); i++) {
+							int codePoint = box_password.codePointAt(i);
+							if (codePoint > 255) {
+								box_password = box_password.substring(0, i)
+										+ '.'
+										+ box_password.substring(i + 1);
+							}
+						}
+
+						String pwd = challenge + "-" + box_password;
+
+						MessageDigest m = null;
+						try {
+							m = MessageDigest.getInstance("MD5");
+						} catch (NoSuchAlgorithmException ex) {
+							Logger.getLogger(SIDLogin.class.getName()).log(
+									Level.SEVERE, null, ex);
+						}
+						String md5Pass = "";
+						byte[] passwordBytes = new byte[0]; // 30.10.2012
+						try {
+							passwordBytes = pwd.getBytes("UTF-16LE");
+							m.update(passwordBytes, 0, passwordBytes.length);
+							md5Pass = new BigInteger(1, m.digest())
+									.toString(16);
+						} catch (UnsupportedEncodingException ex) {
+							Logger.getLogger(SIDLogin.class.getName()).log(
+									Level.SEVERE, null, ex);
+						}
+
+						sidResponse = challenge + '-' + md5Pass;
+						TsessionId = "3 -> " + sidResponse;
+						// 01.03.2014 Debug.debug("Challenge: " + challenge
+						// 01.03.2014 		+ " Response: " + sidResponse);
+
+						// sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
+						// + sidResponse;
+						sPostdata = POSTDATA_LOGIN_SID_LUA_RESPONSE
+								+ sidResponse + "&username=" + box_username;
+						login_xml = http.Post(sUrl + LOGIN_SID_LUA,
+								sPostdata);
+
+						// System.out.println("Login: " + "   " +
+						// login_xml);
+						// 01.03.2014 Debug.debug("login_lua Response: " + login_xml);
+						// 01.03.2014 Debug.debug("login_lua Username: " + box_username);
+
+						SIDwriteAccessPattern = Pattern
+								.compile(PATTERN_SID);
+						Matcher matcher1 = SIDwriteAccessPattern
+								.matcher(login_xml);
+
+						if (matcher1.find()) {
+
+							SIDwriteAccess = matcher1.group(1);
+
+							// Debug.debug("login_lua SIDwriteAccesse: " +
+							// SIDwriteAccess);
+
+							if (!"0000000000000000".equals(SIDwriteAccess)) { // answer
+																				// Response
+
+								Pattern sidPattern = Pattern
+										.compile(PATTERN_SID);
+								Matcher sidMatcher = sidPattern
+										.matcher(login_xml);
+
+								if (sidMatcher.find()) {
+									sidLogin = true;
+									sidLoginLua = true;
+									sessionId = sidMatcher.group(1);
+									TsessionId = "3s -> " + sessionId;
+									// 01.03.2014 Debug.debug("login_lua sessionId Response: "
+									// 01.03.2014 		+ sessionId);
+								}
+
+							} else {
+								sessionId = SIDwriteAccess; // 01.03.2014
+								TsessionId = "3s0 -> " + sessionId;
+								sidLogin = false;
+								sidLoginLua = false;
+								nLoginLua = false; // 25.06.2018
+							}
+						}
+
+						// Debug.debug("Challenge: " + challenge +
+						// " Response: " + sidResponse);
+					} else {
+						// Debug.error("Could not determine challenge in login_sid.xml");
+					}
+
+				} else if (!"0000000000000000".equals(SIDwriteAccess)) { // no
+																			// challenge,
+																			// use
+																			// SID
+																			// directly
+					Pattern sidPattern = Pattern.compile(PATTERN_SID);
+					Matcher sidMatcher = sidPattern.matcher(login_xml);
+					if (sidMatcher.find()) {
+						sidLogin = true;
+						sidLoginLua = true;
+						sessionId = sidMatcher.group(1);
+						TsessionId = "4s -> " + sessionId;
+					}
+				} else {
+					Debug.error("Could not determine SIDwriteAccess in login_sid.lua");
+				}
+				// Debug.errDlg(SIDwriteAccess + " " + sessionId);
+			}
+
+		} catch (MalformedURLException ex) {
+			Logger.getLogger(SIDLogin.class.getName()).log(Level.SEVERE, null,
+					ex);
+		}
 	}
 
 	public static String getTsessionId() {

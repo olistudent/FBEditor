@@ -67,6 +67,8 @@ public class UPNPUtils {
 			uc.setUseCaches(false);
 
 			byte[] bytes = xml.getBytes();
+
+			uc.setRequestProperty("HOST", u.getAuthority()); // 14.05.2018
 			uc.setRequestProperty("USER-AGENT", "AVM UPnP/1.0 Client 1.0");
 			uc.setRequestProperty("Connection", "Keep-Alive");
 			uc.setRequestProperty("CONTENT-LENGTH", String.valueOf(bytes.length));
@@ -149,6 +151,7 @@ public class UPNPUtils {
 			uc.setRequestProperty("HOST", u.getAuthority());
 			uc.setRequestProperty("USER-AGENT", "AVM UPnP/1.0 Client 1.0");
 			uc.setRequestProperty("Connection", "Keep-Alive");
+			uc.setRequestProperty("CONTENT-LENGTH", String.valueOf(bytes.length)); // 14.05.2018
 			uc.setRequestProperty("CONTENT-TYPE", "text/xml; charset=\"utf-8\"");
 			uc.setRequestProperty("SOAPACTION", urn);
 			uc.setRequestProperty("Connection", "close");
