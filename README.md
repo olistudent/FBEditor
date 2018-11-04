@@ -7,4 +7,5 @@ Zum Im-/Export der Konfiguration wird die "Einstellungen sichern"-Funktion des W
 Diskussion
 ----------
 DE - http://www.ip-phone-forum.de/showthread.php?t=79513
+
 IT - https://www.hwupgrade.it/forum/showthread.php?p=45620145
