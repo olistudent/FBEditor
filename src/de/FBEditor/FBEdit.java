@@ -394,8 +394,8 @@ public class FBEdit extends JFrame implements Runnable
 				FBEdit.getMessage("box.affirmation"),
 				FBEdit.getMessage("settings.backup"), 0, 0);
 		if (response == 0) {
-			String text = CalcChecksum.replaceChecksum(this.getJTextPane()
-					.getText());
+			String text = this.getJTextPane().getText().replace("\r", ""); 
+			text = CalcChecksum.replaceChecksum(text);
 			if (text.startsWith("**** ") && text.endsWith(" ****\n")) {
 				/* NoChecks=yes einfügen */
 				if (NoChecks.equals("true")) {

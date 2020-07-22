@@ -21,7 +21,7 @@ import de.FBEditor.struct.JTextPane2;
 public class FindReplace extends JDialog {
 
 	public FindReplace(FBEdit parent, int type) {
-		super(parent, type != 2 ? "Suchen" : "Suchen und Ersetzen");
+		super(parent, type != 2 ? FBEdit.getMessage("find.search") : FBEdit.getMessage("find.searchandreplace"));
 		this.type = type;
 		initComponents();
 		setLocationRelativeTo(parent);
@@ -93,7 +93,7 @@ public class FindReplace extends JDialog {
 */
 		jPanel1.setLayout(new BoxLayout(jPanel1, 1));
 		jPanel3.setPreferredSize(new Dimension(20, 20));
-		jLabel1.setText("Suchen");
+		jLabel1.setText(FBEdit.getMessage("find.search"));
 		jPanel3.add(jLabel1);
 		jPanel1.add(jPanel3);
 		jPanel4.setLayout(new FlowLayout(0));
@@ -101,7 +101,7 @@ public class FindReplace extends JDialog {
 		jPanel4.add(TFfind);
 		jPanel1.add(jPanel4);
 		jPanel5.setPreferredSize(new Dimension(20, 20));
-		jLabel2.setText("Ersetzen");
+		jLabel2.setText(FBEdit.getMessage("find.replace"));
 		if (type != 2)
 			jLabel2.setEnabled(false);
 		jPanel5.add(jLabel2);
@@ -114,7 +114,7 @@ public class FindReplace extends JDialog {
 		jPanel1.add(jPanel6);
 		getContentPane().add(jPanel1, "Center");
 		jPanel2.setLayout(new BoxLayout(jPanel2, 1));
-		jButton1.setText("Weitersuchen");
+		jButton1.setText(FBEdit.getMessage("find.continue"));
 		jButton1.setMaximumSize(new Dimension(115, 26));
 		jButton1.setPreferredSize(new Dimension(115, 26));
 		jButton1.addActionListener(new ActionListener() {
@@ -124,7 +124,7 @@ public class FindReplace extends JDialog {
 			}
 		});
 		jPanel2.add(jButton1);
-		jButton4.setText("Alle Suchen");
+		jButton4.setText(FBEdit.getMessage("find.searchall"));
 		jButton4.setMaximumSize(new Dimension(115, 26));
 		jButton4.setPreferredSize(new Dimension(115, 26));
 		jButton4.addActionListener(new ActionListener() {
@@ -134,7 +134,7 @@ public class FindReplace extends JDialog {
 			}
 		});
 		jPanel2.add(jButton4);
-		jButton2.setText("Ersetzen");
+		jButton2.setText(FBEdit.getMessage("find.replace"));
 		jButton2.setMaximumSize(new Dimension(115, 26));
 		jButton2.setPreferredSize(new Dimension(115, 26));
 		jButton2.addActionListener(new ActionListener() {
@@ -160,7 +160,7 @@ public class FindReplace extends JDialog {
 			jButton3.setEnabled(false);
 		jPanel2.add(jButton3);
 		*/
-		jButton5.setText("Abbrechen");
+		jButton5.setText(FBEdit.getMessage("find.cancel"));
 		jButton5.setMaximumSize(new Dimension(115, 26));
 		jButton5.setPreferredSize(new Dimension(115, 26));
 		jButton5.addActionListener(new ActionListener() {
