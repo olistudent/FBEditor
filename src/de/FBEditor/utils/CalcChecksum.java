@@ -117,7 +117,7 @@ public class CalcChecksum {
 					return;
 				}
 				String base64 = line.trim().replace("\n", "");
-				byte[]dec = Base64.decodeBase64(base64.getBytes());
+				byte[] dec = Base64.decodeBase64(base64.getBytes());
 				crc.update(dec);
 
 				return;
