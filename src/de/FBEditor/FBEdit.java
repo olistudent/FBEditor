@@ -57,7 +57,7 @@ public class FBEdit extends JFrame implements Runnable
 //	private static final String version = "0.7.2.1e"; // 23.06.2018 "0.7.2.5" Fixed typo error language Italien
 //	private static final String version = "0.7.2.1g"; // 25.06.2018 "0.7.2.7" language setting manuell
 //	private static final String version = "0.7.2.1h"; // 25.06.2018 "0.7.2.8" Program Start Dialog
-	private static final String version = "0.7.2.1i"; // 25.06.2018 "0.7.2.9" Fix Checksumme Firmware xxx.07.20
+	private static final String version = "0.7.2.1i"; // 23.07.2020 "0.7.2.9" Fix Checksumme Firmware xxx.07.20
 
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
