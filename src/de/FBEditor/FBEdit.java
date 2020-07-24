@@ -56,7 +56,8 @@ public class FBEdit extends JFrame implements Runnable
 //	private static final String version = "0.7.2.1d"; // 22.06.2018 "0.7.2.4" language Italien
 //	private static final String version = "0.7.2.1e"; // 23.06.2018 "0.7.2.5" Fixed typo error language Italien
 //	private static final String version = "0.7.2.1g"; // 25.06.2018 "0.7.2.7" language setting manuell
-	private static final String version = "0.7.2.1h"; // 25.06.2018 "0.7.2.8" Program Start Dialog
+//	private static final String version = "0.7.2.1h"; // 25.06.2018 "0.7.2.8" Program Start Dialog
+	private static final String version = "0.7.2.1i"; // 25.06.2018 "0.7.2.9" Fix Checksumme Firmware xxx.07.20
 
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
@@ -394,8 +395,8 @@ public class FBEdit extends JFrame implements Runnable
 				FBEdit.getMessage("box.affirmation"),
 				FBEdit.getMessage("settings.backup"), 0, 0);
 		if (response == 0) {
-			String text = this.getJTextPane().getText().replace("\r", ""); 
-			text = CalcChecksum.replaceChecksum(text);
+			String text = CalcChecksum.replaceChecksum(this.getJTextPane()
+					.getText());
 			if (text.startsWith("**** ") && text.endsWith(" ****\n")) {
 				/* NoChecks=yes einfügen */
 				if (NoChecks.equals("true")) {
