@@ -29,9 +29,11 @@ public class UPNPUtils {
 	private static String URN_SERVICE_CREATEURLSID = "urn:dslforum-org:service:DeviceConfig:1#X_AVM-DE_CreateUrlSID"; // 01.08.2015
 
 	private static String URL_SERVICE_2FA = ":49000/upnp/control/x_auth"; // 27.04.2018
+//	private static String URL_SERVICE_2FA = ":49443/upnp/control/x_auth"; // 27.04.2018
 	private static String URN_SERVICE_2FA = "urn:dslforum-org:service:X_AVM-DE_Auth:1#GetInfo"; // 27.04.2018
 
 	private static String protocol = "http";
+//	private static String protocol = "https";
 	private static FBEdit fbe;
 	
 	public UPNPUtils() {
@@ -162,12 +164,14 @@ public class UPNPUtils {
 
 			//Debug.info("Result of DeviceConfig getHeaderFields: " + uc.getHeaderFields());
 
-			//InputStream in = uc.getInputStream();
-			d = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+			if (uc.getResponseCode() == 200) {
+				//InputStream in = uc.getInputStream();
+				d = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 
-			String str;
-			while (null != ((str = d.readLine())))
-				data += str + "\n";
+				String str;
+				while (null != ((str = d.readLine())))
+					data += str + "\n";
+			}
 
 		} catch (IOException e) {
 			Debug.error(e.toString());
