@@ -187,10 +187,13 @@ public class CalcChecksum {
 			CalcChecksum exportsumme = new CalcChecksum();
 			String newChecksum = Long.toHexString(exportsumme.getChecksum(text));
 			newChecksum = newChecksum.toUpperCase();
-			if (!CalcChecksum.getchecksum())
+			if (!CalcChecksum.getchecksum()) { // 25.07.2020
+				if (newChecksum.length() < 8)
+					newChecksum = '0' + newChecksum;
 				newText = text.replace(checksum, newChecksum);
-			else
+			} else {
 				newText = text;
+			}
 		} else {
 			newText = text;
 		}
