@@ -257,7 +257,7 @@ public class FritzBoxFirmware {
             case 121:
              return "FRITZ!Box 3390";
             case 122:
-             return "FRITZ!WLAN Repeater 310";
+             return "FRITZ!WLAN Repeater 310 A";
             case 123:
              return "FRITZ!Box 6842 LTE";
             case 124:
@@ -266,10 +266,16 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 3270 V3 (IT-Edition)";
             case 126:
              return "FRITZ!Box 3272";
+            case 128:
+             return "FRITZ!WLAN Repeater 450E";
+            case 129:
+             return "FRITZ!Powerline 540E";
             case 131:
              return "FRITZ!Box 7362 SL";
             case 133:
              return "FRITZ!WLAN Repeater DVB-C";
+            case 134:
+             return "FRITZ!WLAN Repeater 1750E";
             case 137:
              return "FRITZ!Box 7412";
             case 140:
@@ -278,6 +284,10 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 6490 Cable";
             case 142:
              return "FRITZ!Box 6820 LTE";
+            case 143:
+             return "FRITZ!WLAN Repeater 310 B";
+            case 144:
+             return "FRITZ!WLAN Repeater 1160";
             case 146:
              return "FRITZ!Box 7430";
             case 147:
@@ -286,6 +296,8 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 6590 Cable";
             case 149:
              return "FRITZ!Box 7560";
+            case 150:
+             return "FRITZ!Powerline 1240E";
             case 151:
              return "FRITZ!Box 5490";
             case 152:
@@ -298,6 +310,8 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 4040";
             case 156:
              return "FRITZ!Box 7582";
+            case 157:
+             return "FRITZ!Powerline 1260E";
             case 159:
              return "FRITZ!Box 6430 Cable";
             case 161:
@@ -306,6 +320,8 @@ public class FritzBoxFirmware {
              return "FRITZ!Box 6890 LTE";
             case 164:
              return "FRITZ!Box 7530";
+            case 175:
+             return "FRITZ!Box 7520";
             default:
              return "unknown";
            }
