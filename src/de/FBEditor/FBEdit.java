@@ -58,7 +58,15 @@ public class FBEdit extends JFrame implements Runnable
 //	private static final String version = "0.7.2.1g"; // 25.06.2018 "0.7.2.7" language setting manuell
 //	private static final String version = "0.7.2.1h"; // 25.06.2018 "0.7.2.8" Program Start Dialog
 //	private static final String version = "0.7.2.1i"; // 23.07.2020 "0.7.2.9" Fix Checksumme Firmware xxx.07.20
-	private static final String version = "0.7.2.1j"; // 25.07.2020 "0.7.2.10" Fix checksum fuehrende Null Fehlte
+//	private static final String version = "0.7.2.1j"; // 25.07.2020 "0.7.2.10" Fix checksum fuehrende Null Fehlte
+	private static final String version = "0.7.2.1k"; // 28.07.2020 "0.7.2.11" Dialog Update IP/Passwort/User/Kennwort/About
+
+	private static String ProgramCreator = "Erwin G. (Pikachu)";
+	private static String ProgramCreatorLink = "Forum: https://www.ip-phone-forum.de/threads/fbeditor.79513"
+											+ "\nCode: https://github.com/olistudent/FBEditor"
+											+ "\nCode: https://github.com/mypikachu/FBEditor";
+
+	//private static String ProgramCreatorInfo = "Diese Software Version wurde erstellt von:";
 
 	private static final String PROPERTIES_FILE = "FBEditor.properties.xml";
 
@@ -483,13 +491,12 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void about() {
-		JOptionPane.showMessageDialog(
-				this,
-				(new StringBuilder("Fritz!Box Export Editor ")).append(version)
-						.append("\n").append("by Oliver Metz\n\n")
-						.append(FBEdit.getMessage("main.thanks")).toString(),
-				FBEdit.getMessage("menu.about"), 0, new ImageIcon(
-						getImageFromJAR("/icon.gif")));
+		JOptionPane.showMessageDialog(this,
+				(new StringBuilder("Fritz!Box Export Editor ")).append(version).append("\n")
+						.append("by Oliver Metz\n\n").append(FBEdit.getMessage("main.programcreatorinfo"))
+						.append("\n").append(ProgramCreator).append("\n").append(ProgramCreatorLink)
+						.append("\n\n").append(FBEdit.getMessage("main.thanks")).toString(),
+				FBEdit.getMessage("menu.about"), 0, new ImageIcon(getImageFromJAR("/icon.gif")));
 	}
 
 	void showBoxInfo() {
@@ -499,67 +506,84 @@ public class FBEdit extends JFrame implements Runnable
 	}
 
 	void getHost(boolean first) {
-		String new_box_address = JOptionPane.showInputDialog(this,
-				FBEdit.getMessage("settings.host_ip"), box_address);
-		if (new_box_address != null && !new_box_address.equals(box_address)) {
+		JTextField field = new JTextField(box_address);
+		int retValue = JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.host_ip"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		field.requestFocus();
+		String new_box_address = new String(field.getText()).toString();
+		if (retValue == JOptionPane.OK_OPTION && !new_box_address.equals(box_address)) {
 			box_address = new_box_address;
 		}
-		
-		if (!first)
-			makeNewConnection(first);
+
+		if (!first)	makeNewConnection(first);
 	}
 
 	void getPassword(boolean first) {
 		JPasswordField field = new JPasswordField(box_password);
-		JOptionPane.showConfirmDialog(this, field,
-				FBEdit.getMessage("settings.password"),
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		int retValue = JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.password"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+//				JOptionPane.INFORMATION_MESSAGE);
 		field.requestFocus();
-		String newPass = new String(field.getPassword());
-		if (newPass != null && !newPass.equals(box_password)) {
+		String newPass = new String(field.getPassword()).toString();
+		if (retValue == JOptionPane.OK_OPTION && !newPass.equals(box_password)) {
 			box_password = newPass;
-
-			if (!first)
-				makeNewConnection(first);
 		}
+
+		if (!first)	makeNewConnection(first);
 	}
-	
+
 	void getUsername(boolean first) {
-		String new_box_username = JOptionPane.showInputDialog(this,
-				FBEdit.getMessage("settings.username"), box_username);
-		if (new_box_username != null && !new_box_username.equals(box_username)) {
+		JTextField field = new JTextField(box_username);
+		int retValue = JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.username"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		field.requestFocus();
+		String new_box_username = new String(field.getText()).toString();
+		if (retValue == JOptionPane.OK_OPTION && !new_box_username.equals(box_username)) {
 			box_username = new_box_username;
 		}
-		
-		if (!first)
-			makeNewConnection(first);
+
+		if (!first)	makeNewConnection(first);
 	}
 /*
 	public void getConfigImExPwd(boolean first) {
-		String new_box_ConfigImExPwd = JOptionPane.showInputDialog(this,
-				FBEdit.getMessage("settings.ConfigImExPwd"), box_ConfigImExPwd);
-		if (new_box_ConfigImExPwd != null && !new_box_ConfigImExPwd.equals(box_ConfigImExPwd)) {
+		JTextField field = new JTextField(box_ConfigImExPwd);
+		int retValue = JOptionPane.showConfirmDialog(this, field, FBEdit.getMessage("settings.ConfigImExPwd"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		field.requestFocus();
+		String new_box_ConfigImExPwd = new String(field.getText()).toString();
+		if (retValue == JOptionPane.OK_OPTION && !new_box_ConfigImExPwd.equals(box_ConfigImExPwd)) {
 			box_ConfigImExPwd = new_box_ConfigImExPwd;
-		//} else if (new_box_ConfigImExPwd == null) {	
-			//box_isConfigImExPwdOk = false;
-		//	setConfigImExPwdOk(false);
-		//	System.out.println("new_box_ConfigImExPwd false: " + isConfigImExPwdOk());
+//			System.out.println("box_ConfigImExPwd: " + box_ConfigImExPwd + " -> " + retValue);
+		} else if (retValue == JOptionPane.OK_OPTION) {	
+
+		} else {	
+			new_box_ConfigImExPwd = "";
 		}
-		
-		if (new_box_ConfigImExPwd != null) {
-			//box_isConfigImExPwdOk = true;
+/*
+		if (retValue == JOptionPane.OK_OPTION) {
+			System.out.println("retValue: OK " + " -> " + retValue); // 0
+		} else if (retValue == JOptionPane.CLOSED_OPTION) {
+			System.out.println("retValue: CLOSED " + " -> " + retValue); // -1
+		} else if (retValue == JOptionPane.CANCEL_OPTION) {
+			System.out.println("retValue: Chancel " + " -> " + retValue); // 2
+		}
+		if (retValue == JOptionPane.OK_CANCEL_OPTION) {
+			System.out.println("retValue: OK Chancel " + " -> " + retValue); // 2
+		}
+*/
+/*		if (!"".equals(new_box_ConfigImExPwd)) {
+			// box_isConfigImExPwdOk = true;
 			setConfigImExPwdOk(true);
 			System.out.println("new_box_ConfigImExPwd true: " + isConfigImExPwdOk());
-	    } else if (new_box_ConfigImExPwd == null) {	
-		    //box_isConfigImExPwdOk = false;
-	    	setConfigImExPwdOk(false);
-	        System.out.println("new_box_ConfigImExPwd false: " + isConfigImExPwdOk());
-	    }
+		} else if ("".equals(new_box_ConfigImExPwd)) {
+			// box_isConfigImExPwdOk = false;
+			setConfigImExPwdOk(false);
+			System.out.println("new_box_ConfigImExPwd false: " + isConfigImExPwdOk());
+		}
 
 		System.out.println("new_box_ConfigImExPwd: " + new_box_ConfigImExPwd + " -> " + isConfigImExPwdOk());
 
-		if (!first)
-			setbox_ConfigImExPwd(box_ConfigImExPwd);
+		if (!first) setbox_ConfigImExPwd(box_ConfigImExPwd);
 	}
 */
 	public void enableMenu(boolean bool) {
