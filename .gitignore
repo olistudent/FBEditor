@@ -1,6 +1,6 @@
 /.project
 /FBEditor.properties.xml
 /.settings
-/bin
 /build/*
 /.externalToolBuilders
+/target/

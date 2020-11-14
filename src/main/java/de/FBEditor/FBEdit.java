@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager; // Sorry nur für den Mac
 import javax.swing.event.DocumentListener;
@@ -77,7 +79,7 @@ public class FBEdit extends JFrame implements Runnable
 
 	private static final long serialVersionUID = 1L;
 	private static FBEdit INSTANCE = null;
-	private static FritzBoxFirmware firmware = null;
+	private static FritzBoxFirmware firmware;
 	private static JTextPane2 pane;
 	private String jFile = "";
 	private static String box_address = "";
@@ -96,14 +98,14 @@ public class FBEdit extends JFrame implements Runnable
 	private final CompoundUndoManager undoManager;
 	private static String progName = "Fritz!Box Export Editor";
 	private String fileName = "";
-	private boolean stoprequested = false;
+	private boolean stoprequested;
 	private static CutAndPastePopup cutAndPaste;
 	private ActionListen action;
 	private MyMenu myMenu;
 	private static boolean insertMode = true;
 
 	private static DocumentListener docListen;
-	private FindReplace findReplace = null;
+	private FindReplace findReplace;
 	private static JPopupMenu popup;
 	Thread thread = new Thread(this);
 
@@ -111,7 +113,7 @@ public class FBEdit extends JFrame implements Runnable
 	private static ResourceBundle messages;
 	private static ResourceBundle en_messages;
 	
-	private boolean macos = false; // 27.04.2018
+	private boolean macos; // 27.04.2018
 
 	public FBEdit() {
 		
@@ -248,7 +250,7 @@ public class FBEdit extends JFrame implements Runnable
 			e.printStackTrace();
 		}
 
-		if (!(loadProp)) {
+		if (!loadProp) {
 			getHost(true);
 			getPassword(true);
 			getUsername(true); // 25.06.2018
@@ -302,7 +304,7 @@ public class FBEdit extends JFrame implements Runnable
 			updateTitle();
 			myMenu.setstatusMsg(pane);
 			try {
-				Thread.sleep(200L);
+				TimeUnit.MILLISECONDS.sleep(200);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(FBEdit.class.getName()).log(Level.SEVERE,
 						null, ex);
@@ -615,14 +617,7 @@ public class FBEdit extends JFrame implements Runnable
 		return INSTANCE;
 	}
 
-    private static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) {
-        }
-    }       
-
-	public static void main(String[] s) {
+    public static void main(String[] s) throws InterruptedException {
 		FBEdit fbedit = new FBEdit();
 
 		// Add document, window and key listener
@@ -642,7 +637,7 @@ public class FBEdit extends JFrame implements Runnable
 		fbedit.thread.start(); // Korrektur Statuszeile geht sonst nicht
 
 		//Debug.always("sleep: 0");
-		sleep(2000);
+		TimeUnit.SECONDS.sleep(2);
 		//Debug.always("sleep: 1");
 
 		makeNewConnection(true);
